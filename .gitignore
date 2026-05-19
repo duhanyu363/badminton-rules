@@ -1,0 +1,16 @@
+# Editor
+.vscode/
+.idea/
+
+# Claude
+.claude/
+
+# Large unused video files
+*_noscore.mp4
+
+# Logs
+load_log
+
+# OS
+.DS_Store
+Thumbs.db
