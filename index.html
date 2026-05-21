@@ -1106,11 +1106,264 @@
             }
 
             .demo-area > div {
-                height: calc(100vh - 200px);
+                height: calc(100vh - 280px);
+                min-height: 300px;
             }
 
             .main-content {
                 margin-top: 100px;
+            }
+
+            .page-container {
+                padding: 16px;
+                min-height: calc(100vh - 100px);
+            }
+
+            .court-info-bar {
+                font-size: 0.95em;
+                line-height: 1.7;
+                padding: 14px 16px;
+                overflow-x: auto;
+            }
+
+            .court-info-bar .param-row {
+                gap: 6px 16px;
+            }
+
+            .court-info-bar .param-item {
+                white-space: normal;
+                font-size: 0.9em;
+            }
+
+            .singles-rule-text {
+                font-size: 1em;
+                padding: 12px 16px;
+            }
+
+            .scoreboard {
+                min-width: auto;
+                width: 100%;
+                max-width: 100%;
+                padding: 16px 20px;
+            }
+
+            .scoreboard-players {
+                gap: 12px;
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+
+            .flip-digit {
+                width: 70px;
+                height: 110px;
+            }
+
+            .flip-digit .bg-upper span,
+            .flip-digit .bg-lower span,
+            .flip-digit .face span {
+                font-size: 2.4em;
+                height: 110px;
+                line-height: 110px;
+            }
+
+            .current-score {
+                font-size: 2em;
+            }
+
+            .score-separator {
+                font-size: 1.8em;
+                margin-top: 10px;
+            }
+
+            .score-rule-text {
+                font-size: 1em;
+                padding: 14px 18px;
+                max-width: 100%;
+            }
+
+            .step-nav {
+                flex-wrap: wrap;
+                gap: 6px;
+            }
+
+            .step-btn {
+                padding: 8px 14px;
+                font-size: 0.85em;
+            }
+
+            table {
+                font-size: 0.85em;
+            }
+
+            th, td {
+                padding: 8px 10px;
+            }
+
+            .hero-title {
+                font-size: 1.8em;
+            }
+
+            .hero-subtitle {
+                font-size: 0.9em;
+            }
+
+            .feature-card {
+                padding: 20px 16px;
+            }
+
+            .feature-icon {
+                font-size: 2em;
+                width: 60px;
+                height: 60px;
+                line-height: 60px;
+            }
+
+            .feature-title {
+                font-size: 1.1em;
+            }
+
+            .feature-desc {
+                font-size: 0.9em;
+            }
+
+            .shuttlecock-deco {
+                width: 60px;
+                height: 60px;
+            }
+
+            .flight-trail svg {
+                width: 120px;
+                height: 80px;
+            }
+
+            .racket-deco {
+                width: 80px;
+                height: 140px;
+            }
+
+            .logo {
+                margin-right: 0;
+                padding: 10px 0;
+                font-size: 1.1em;
+            }
+
+            .sub-menu {
+                position: static;
+                opacity: 1;
+                visibility: visible;
+                transform: none;
+                border: none;
+                border-left: 2px solid var(--accent-cyan);
+                box-shadow: none;
+                display: none;
+                min-width: auto;
+                background: rgba(0,200,255,0.05);
+            }
+
+            .main-nav li.sub-open .sub-menu {
+                display: block;
+            }
+
+            .sub-menu a {
+                white-space: normal;
+                padding: 10px 16px 10px 24px;
+                font-size: 0.85em;
+            }
+
+            .score-scene-wrapper {
+                height: calc(100vh - 320px);
+                min-height: 260px;
+            }
+
+            .tab-buttons {
+                flex-wrap: wrap;
+                gap: 6px;
+            }
+
+            .tab-btn {
+                padding: 8px 14px;
+                font-size: 0.85em;
+            }
+
+            .table-container {
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+            }
+
+            table {
+                min-width: 500px;
+            }
+
+            .serve-rules-layout {
+                gap: 16px;
+            }
+
+            .serve-rules-layout .card {
+                padding: 16px;
+            }
+
+            .scoreboard-header {
+                font-size: 1em;
+            }
+
+            .scoreboard-player {
+                font-size: 0.85em;
+            }
+
+            .flip-digit {
+                width: 56px;
+                height: 90px;
+            }
+
+            .flip-digit .bg-upper span,
+            .flip-digit .bg-lower span,
+            .flip-digit .face span {
+                font-size: 2em;
+                height: 90px;
+                line-height: 90px;
+            }
+
+            .step-content {
+                padding: 16px;
+            }
+
+            .rule-list li {
+                font-size: 0.95em;
+            }
+
+            .content-section {
+                padding: 16px;
+            }
+
+            .serve-diagram-container {
+                height: calc(100vh - 300px);
+                min-height: 280px;
+            }
+
+            .scoreboard-row {
+                flex-wrap: wrap;
+                gap: 8px;
+            }
+
+            .scoreboard-cell {
+                min-width: 50px;
+                padding: 8px;
+            }
+
+            .shuttlecock-float {
+                width: 40px;
+                height: 60px;
+            }
+
+            .match-flow-step {
+                padding: 12px;
+            }
+
+            .match-flow-step .step-number {
+                width: 32px;
+                height: 32px;
+                line-height: 32px;
+                font-size: 0.9em;
             }
         }
     </style>
@@ -2106,6 +2359,13 @@
             link.addEventListener('click', (e) => {
                 e.preventDefault();
                 const pageName = link.dataset.page;
+                const parentLi = link.parentElement;
+                const hasSubmenu = parentLi.querySelector('.sub-menu');
+                // 移动端：有子菜单的父项点击时切换子菜单展开状态
+                if (window.innerWidth <= 768 && hasSubmenu) {
+                    parentLi.classList.toggle('sub-open');
+                    return;
+                }
                 showPage(pageName);
             });
         });
