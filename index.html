@@ -1052,18 +1052,17 @@
         /* 响应式 */
         @media (max-width: 768px) {
             .nav-container {
-                flex-direction: column;
-                padding: 10px;
+                flex-direction: row;
+                padding: 6px 8px;
             }
 
             .main-nav {
-                flex-wrap: wrap;
-                justify-content: center;
+                flex-wrap: nowrap;
             }
 
             .main-nav a {
-                padding: 12px 15px;
-                font-size: 0.85em;
+                padding: 8px 6px;
+                font-size: 0.72em;
             }
 
             .hero-title {
@@ -1111,12 +1110,14 @@
             }
 
             .main-content {
-                margin-top: 100px;
+                margin-top: 52px;
+                min-height: auto;
             }
 
             .page-container {
                 padding: 16px;
-                min-height: calc(100vh - 100px);
+                min-height: auto;
+                padding-bottom: 30px;
             }
 
             .court-info-bar {
@@ -1144,26 +1145,31 @@
                 min-width: auto;
                 width: 100%;
                 max-width: 100%;
-                padding: 16px 20px;
+                padding: 12px 16px;
             }
 
             .scoreboard-players {
-                gap: 12px;
+                gap: 8px;
                 flex-wrap: wrap;
                 justify-content: center;
             }
 
+            .flip-score {
+                padding: 10px 14px;
+                gap: 6px;
+            }
+
             .flip-digit {
-                width: 70px;
-                height: 110px;
+                width: 44px;
+                height: 70px;
             }
 
             .flip-digit .bg-upper span,
             .flip-digit .bg-lower span,
             .flip-digit .face span {
-                font-size: 2.4em;
-                height: 110px;
-                line-height: 110px;
+                font-size: 1.6em;
+                height: 70px;
+                line-height: 70px;
             }
 
             .current-score {
@@ -1171,8 +1177,8 @@
             }
 
             .score-separator {
-                font-size: 1.8em;
-                margin-top: 10px;
+                font-size: 1.4em;
+                margin-top: 0;
             }
 
             .score-rule-text {
@@ -1242,9 +1248,9 @@
             }
 
             .logo {
-                margin-right: 0;
-                padding: 10px 0;
-                font-size: 1.1em;
+                margin-right: 6px;
+                padding: 8px 0;
+                font-size: 0.85em;
             }
 
             .sub-menu {
@@ -1311,16 +1317,16 @@
             }
 
             .flip-digit {
-                width: 56px;
-                height: 90px;
+                width: 44px;
+                height: 70px;
             }
 
             .flip-digit .bg-upper span,
             .flip-digit .bg-lower span,
             .flip-digit .face span {
-                font-size: 2em;
-                height: 90px;
-                line-height: 90px;
+                font-size: 1.6em;
+                height: 70px;
+                line-height: 70px;
             }
 
             .step-content {
