@@ -500,23 +500,26 @@
         .score-scene-wrapper {
             position: relative;
             width: 100%;
-            height: calc(100vh - 60px);
+            height: 520px;
+            min-height: 520px;
+            overflow: hidden;
+            background: linear-gradient(135deg, #0a0e1a 0%, #0f1a2e 40%, #0d1525 100%);
+        }
+
+        .shuttlecock-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            pointer-events: none;
             overflow: hidden;
         }
 
-        .score-bg-video {
+        .shuttlecock-bg-item {
             position: absolute;
-            top: 50%;
-            left: 50%;
-            min-width: 100%;
-            min-height: 100%;
-            width: auto;
-            height: auto;
-            transform: translate(-50%, -50%);
-            object-fit: cover;
-            object-position: center 35%;
-            z-index: 1;
-            transition: filter 2s ease;
+            pointer-events: none;
         }
 
         .score-scene-wrapper::before {
@@ -526,10 +529,9 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(10, 21, 37, 0.3);
+            background: rgba(10, 14, 26, 0.5);
             z-index: 2;
             pointer-events: none;
-            transition: background 2s ease;
         }
 
         .score-overlay {
@@ -1277,8 +1279,8 @@
             }
 
             .score-scene-wrapper {
-                height: calc(100vh - 320px);
-                min-height: 260px;
+                height: auto;
+                min-height: 380px;
             }
 
             .tab-buttons {
@@ -1764,12 +1766,7 @@
                     </svg>
             </div>
             <div class="score-scene-wrapper" id="score-scene-wrapper">
-                <video id="score-bg-video" class="score-bg-video" muted loop playsinline preload="auto">
-                    <source src="./抖音2026513-023820.mp4" type="video/mp4">
-                </video>
-                <video id="score-bg-video-new" class="score-bg-video" muted playsinline preload="auto" style="display: none; opacity: 0; transition: opacity 1.5s ease;">
-                    <source src="./31521311230.mp4" type="video/mp4">
-                </video>
+                <div class="shuttlecock-bg" id="shuttlecock-bg"></div>
                 <div id="score-system-container" style="position: relative; width: 100%; height: 100%;"></div>
                 <div class="score-overlay" id="score-overlay">
                     <div class="score-rule-text" id="score-rule-text"></div>
@@ -2331,22 +2328,9 @@
 
             // 如果打开计分制度页面，初始化动画
             if (pageName === 'score-system') {
-                const video = document.getElementById('score-bg-video');
-                if (video) video.style.display = '';
                 setTimeout(initScoreSystem, 100);
             } else {
-                // 离开计分制度页面时暂停视频并清理动画，节省资源
-                const video = document.getElementById('score-bg-video');
-                if (video) {
-                    video.pause();
-                    video.style.display = 'none';
-                }
-                const newVideo = document.getElementById('score-bg-video-new');
-                if (newVideo) {
-                    newVideo.pause();
-                    newVideo.style.display = 'none';
-                    newVideo.style.opacity = '0';
-                }
+                // 离开计分制度页面时清理动画，节省资源
                 if (netViewAnimId) {
                     cancelAnimationFrame(netViewAnimId);
                     netViewAnimId = null;
@@ -2660,8 +2644,6 @@
         // ========== 计分制度页面动画 ==========
         let scoreAnimTimers = [];
         let scoreSceneObj = null;
-        const SCORE_VIDEO_CLIP_END = 10; // 网口视角片段结束时间（秒）
-        let scoreVideoTimeListener = null;
 let netViewSceneObj = null;
 let netViewAnimId = null;
 
@@ -2867,6 +2849,31 @@ let netViewAnimId = null;
             return tex;
         }
 
+        function fillShuttlecockBackground() {
+            const bg = document.getElementById('shuttlecock-bg');
+            if (!bg) return;
+            bg.innerHTML = '';
+            const svg = `<svg viewBox="0 0 100 150" style="width:100%;height:100%;">
+                <ellipse cx="50" cy="138" rx="14" ry="6" fill="rgba(0,200,255,0.12)" stroke="rgba(0,200,255,0.2)" stroke-width="1"/>
+                <ellipse cx="50" cy="133" rx="12" ry="3" fill="rgba(0,200,255,0.08)" stroke="rgba(0,200,255,0.15)" stroke-width="0.5"/>
+                <path d="M38 133 Q50 129 62 133 L58 126 Q50 122 42 126 Z" fill="rgba(0,200,255,0.06)" stroke="rgba(0,200,255,0.12)" stroke-width="0.7"/>
+                <path d="M38 126 Q18 94 14 58 Q20 38 50 32 Q80 38 86 58 Q82 94 62 126" fill="rgba(0,200,255,0.03)" stroke="rgba(0,200,255,0.1)" stroke-width="0.8"/>
+                <path d="M38 126 L30 96 L24 64 Q28 61 32 64 L38 96 L44 126 Z" fill="rgba(0,200,255,0.04)" stroke="rgba(0,200,255,0.08)" stroke-width="0.35"/>
+                <path d="M42 126 L37 94 L34 62 Q38 59 42 62 L44 94 L46 126 Z" fill="rgba(0,200,255,0.04)" stroke="rgba(0,200,255,0.08)" stroke-width="0.35"/>
+                <path d="M46 126 L44 92 L44 60 Q48 57 52 60 L51 92 L50 126 Z" fill="rgba(0,200,255,0.04)" stroke="rgba(0,200,255,0.08)" stroke-width="0.35"/>
+                <path d="M50 126 L52 90 L56 58 Q60 55 64 58 L60 90 L54 126 Z" fill="rgba(0,200,255,0.05)" stroke="rgba(0,200,255,0.1)" stroke-width="0.45"/>
+                <path d="M54 126 L60 92 L68 60 Q72 57 76 60 L69 92 L58 126 Z" fill="rgba(0,200,255,0.05)" stroke="rgba(0,200,255,0.1)" stroke-width="0.45"/>
+                <path d="M58 126 L68 94 L78 64 Q82 61 86 64 L77 94 L62 126 Z" fill="rgba(0,200,255,0.04)" stroke="rgba(0,200,255,0.08)" stroke-width="0.35"/>
+            </svg>`;
+            for (let i = 0; i < 24; i++) {
+                const el = document.createElement('div');
+                el.className = 'shuttlecock-bg-item';
+                el.style.cssText = `width:${30 + Math.random() * 40}px;height:${45 + Math.random() * 60}px;left:${Math.random() * 90 + 5}%;top:${Math.random() * 90 + 5}%;opacity:${0.03 + Math.random() * 0.06};transform:rotate(${Math.random() * 360}deg);`;
+                el.innerHTML = svg;
+                bg.appendChild(el);
+            }
+        }
+
         function initScoreSystem() {
             const container = document.getElementById('score-system-container');
             if (!container) return;
@@ -2889,13 +2896,6 @@ let netViewAnimId = null;
                     netViewSceneObj.renderer.dispose();
                 }
                 netViewSceneObj = null;
-            }
-
-            // 移除之前绑定的视频时间监听器
-            const oldVideo = document.getElementById('score-bg-video');
-            if (oldVideo && scoreVideoTimeListener) {
-                oldVideo.removeEventListener('timeupdate', scoreVideoTimeListener);
-                scoreVideoTimeListener = null;
             }
 
             const overlay = document.getElementById('score-overlay');
@@ -2928,34 +2928,11 @@ let netViewAnimId = null;
             if (winA) winA.classList.remove('show');
             if (winB) winB.classList.remove('show');
 
-            // 初始化旧视频背景（开头10秒用）
-            if (oldVideo) {
-                oldVideo.style.display = '';
-                oldVideo.style.filter = '';
-                oldVideo.currentTime = 0;
-                const playPromise = oldVideo.play();
-                if (playPromise !== undefined) {
-                    playPromise.catch(() => {});
-                }
-                scoreVideoTimeListener = function() {
-                    if (oldVideo.currentTime >= SCORE_VIDEO_CLIP_END) {
-                        oldVideo.currentTime = 0;
-                    }
-                };
-                oldVideo.addEventListener('timeupdate', scoreVideoTimeListener);
-            }
+            // 生成羽毛球背景
+            fillShuttlecockBackground();
 
-            // 新视频先隐藏
-            const newVideo = document.getElementById('score-bg-video-new');
-            if (newVideo) {
-                newVideo.pause();
-                newVideo.style.display = 'none';
-                newVideo.style.opacity = '0';
-            }
-
-            setTimeout(() => {
-                fadeToScoreboard();
-            }, 10000);
+            // 直接显示记分牌并开始动画
+            fadeToScoreboard();
         }
 
         function startScoreAnimation() {
@@ -3218,34 +3195,9 @@ let netViewAnimId = null;
         }
 
         function fadeToScoreboard() {
-            const oldVideo = document.getElementById('score-bg-video');
-            const newVideo = document.getElementById('score-bg-video-new');
             const overlay = document.getElementById('score-overlay');
-
-            // 停止旧视频，隐藏
-            if (oldVideo) {
-                oldVideo.pause();
-                oldVideo.style.display = 'none';
-            }
-
-            // 启动新视频（从30秒开始），渐显
-            if (newVideo) {
-                newVideo.style.display = '';
-                newVideo.currentTime = 30;
-                newVideo.style.filter = 'brightness(0.25)';
-                const playPromise = newVideo.play();
-                if (playPromise !== undefined) {
-                    playPromise.catch(() => {});
-                }
-                // 渐显效果
-                requestAnimationFrame(() => {
-                    newVideo.style.opacity = '1';
-                });
-            }
-
             if (overlay) overlay.classList.add('active');
-
-            setTimeout(startScoreboardAnimation, 2200);
+            startScoreboardAnimation();
         }
 
         function setFlipScore(element, newScore) {
@@ -3376,7 +3328,6 @@ let netViewAnimId = null;
             ];
 
             let idx = 0;
-            let charIdx = 0;
 
             function updateScoreboard(entry) {
                 if (scoreA) setFlipScore(scoreA, entry.scores[0]);
@@ -3407,51 +3358,38 @@ let netViewAnimId = null;
 
             function showNextEntry() {
                 if (idx >= script.length) {
-                    const newVideo = document.getElementById('score-bg-video-new');
-                    if (newVideo) newVideo.pause();
                     return;
                 }
                 const entry = script[idx];
-                // 只有在新条目有文字时才清空，否则保留上一句与动画匹配
-                if (entry.text) {
-                    textEl.textContent = '';
-                    charIdx = 0;
+                // 整句直接替换显示（空字符串也清空）
+                if (entry.text !== undefined) {
+                    textEl.textContent = entry.text;
                 }
                 updateScoreboard(entry);
 
                 const hasSubSteps = entry.subSteps && entry.subSteps.length > 0;
 
-                const typeInterval = setInterval(() => {
-                    if (charIdx < entry.text.length) {
-                        textEl.textContent += entry.text[charIdx];
-                        charIdx++;
-                    } else {
-                        clearInterval(typeInterval);
-
-                        if (hasSubSteps) {
-                            let stepIdx = 0;
-                            function runSubStep() {
-                                if (stepIdx >= entry.subSteps.length) {
-                                    idx++;
-                                    const timer = setTimeout(showNextEntry, 4000);
-                                    scoreAnimTimers.push(timer);
-                                    return;
-                                }
-                                const sub = entry.subSteps[stepIdx];
-                                updateScoreboard({ ...entry, ...sub });
-                                stepIdx++;
-                                const timer = setTimeout(runSubStep, sub.delay || 400);
-                                scoreAnimTimers.push(timer);
-                            }
-                            runSubStep();
-                        } else {
+                if (hasSubSteps) {
+                    let stepIdx = 0;
+                    function runSubStep() {
+                        if (stepIdx >= entry.subSteps.length) {
                             idx++;
-                            const timer = setTimeout(showNextEntry, 4000);
+                            const timer = setTimeout(showNextEntry, 3000);
                             scoreAnimTimers.push(timer);
+                            return;
                         }
+                        const sub = entry.subSteps[stepIdx];
+                        updateScoreboard({ ...entry, ...sub });
+                        stepIdx++;
+                        const timer = setTimeout(runSubStep, sub.delay || 400);
+                        scoreAnimTimers.push(timer);
                     }
-                }, 90);
-                scoreAnimTimers.push(typeInterval);
+                    runSubStep();
+                } else {
+                    idx++;
+                    const timer = setTimeout(showNextEntry, 3000);
+                    scoreAnimTimers.push(timer);
+                }
             }
 
             // 重置记分牌
