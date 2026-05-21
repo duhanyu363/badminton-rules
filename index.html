@@ -3362,8 +3362,8 @@ let netViewAnimId = null;
                     return;
                 }
                 const entry = script[idx];
-                // 整句直接替换显示（空字符串也清空）
-                if (entry.text !== undefined) {
+                // 整句直接替换显示（有文字才替换，空字符串保留上一句）
+                if (entry.text) {
                     textEl.textContent = entry.text;
                 }
                 updateScoreboard(entry);
