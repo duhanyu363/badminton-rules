@@ -769,16 +769,15 @@
             height: 50%;
             transform-origin: bottom center;
             z-index: 10;
-            will-change: transform, opacity;
-            transform: rotateX(0) translateY(0);
-            opacity: 1;
-            transition: transform 0.35s cubic-bezier(0.25, 0.1, 0.25, 1),
-                        opacity 0.15s ease 0.35s;
+            will-change: transform;
+            transform-style: preserve-3d;
+            backface-visibility: hidden;
+            transform: rotateX(0);
+            transition: transform 0.55s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         .flip-digit .flip-card.flipping {
-            transform: rotateX(-30deg) translateY(110%);
-            opacity: 0;
+            transform: rotateX(-180deg);
         }
 
         /* 卡片正面 - 显示旧数字的上半 */
@@ -791,6 +790,7 @@
             border: 3px solid #000;
             border-radius: 8px 8px 0 0;
             border-bottom: 1px solid #ccc;
+            backface-visibility: hidden;
         }
 
         .flip-digit .face span {
@@ -804,19 +804,6 @@
             text-align: center;
             font-size: 4em;
             font-weight: 700;
-        }
-
-        /* 卡片厚度 */
-        .flip-digit .thickness {
-            position: absolute;
-            bottom: -5px;
-            left: 0;
-            width: 100%;
-            height: 5px;
-            background: linear-gradient(180deg, #ddd 0%, #999 50%, #666 100%);
-            transform-origin: top center;
-            transform: rotateX(-90deg);
-            backface-visibility: hidden;
         }
 
         /* 翻页阴影 */
@@ -1162,16 +1149,16 @@
             }
 
             .flip-digit {
-                width: 44px;
-                height: 70px;
+                width: 64px;
+                height: 96px;
             }
 
             .flip-digit .bg-upper span,
             .flip-digit .bg-lower span,
             .flip-digit .face span {
-                font-size: 1.6em;
-                height: 70px;
-                line-height: 70px;
+                font-size: 2.2em;
+                height: 96px;
+                line-height: 96px;
             }
 
             .current-score {
@@ -1179,7 +1166,7 @@
             }
 
             .score-separator {
-                font-size: 1.4em;
+                font-size: 1.6em;
                 margin-top: 0;
             }
 
@@ -1279,7 +1266,7 @@
             }
 
             .score-scene-wrapper {
-                height: auto;
+                height: 380px;
                 min-height: 380px;
             }
 
@@ -1319,16 +1306,16 @@
             }
 
             .flip-digit {
-                width: 44px;
-                height: 70px;
+                width: 64px;
+                height: 96px;
             }
 
             .flip-digit .bg-upper span,
             .flip-digit .bg-lower span,
             .flip-digit .face span {
-                font-size: 1.6em;
-                height: 70px;
-                line-height: 70px;
+                font-size: 2.2em;
+                height: 96px;
+                line-height: 96px;
             }
 
             .step-content {
@@ -3245,9 +3232,9 @@ let netViewAnimId = null;
                 });
             });
 
-            // transition 结束后移除卡片（监听 opacity 属性确保是最后完成的属性）
+            // transition 结束后移除卡片（监听 transform 属性）
             const onTransitionEnd = (e) => {
-                if (e.target === card && e.propertyName === 'opacity') {
+                if (e.target === card && e.propertyName === 'transform') {
                     card.removeEventListener('transitionend', onTransitionEnd);
                     if (card.parentNode) card.remove();
                 }
