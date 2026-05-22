@@ -877,10 +877,10 @@
             position: absolute;
             pointer-events: none;
             z-index: 0;
-            opacity: 0.3;
-            width: 100px;
-            height: 100px;
-            filter: drop-shadow(0 0 10px rgba(255,255,255,0.12));
+            opacity: 0.22;
+            width: 110px;
+            height: 110px;
+            filter: drop-shadow(0 4px 12px rgba(0,0,0,0.25));
             animation: shuttleFloat 6s ease-in-out infinite;
         }
 
@@ -907,8 +907,8 @@
         }
 
         .shuttlecock-deco-1 { top: 5%; right: 8%; }
-        .shuttlecock-deco-2 { bottom: 10%; left: 5%; opacity: 0.09; }
-        .shuttlecock-deco-3 { top: 30%; left: 3%; opacity: 0.08; }
+        .shuttlecock-deco-2 { bottom: 10%; left: 5%; opacity: 0.22; }
+        .shuttlecock-deco-3 { top: 30%; left: 3%; opacity: 0.15; }
 
         /* 羽毛球飞行轨迹装饰 */
         .flight-trail {
@@ -1433,41 +1433,53 @@
 
                 <!-- 羽毛球装饰 -->
                 <div class="shuttlecock-deco shuttlecock-deco-1">
-                    <svg viewBox="0 0 100 150" xmlns="http://www.w3.org/2000/svg">
-                        <!-- Cork base - beige flat hemisphere, ~1/6 height -->
-                        <path d="M37 128 L37 136 Q37 144 50 144 Q63 144 63 136 L63 128 Z" fill="#D4A574" stroke="#1a1a1a" stroke-width="1.8"/>
-                        <!-- Two white binding rings -->
-                        <rect x="39" y="122" width="22" height="2.5" rx="1" fill="#fff" stroke="#1a1a1a" stroke-width="1"/>
-                        <rect x="39" y="125.5" width="22" height="2.5" rx="1" fill="#fff" stroke="#1a1a1a" stroke-width="1"/>
-                        <!-- Feather cone - white, symmetric side view -->
-                        <path d="M39 122 Q38 80 44 35 Q50 31 56 35 Q62 80 61 122 Z" fill="#fff" stroke="#1a1a1a" stroke-width="1.8"/>
-                        <!-- Feather shaft lines showing layered 16-feather fan arrangement -->
-                        <path d="M43 122 Q41 78 47 36" fill="none" stroke="#c8c8c8" stroke-width="1.1" stroke-linecap="round"/>
-                        <path d="M46 122 Q46 78 48 34" fill="none" stroke="#bdbdbd" stroke-width="1.2" stroke-linecap="round"/>
-                        <path d="M50 122 L50 33" fill="none" stroke="#a8a8a8" stroke-width="1.4" stroke-linecap="round"/>
-                        <path d="M54 122 Q54 78 52 34" fill="none" stroke="#bdbdbd" stroke-width="1.2" stroke-linecap="round"/>
-                        <path d="M57 122 Q59 78 53 36" fill="none" stroke="#c8c8c8" stroke-width="1.1" stroke-linecap="round"/>
-                        <!-- Feather tip scallop hint -->
-                        <path d="M44 35 Q47 32 50 35 Q53 32 56 35" fill="none" stroke="#1a1a1a" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"/>
+                    <svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+                        <!-- 纯白圆形背景 -->
+                        <circle cx="60" cy="60" r="54" fill="#fff" stroke="#e8e8e8" stroke-width="1"/>
+                        <!-- 软木球头 - 米色宽扁半球形，占整体高度约1/6 -->
+                        <path d="M48 92 L48 102 Q48 106 60 106 Q72 106 72 102 L72 92 Z" fill="#D4A574" stroke="#222" stroke-width="1.6"/>
+                        <!-- 两道白色线圈绑带 -->
+                        <rect x="50" y="86" width="20" height="2.5" rx="1" fill="#fff" stroke="#222" stroke-width="0.9"/>
+                        <rect x="50" y="89" width="20" height="2.5" rx="1" fill="#fff" stroke="#222" stroke-width="0.9"/>
+                        <!-- 羽毛圆锥体 - 白色 -->
+                        <path d="M50 86 Q48 55 55 20 Q60 16 65 20 Q72 55 70 86 Z" fill="#fff" stroke="#222" stroke-width="1.6"/>
+                        <!-- 9根羽轴线 - 暗示16片羽毛的扇骨均匀排列 -->
+                        <path d="M52 86 Q50 55 56 22" fill="none" stroke="#d5d5d5" stroke-width="0.9" stroke-linecap="round"/>
+                        <path d="M54 86 Q53 55 57 20" fill="none" stroke="#c8c8c8" stroke-width="1" stroke-linecap="round"/>
+                        <path d="M56 86 Q55 55 58 19" fill="none" stroke="#bbb" stroke-width="1.1" stroke-linecap="round"/>
+                        <path d="M58 86 Q58 55 59 18" fill="none" stroke="#aaa" stroke-width="1.2" stroke-linecap="round"/>
+                        <path d="M62 86 L62 18" fill="none" stroke="#999" stroke-width="1.3" stroke-linecap="round"/>
+                        <path d="M66 86 Q66 55 63 18" fill="none" stroke="#aaa" stroke-width="1.2" stroke-linecap="round"/>
+                        <path d="M68 86 Q67 55 64 19" fill="none" stroke="#bbb" stroke-width="1.1" stroke-linecap="round"/>
+                        <path d="M70 86 Q69 55 65 20" fill="none" stroke="#c8c8c8" stroke-width="1" stroke-linecap="round"/>
+                        <path d="M72 86 Q74 55 66 22" fill="none" stroke="#d5d5d5" stroke-width="0.9" stroke-linecap="round"/>
+                        <!-- 顶部羽毛尖端 scallop - 显示层叠排列 -->
+                        <path d="M54 20 Q55 17 56 20 Q57 17 58 20 Q59 17 60 20 Q61 17 62 20 Q63 17 64 20 Q65 17 66 20" fill="none" stroke="#222" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"/>
                     </svg>
                 </div>
                 <div class="shuttlecock-deco shuttlecock-deco-2">
-                    <svg viewBox="0 0 100 150" xmlns="http://www.w3.org/2000/svg">
-                        <!-- Cork base - beige flat hemisphere, ~1/6 height -->
-                        <path d="M37 128 L37 136 Q37 144 50 144 Q63 144 63 136 L63 128 Z" fill="#D4A574" stroke="#1a1a1a" stroke-width="1.8"/>
-                        <!-- Two white binding rings -->
-                        <rect x="39" y="122" width="22" height="2.5" rx="1" fill="#fff" stroke="#1a1a1a" stroke-width="1"/>
-                        <rect x="39" y="125.5" width="22" height="2.5" rx="1" fill="#fff" stroke="#1a1a1a" stroke-width="1"/>
-                        <!-- Feather cone - white, symmetric side view -->
-                        <path d="M39 122 Q38 80 44 35 Q50 31 56 35 Q62 80 61 122 Z" fill="#fff" stroke="#1a1a1a" stroke-width="1.8"/>
-                        <!-- Feather shaft lines showing layered 16-feather fan arrangement -->
-                        <path d="M43 122 Q41 78 47 36" fill="none" stroke="#c8c8c8" stroke-width="1.1" stroke-linecap="round"/>
-                        <path d="M46 122 Q46 78 48 34" fill="none" stroke="#bdbdbd" stroke-width="1.2" stroke-linecap="round"/>
-                        <path d="M50 122 L50 33" fill="none" stroke="#a8a8a8" stroke-width="1.4" stroke-linecap="round"/>
-                        <path d="M54 122 Q54 78 52 34" fill="none" stroke="#bdbdbd" stroke-width="1.2" stroke-linecap="round"/>
-                        <path d="M57 122 Q59 78 53 36" fill="none" stroke="#c8c8c8" stroke-width="1.1" stroke-linecap="round"/>
-                        <!-- Feather tip scallop hint -->
-                        <path d="M44 35 Q47 32 50 35 Q53 32 56 35" fill="none" stroke="#1a1a1a" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"/>
+                    <svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+                        <!-- 纯白圆形背景 -->
+                        <circle cx="60" cy="60" r="54" fill="#fff" stroke="#e8e8e8" stroke-width="1"/>
+                        <!-- 软木球头 - 米色宽扁半球形，占整体高度约1/6 -->
+                        <path d="M48 92 L48 102 Q48 106 60 106 Q72 106 72 102 L72 92 Z" fill="#D4A574" stroke="#222" stroke-width="1.6"/>
+                        <!-- 两道白色线圈绑带 -->
+                        <rect x="50" y="86" width="20" height="2.5" rx="1" fill="#fff" stroke="#222" stroke-width="0.9"/>
+                        <rect x="50" y="89" width="20" height="2.5" rx="1" fill="#fff" stroke="#222" stroke-width="0.9"/>
+                        <!-- 羽毛圆锥体 - 白色 -->
+                        <path d="M50 86 Q48 55 55 20 Q60 16 65 20 Q72 55 70 86 Z" fill="#fff" stroke="#222" stroke-width="1.6"/>
+                        <!-- 9根羽轴线 - 暗示16片羽毛的扇骨均匀排列 -->
+                        <path d="M52 86 Q50 55 56 22" fill="none" stroke="#d5d5d5" stroke-width="0.9" stroke-linecap="round"/>
+                        <path d="M54 86 Q53 55 57 20" fill="none" stroke="#c8c8c8" stroke-width="1" stroke-linecap="round"/>
+                        <path d="M56 86 Q55 55 58 19" fill="none" stroke="#bbb" stroke-width="1.1" stroke-linecap="round"/>
+                        <path d="M58 86 Q58 55 59 18" fill="none" stroke="#aaa" stroke-width="1.2" stroke-linecap="round"/>
+                        <path d="M62 86 L62 18" fill="none" stroke="#999" stroke-width="1.3" stroke-linecap="round"/>
+                        <path d="M66 86 Q66 55 63 18" fill="none" stroke="#aaa" stroke-width="1.2" stroke-linecap="round"/>
+                        <path d="M68 86 Q67 55 64 19" fill="none" stroke="#bbb" stroke-width="1.1" stroke-linecap="round"/>
+                        <path d="M70 86 Q69 55 65 20" fill="none" stroke="#c8c8c8" stroke-width="1" stroke-linecap="round"/>
+                        <path d="M72 86 Q74 55 66 22" fill="none" stroke="#d5d5d5" stroke-width="0.9" stroke-linecap="round"/>
+                        <!-- 顶部羽毛尖端 scallop - 显示层叠排列 -->
+                        <path d="M54 20 Q55 17 56 20 Q57 17 58 20 Q59 17 60 20 Q61 17 62 20 Q63 17 64 20 Q65 17 66 20" fill="none" stroke="#222" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"/>
                     </svg>
                 </div>
 
@@ -3353,9 +3365,20 @@ let netViewAnimId = null;
                     return;
                 }
                 const entry = script[idx];
-                // 整句直接替换显示（有文字才替换，空字符串保留上一句）
+
+                // 打字机效果：逐字显示，空字符串保留上一句
                 if (entry.text) {
-                    textEl.textContent = entry.text;
+                    textEl.textContent = '';
+                    let charIdx = 0;
+                    const typeInterval = setInterval(() => {
+                        if (charIdx < entry.text.length) {
+                            textEl.textContent += entry.text[charIdx];
+                            charIdx++;
+                        } else {
+                            clearInterval(typeInterval);
+                        }
+                    }, 40);
+                    scoreAnimTimers.push(typeInterval);
                 }
                 updateScoreboard(entry);
 
