@@ -89,7 +89,7 @@
         .main-nav a {
             display: block;
             padding: 15px 20px;
-            color: rgba(255,255,255,0.8);
+            color: var(--text-secondary);
             text-decoration: none;
             transition: all 0.3s;
             font-size: 0.9em;
@@ -97,7 +97,7 @@
 
         .main-nav a:hover,
         .main-nav a.active {
-            color: #00c8ff;
+            color: var(--accent-cyan);
             background: rgba(0,200,255,0.1);
         }
 
@@ -106,9 +106,9 @@
             position: absolute;
             top: 100%;
             left: 0;
-            background: rgba(10,14,26,0.98);
-            border: 1px solid rgba(0,200,255,0.3);
-            border-top: 2px solid #00c8ff;
+            background: rgba(6,10,20,0.98);
+            border: 1px solid var(--border-subtle);
+            border-top: 2px solid var(--accent-cyan);
             min-width: 180px;
             opacity: 0;
             visibility: hidden;
@@ -122,6 +122,15 @@
             opacity: 1;
             visibility: visible;
             transform: translateY(0);
+        }
+
+        /* 点击后临时强制收起二级菜单 */
+        .menu-closing .sub-menu,
+        .menu-closing .main-nav li:hover .sub-menu {
+            opacity: 0 !important;
+            visibility: hidden !important;
+            transform: translateY(-5px) !important;
+            pointer-events: none !important;
         }
 
         .sub-menu li {
@@ -139,7 +148,8 @@
         }
 
         .sub-menu a:hover {
-            background: rgba(0,200,255,0.15);
+            background: rgba(0,200,255,0.12);
+            color: var(--accent-cyan);
             padding-left: 25px;
         }
 
@@ -228,7 +238,10 @@
             font-size: 3.6em;
             font-weight: 700;
             margin-bottom: var(--space-sm);
-            color: var(--text-primary);
+            background: linear-gradient(135deg, var(--accent-cyan) 0%, var(--accent-purple) 35%, var(--accent-pink) 65%, var(--accent-gold) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
             letter-spacing: 2px;
             position: relative;
             z-index: 1;
@@ -243,6 +256,7 @@
             height: 0.8em;
             color: var(--accent-cyan);
             filter: drop-shadow(0 0 12px rgba(0,200,255,0.4));
+            -webkit-text-fill-color: initial;
         }
 
         .hero-subtitle {
@@ -334,20 +348,42 @@
             left: 0;
             right: 0;
             height: 3px;
-            background: linear-gradient(90deg, var(--accent-cyan), var(--accent-purple));
-            opacity: 0.5;
+            opacity: 0.6;
             transition: opacity 0.25s ease;
         }
 
         .feature-card:hover {
             transform: translateY(-4px);
-            border-color: rgba(0,200,255,0.25);
-            box-shadow: 0 12px 40px rgba(0,0,0,0.3), 0 0 0 1px rgba(0,200,255,0.1);
+            box-shadow: 0 12px 40px rgba(0,0,0,0.3);
         }
 
         .feature-card:hover::before {
             opacity: 1;
         }
+
+        /* 场地规则 - 青色 */
+        .feature-card-cyan::before { background: linear-gradient(90deg, var(--accent-cyan), #0096ff); }
+        .feature-card-cyan:hover { border-color: rgba(0,200,255,0.3); box-shadow: 0 12px 40px rgba(0,0,0,0.3), 0 0 20px rgba(0,200,255,0.1); }
+        .feature-card-cyan .feature-icon { background: rgba(0,200,255,0.1); border-color: rgba(0,200,255,0.2); color: var(--accent-cyan); }
+        .feature-card-cyan:hover .feature-icon { background: rgba(0,200,255,0.2); border-color: rgba(0,200,255,0.4); }
+
+        /* 发球规则 - 紫色 */
+        .feature-card-purple::before { background: linear-gradient(90deg, var(--accent-purple), #a855f7); }
+        .feature-card-purple:hover { border-color: rgba(123,104,238,0.3); box-shadow: 0 12px 40px rgba(0,0,0,0.3), 0 0 20px rgba(123,104,238,0.1); }
+        .feature-card-purple .feature-icon { background: rgba(123,104,238,0.1); border-color: rgba(123,104,238,0.2); color: var(--accent-purple); }
+        .feature-card-purple:hover .feature-icon { background: rgba(123,104,238,0.2); border-color: rgba(123,104,238,0.4); }
+
+        /* 计分规则 - 粉色 */
+        .feature-card-pink::before { background: linear-gradient(90deg, var(--accent-pink), #f472b6); }
+        .feature-card-pink:hover { border-color: rgba(255,107,157,0.3); box-shadow: 0 12px 40px rgba(0,0,0,0.3), 0 0 20px rgba(255,107,157,0.1); }
+        .feature-card-pink .feature-icon { background: rgba(255,107,157,0.1); border-color: rgba(255,107,157,0.2); color: var(--accent-pink); }
+        .feature-card-pink:hover .feature-icon { background: rgba(255,107,157,0.2); border-color: rgba(255,107,157,0.4); }
+
+        /* 违例规则 - 金色 */
+        .feature-card-gold::before { background: linear-gradient(90deg, var(--accent-gold), #fbbf24); }
+        .feature-card-gold:hover { border-color: rgba(255,169,77,0.3); box-shadow: 0 12px 40px rgba(0,0,0,0.3), 0 0 20px rgba(255,169,77,0.1); }
+        .feature-card-gold .feature-icon { background: rgba(255,169,77,0.1); border-color: rgba(255,169,77,0.2); color: var(--accent-gold); }
+        .feature-card-gold:hover .feature-icon { background: rgba(255,169,77,0.2); border-color: rgba(255,169,77,0.4); }
 
         .feature-icon {
             margin-bottom: var(--space-sm);
@@ -357,9 +393,6 @@
             width: 72px;
             height: 72px;
             border-radius: 16px;
-            background: rgba(0,200,255,0.08);
-            border: 1px solid rgba(0,200,255,0.15);
-            color: var(--accent-cyan);
             transition: all 0.25s cubic-bezier(0.16,1,0.3,1);
         }
 
@@ -370,8 +403,6 @@
         }
 
         .feature-card:hover .feature-icon {
-            background: rgba(0,200,255,0.15);
-            border-color: rgba(0,200,255,0.3);
             transform: scale(1.05);
         }
 
@@ -1474,24 +1505,24 @@
 
                 <div class="feature-grid-pin">
                     <div class="feature-row">
-                        <div class="feature-card" onclick="showPage('court-size')">
+                        <div class="feature-card feature-card-cyan" onclick="showPage('court-size')">
                             <div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="20" height="12" rx="2"/><path d="M6 6v12"/><path d="M18 6v12"/><path d="M12 6v12"/></svg></div>
                             <div class="feature-title">场地规则</div>
                             <div class="feature-desc">了解标准场地尺寸、线条含义和球网规格</div>
                         </div>
-                        <div class="feature-card" onclick="showPage('service-singles')">
+                        <div class="feature-card feature-card-purple" onclick="showPage('service-singles')">
                             <div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="3"/></svg></div>
                             <div class="feature-title">发球规则</div>
                             <div class="feature-desc">掌握单双打发球规则，避免违例</div>
                         </div>
                     </div>
                     <div class="feature-row">
-                        <div class="feature-card" onclick="showPage('score-system')">
+                        <div class="feature-card feature-card-pink" onclick="showPage('score-system')">
                             <div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg></div>
                             <div class="feature-title">计分规则</div>
                             <div class="feature-desc">学习21分制计分方法和换球规则</div>
                         </div>
-                        <div class="feature-card" onclick="showPage('violation-service')">
+                        <div class="feature-card feature-card-gold" onclick="showPage('violation-service')">
                             <div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg></div>
                             <div class="feature-title">违例规则</div>
                             <div class="feature-desc">了解发球、击球和行为违例规定</div>
@@ -2219,6 +2250,10 @@
     <script>
         // 页面切换功能
         function showPage(pageName) {
+            // 临时强制收起二级菜单，避免遮挡新页面内容
+            document.body.classList.add('menu-closing');
+            setTimeout(() => document.body.classList.remove('menu-closing'), 350);
+
             // 隐藏所有页面
             document.querySelectorAll('.page-container').forEach(page => {
                 page.classList.remove('active');
