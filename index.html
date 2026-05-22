@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>羽毛球规则教学网</title>
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;500;600;700&family=Barlow:wght@300;400;500;600;700&display=swap');
+
         * {
             margin: 0;
             padding: 0;
@@ -13,28 +15,41 @@
 
         :root {
             --phi: 1.618;
-            --space-xs: 10px;
+            --space-xs: 8px;
             --space-sm: 16px;
-            --space-md: 26px;
-            --space-lg: 42px;
-            --space-xl: 68px;
+            --space-md: 24px;
+            --space-lg: 40px;
+            --space-xl: 64px;
+            --font-display: 'Barlow Condensed', 'Microsoft YaHei', sans-serif;
+            --font-body: 'Barlow', 'Microsoft YaHei', sans-serif;
             --accent-cyan: #00c8ff;
             --accent-purple: #7b68ee;
             --accent-pink: #ff6b9d;
             --accent-gold: #ffa94d;
+            --accent-green: #22c55e;
+            --bg-deep: #060a14;
+            --bg-elevated: #0f1629;
+            --surface: rgba(255,255,255,0.04);
+            --text-primary: #f0f4f8;
+            --text-secondary: #94a3b8;
+            --border-subtle: rgba(255,255,255,0.08);
         }
 
         body {
-            font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
-            background: #0a0e1a;
+            font-family: var(--font-body);
+            background: var(--bg-deep);
             min-height: 100vh;
-            color: #fff;
+            color: var(--text-primary);
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
         }
 
         /* 顶部导航 */
         .header {
-            background: rgba(10,14,26,0.95);
-            border-bottom: 1px solid rgba(0,200,255,0.3);
+            background: rgba(6,10,20,0.85);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border-subtle);
             padding: 0;
             position: fixed;
             top: 0;
@@ -48,16 +63,17 @@
             margin: 0 auto;
             display: flex;
             align-items: center;
-            padding: 0 20px;
+            padding: 0 var(--space-md);
         }
 
         .logo {
-            font-size: 1.2em;
-            font-weight: bold;
-            color: #00c8ff;
-            -webkit-text-fill-color: transparent;
+            font-family: var(--font-display);
+            font-size: 1.3em;
+            font-weight: 600;
+            color: var(--accent-cyan);
+            letter-spacing: 0.5px;
             margin-right: 40px;
-            padding: 15px 0;
+            padding: 14px 0;
         }
 
         /* 一级菜单 */
@@ -208,23 +224,34 @@
         }
 
         .hero-title {
-            font-size: 3.2em;
+            font-family: var(--font-display);
+            font-size: 3.6em;
             font-weight: 700;
-            margin-bottom: 20px;
-            background: linear-gradient(135deg, #00c8ff 0%, #7b68ee 30%, #ff6b9d 60%, #ffa94d 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            filter: drop-shadow(0 0 30px rgba(0,200,255,0.25));
+            margin-bottom: var(--space-sm);
+            color: var(--text-primary);
+            letter-spacing: 2px;
             position: relative;
             z-index: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: var(--space-sm);
+        }
+
+        .hero-icon {
+            width: 0.8em;
+            height: 0.8em;
+            color: var(--accent-cyan);
+            filter: drop-shadow(0 0 12px rgba(0,200,255,0.4));
         }
 
         .hero-subtitle {
-            font-size: 1.3em;
-            color: rgba(200,220,255,0.8);
-            margin-bottom: 40px;
-            text-shadow: 0 0 20px rgba(0,200,255,0.15);
+            font-family: var(--font-body);
+            font-size: 1.25em;
+            font-weight: 300;
+            color: var(--text-secondary);
+            margin-bottom: var(--space-lg);
+            letter-spacing: 1px;
             position: relative;
             z-index: 1;
         }
@@ -238,24 +265,24 @@
             height: 100%;
             pointer-events: none;
             z-index: 0;
-            background: linear-gradient(135deg, #0a0e1a 0%, #0f1a2e 25%, #0a1628 50%, #0f1a2e 75%, #0a0e1a 100%);
+            background: radial-gradient(ellipse 80% 60% at 50% -10%, rgba(0,200,255,0.08) 0%, transparent 60%),
+                        radial-gradient(ellipse 60% 50% at 80% 90%, rgba(123,104,238,0.06) 0%, transparent 50%),
+                        var(--bg-deep);
             overflow: hidden;
         }
 
         .gradient-bg::before {
             content: '';
             position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
+            top: -30%;
+            left: -30%;
+            width: 160%;
+            height: 160%;
             background:
-                radial-gradient(circle at 20% 30%, rgba(0,200,255,0.12) 0%, transparent 40%),
-                radial-gradient(circle at 80% 20%, rgba(255,100,150,0.1) 0%, transparent 35%),
-                radial-gradient(circle at 60% 80%, rgba(150,100,255,0.1) 0%, transparent 45%),
-                radial-gradient(circle at 30% 70%, rgba(0,255,180,0.08) 0%, transparent 40%),
-                radial-gradient(circle at 90% 60%, rgba(255,180,50,0.08) 0%, transparent 35%);
-            animation: gradientMove 15s ease-in-out infinite;
+                radial-gradient(circle at 25% 25%, rgba(0,200,255,0.06) 0%, transparent 45%),
+                radial-gradient(circle at 75% 15%, rgba(123,104,238,0.05) 0%, transparent 40%),
+                radial-gradient(circle at 50% 85%, rgba(0,200,255,0.04) 0%, transparent 50%);
+            animation: gradientMove 20s ease-in-out infinite;
         }
 
         @keyframes gradientMove {
@@ -287,12 +314,14 @@
         }
 
         .feature-card {
-            background: linear-gradient(135deg, rgba(0,200,255,0.06) 0%, rgba(123,104,238,0.06) 50%, rgba(255,107,157,0.06) 100%);
-            border: 1px solid rgba(0,200,255,0.2);
-            border-radius: 12px;
+            background: var(--surface);
+            border: 1px solid var(--border-subtle);
+            border-radius: 16px;
             padding: var(--space-lg) var(--space-md);
             text-align: center;
-            transition: all 0.3s;
+            transition: transform 0.25s cubic-bezier(0.16,1,0.3,1),
+                        border-color 0.25s ease,
+                        box-shadow 0.25s ease;
             cursor: pointer;
             position: relative;
             overflow: hidden;
@@ -305,15 +334,15 @@
             left: 0;
             right: 0;
             height: 3px;
-            background: linear-gradient(90deg, #00c8ff, #7b68ee, #ff6b9d, #ffa94d);
-            opacity: 0.6;
-            transition: opacity 0.3s;
+            background: linear-gradient(90deg, var(--accent-cyan), var(--accent-purple));
+            opacity: 0.5;
+            transition: opacity 0.25s ease;
         }
 
         .feature-card:hover {
-            transform: translateY(-5px) scale(1.03);
-            border-color: rgba(0,200,255,0.5);
-            box-shadow: 0 8px 32px rgba(0,200,255,0.15), 0 0 16px rgba(123,104,238,0.1);
+            transform: translateY(-4px);
+            border-color: rgba(0,200,255,0.25);
+            box-shadow: 0 12px 40px rgba(0,0,0,0.3), 0 0 0 1px rgba(0,200,255,0.1);
         }
 
         .feature-card:hover::before {
@@ -321,31 +350,45 @@
         }
 
         .feature-icon {
-            font-size: 3em;
-            margin-bottom: 15px;
-            display: inline-block;
-            width: 80px;
-            height: 80px;
-            line-height: 80px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, rgba(0,200,255,0.15) 0%, rgba(123,104,238,0.15) 100%);
-            border: 2px solid rgba(0,200,255,0.3);
-            box-shadow: 0 0 20px rgba(0,200,255,0.15);
+            margin-bottom: var(--space-sm);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 72px;
+            height: 72px;
+            border-radius: 16px;
+            background: rgba(0,200,255,0.08);
+            border: 1px solid rgba(0,200,255,0.15);
+            color: var(--accent-cyan);
+            transition: all 0.25s cubic-bezier(0.16,1,0.3,1);
+        }
+
+        .feature-icon svg {
+            width: 32px;
+            height: 32px;
+            stroke-width: 1.5;
+        }
+
+        .feature-card:hover .feature-icon {
+            background: rgba(0,200,255,0.15);
+            border-color: rgba(0,200,255,0.3);
+            transform: scale(1.05);
         }
 
         .feature-title {
-            font-size: 1.4em;
-            background: linear-gradient(90deg, #00c8ff, #7b68ee);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            margin-bottom: 12px;
+            font-family: var(--font-display);
+            font-size: 1.35em;
+            color: var(--text-primary);
+            margin-bottom: 10px;
             font-weight: 600;
+            letter-spacing: 0.5px;
         }
 
         .feature-desc {
-            color: rgba(200,220,255,0.65);
-            font-size: 1.05em;
+            color: var(--text-secondary);
+            font-size: 1em;
+            line-height: 1.6;
+            font-weight: 300;
         }
 
         /* 按钮样式 */
@@ -933,14 +976,6 @@
         }
 
         /* 页面头部羽毛球图标装饰 */
-        .page-header-shuttle {
-            display: inline-block;
-            margin: 0 var(--space-xs);
-            font-size: 0.9em;
-            opacity: 0.7;
-            vertical-align: middle;
-        }
-
         /* 内容区羽毛球角标 */
         .corner-shuttle {
             position: absolute;
@@ -1041,7 +1076,8 @@
             }
 
             .hero-title {
-                font-size: 2.2em;
+                font-size: 2.4em;
+                gap: 8px;
             }
 
             .hero-subtitle {
@@ -1068,7 +1104,12 @@
             }
 
             .feature-icon {
-                font-size: 2.5em;
+                width: 60px;
+                height: 60px;
+            }
+            .feature-icon svg {
+                width: 26px;
+                height: 26px;
             }
 
             .feature-title {
@@ -1425,151 +1466,33 @@
         <!-- 首页 -->
         <div class="page-container active" id="page-home">
             <section class="hero-section">
-                <h1 class="hero-title"><span class="page-header-shuttle">🏸</span>羽毛球规则<span class="page-header-shuttle">🏸</span></h1>
+                <h1 class="hero-title"><svg class="hero-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2a2 2 0 0 0-2 2v2.5c0 2.5 1.5 4.5 3 6s3 3.5 3 6V20a2 2 0 0 0 2 2"/><path d="M16 2a2 2 0 0 1 2 2v2.5c0 2.5-1.5 4.5-3 6s-3 3.5-3 6V20a2 2 0 0 1-2 2"/></svg>羽毛球规则<svg class="hero-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2a2 2 0 0 0-2 2v2.5c0 2.5 1.5 4.5 3 6s3 3.5 3 6V20a2 2 0 0 0 2 2"/><path d="M16 2a2 2 0 0 1 2 2v2.5c0 2.5-1.5 4.5-3 6s-3 3.5-3 6V20a2 2 0 0 1-2 2"/></svg></h1>
                 <p class="hero-subtitle">通过交互式动画，轻松学习羽毛球规则</p>
 
                 <!-- 动态渐变背景 -->
                 <div class="gradient-bg"></div>
 
-                <!-- 羽毛球装饰 -->
-                <div class="shuttlecock-deco shuttlecock-deco-1">
-                    <svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
-                        <!-- 纯白圆形背景 -->
-                        <circle cx="60" cy="60" r="54" fill="#fff" stroke="#e8e8e8" stroke-width="1"/>
-                        <!-- 软木球头 - 米色宽扁半球形，占整体高度约1/6 -->
-                        <path d="M48 92 L48 102 Q48 106 60 106 Q72 106 72 102 L72 92 Z" fill="#D4A574" stroke="#222" stroke-width="1.6"/>
-                        <!-- 两道白色线圈绑带 -->
-                        <rect x="50" y="86" width="20" height="2.5" rx="1" fill="#fff" stroke="#222" stroke-width="0.9"/>
-                        <rect x="50" y="89" width="20" height="2.5" rx="1" fill="#fff" stroke="#222" stroke-width="0.9"/>
-                        <!-- 羽毛圆锥体 - 白色 -->
-                        <path d="M50 86 Q48 55 55 20 Q60 16 65 20 Q72 55 70 86 Z" fill="#fff" stroke="#222" stroke-width="1.6"/>
-                        <!-- 9根羽轴线 - 暗示16片羽毛的扇骨均匀排列 -->
-                        <path d="M52 86 Q50 55 56 22" fill="none" stroke="#d5d5d5" stroke-width="0.9" stroke-linecap="round"/>
-                        <path d="M54 86 Q53 55 57 20" fill="none" stroke="#c8c8c8" stroke-width="1" stroke-linecap="round"/>
-                        <path d="M56 86 Q55 55 58 19" fill="none" stroke="#bbb" stroke-width="1.1" stroke-linecap="round"/>
-                        <path d="M58 86 Q58 55 59 18" fill="none" stroke="#aaa" stroke-width="1.2" stroke-linecap="round"/>
-                        <path d="M62 86 L62 18" fill="none" stroke="#999" stroke-width="1.3" stroke-linecap="round"/>
-                        <path d="M66 86 Q66 55 63 18" fill="none" stroke="#aaa" stroke-width="1.2" stroke-linecap="round"/>
-                        <path d="M68 86 Q67 55 64 19" fill="none" stroke="#bbb" stroke-width="1.1" stroke-linecap="round"/>
-                        <path d="M70 86 Q69 55 65 20" fill="none" stroke="#c8c8c8" stroke-width="1" stroke-linecap="round"/>
-                        <path d="M72 86 Q74 55 66 22" fill="none" stroke="#d5d5d5" stroke-width="0.9" stroke-linecap="round"/>
-                        <!-- 顶部羽毛尖端 scallop - 显示层叠排列 -->
-                        <path d="M54 20 Q55 17 56 20 Q57 17 58 20 Q59 17 60 20 Q61 17 62 20 Q63 17 64 20 Q65 17 66 20" fill="none" stroke="#222" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"/>
-                    </svg>
-                </div>
-                <div class="shuttlecock-deco shuttlecock-deco-2">
-                    <svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
-                        <!-- 纯白圆形背景 -->
-                        <circle cx="60" cy="60" r="54" fill="#fff" stroke="#e8e8e8" stroke-width="1"/>
-                        <!-- 软木球头 - 米色宽扁半球形，占整体高度约1/6 -->
-                        <path d="M48 92 L48 102 Q48 106 60 106 Q72 106 72 102 L72 92 Z" fill="#D4A574" stroke="#222" stroke-width="1.6"/>
-                        <!-- 两道白色线圈绑带 -->
-                        <rect x="50" y="86" width="20" height="2.5" rx="1" fill="#fff" stroke="#222" stroke-width="0.9"/>
-                        <rect x="50" y="89" width="20" height="2.5" rx="1" fill="#fff" stroke="#222" stroke-width="0.9"/>
-                        <!-- 羽毛圆锥体 - 白色 -->
-                        <path d="M50 86 Q48 55 55 20 Q60 16 65 20 Q72 55 70 86 Z" fill="#fff" stroke="#222" stroke-width="1.6"/>
-                        <!-- 9根羽轴线 - 暗示16片羽毛的扇骨均匀排列 -->
-                        <path d="M52 86 Q50 55 56 22" fill="none" stroke="#d5d5d5" stroke-width="0.9" stroke-linecap="round"/>
-                        <path d="M54 86 Q53 55 57 20" fill="none" stroke="#c8c8c8" stroke-width="1" stroke-linecap="round"/>
-                        <path d="M56 86 Q55 55 58 19" fill="none" stroke="#bbb" stroke-width="1.1" stroke-linecap="round"/>
-                        <path d="M58 86 Q58 55 59 18" fill="none" stroke="#aaa" stroke-width="1.2" stroke-linecap="round"/>
-                        <path d="M62 86 L62 18" fill="none" stroke="#999" stroke-width="1.3" stroke-linecap="round"/>
-                        <path d="M66 86 Q66 55 63 18" fill="none" stroke="#aaa" stroke-width="1.2" stroke-linecap="round"/>
-                        <path d="M68 86 Q67 55 64 19" fill="none" stroke="#bbb" stroke-width="1.1" stroke-linecap="round"/>
-                        <path d="M70 86 Q69 55 65 20" fill="none" stroke="#c8c8c8" stroke-width="1" stroke-linecap="round"/>
-                        <path d="M72 86 Q74 55 66 22" fill="none" stroke="#d5d5d5" stroke-width="0.9" stroke-linecap="round"/>
-                        <!-- 顶部羽毛尖端 scallop - 显示层叠排列 -->
-                        <path d="M54 20 Q55 17 56 20 Q57 17 58 20 Q59 17 60 20 Q61 17 62 20 Q63 17 64 20 Q65 17 66 20" fill="none" stroke="#222" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"/>
-                    </svg>
-                </div>
-
-                <!-- 飞行轨迹装饰 -->
-                <div class="flight-trail flight-trail-1">
-                    <svg viewBox="0 0 200 120" fill="none" stroke="rgba(0,200,255,0.15)" stroke-width="1.5">
-                        <path d="M10 100 Q50 20 100 60 T190 30"/>
-                        <circle cx="190" cy="30" r="3" fill="rgba(0,200,255,0.2)"/>
-                    </svg>
-                </div>
-                <div class="flight-trail flight-trail-2">
-                    <svg viewBox="0 0 200 120" fill="none" stroke="rgba(0,200,255,0.15)" stroke-width="1.5">
-                        <path d="M10 100 Q50 20 100 60 T190 30"/>
-                        <circle cx="190" cy="30" r="3" fill="rgba(0,200,255,0.2)"/>
-                    </svg>
-                </div>
-
-                <!-- 球拍装饰 -->
-                <div class="racket-deco racket-deco-1">
-                    <svg viewBox="0 0 80 200">
-                        <!-- 拍框外轮廓 - 泪滴形 -->
-                        <path d="M40 8 Q66 8 69 32 Q71 58 56 76 Q49 83 40 83 Q31 83 24 76 Q9 58 11 32 Q14 8 40 8" fill="rgba(123,104,238,0.08)" stroke="var(--accent-purple)" stroke-width="1.8" stroke-linejoin="round"/>
-                        <!-- 拍框内轮廓 -->
-                        <path d="M40 12 Q62 12 65 32 Q67 56 53 72 Q47 78 40 78 Q33 78 27 72 Q13 56 15 32 Q18 12 40 12" fill="none" stroke="var(--accent-purple)" stroke-width="0.9"/>
-                        <!-- 竖线 - 左到右 -->
-                        <line x1="26" y1="16" x2="26" y2="74" stroke="var(--accent-purple)" stroke-width="0.4" opacity="0.7"/>
-                        <line x1="30" y1="14" x2="30" y2="76" stroke="var(--accent-purple)" stroke-width="0.4" opacity="0.7"/>
-                        <line x1="34" y1="13" x2="34" y2="77" stroke="var(--accent-purple)" stroke-width="0.4" opacity="0.7"/>
-                        <line x1="38" y1="12" x2="38" y2="78" stroke="var(--accent-purple)" stroke-width="0.4" opacity="0.7"/>
-                        <line x1="42" y1="12" x2="42" y2="78" stroke="var(--accent-purple)" stroke-width="0.4" opacity="0.7"/>
-                        <line x1="46" y1="13" x2="46" y2="77" stroke="var(--accent-purple)" stroke-width="0.4" opacity="0.7"/>
-                        <line x1="50" y1="14" x2="50" y2="76" stroke="var(--accent-purple)" stroke-width="0.4" opacity="0.7"/>
-                        <line x1="54" y1="16" x2="54" y2="74" stroke="var(--accent-purple)" stroke-width="0.4" opacity="0.7"/>
-                        <!-- 横线 -->
-                        <line x1="15" y1="26" x2="65" y2="26" stroke="var(--accent-purple)" stroke-width="0.4" opacity="0.7"/>
-                        <line x1="13" y1="36" x2="67" y2="36" stroke="var(--accent-purple)" stroke-width="0.4" opacity="0.7"/>
-                        <line x1="12" y1="46" x2="68" y2="46" stroke="var(--accent-purple)" stroke-width="0.4" opacity="0.7"/>
-                        <line x1="12" y1="56" x2="68" y2="56" stroke="var(--accent-purple)" stroke-width="0.4" opacity="0.7"/>
-                        <line x1="13" y1="66" x2="67" y2="66" stroke="var(--accent-purple)" stroke-width="0.4" opacity="0.7"/>
-                        <!-- T头 -->
-                        <path d="M34 81 L46 81 L44 88 L36 88 Z" fill="rgba(123,104,238,0.15)" stroke="var(--accent-purple)" stroke-width="1.2"/>
-                        <!-- 拍杆 -->
-                        <line x1="40" y1="88" x2="40" y2="155" stroke="var(--accent-purple)" stroke-width="2.5" stroke-linecap="round"/>
-                        <!-- 拍杆高光 -->
-                        <line x1="38" y1="90" x2="38" y2="153" stroke="rgba(123,104,238,0.4)" stroke-width="0.8" stroke-linecap="round"/>
-                        <!-- 握把 -->
-                        <rect x="34" y="155" width="12" height="32" rx="3" fill="rgba(123,104,238,0.12)" stroke="var(--accent-purple)" stroke-width="1.2"/>
-                        <!-- 握把纹理 -->
-                        <line x1="34" y1="162" x2="46" y2="162" stroke="var(--accent-purple)" stroke-width="0.5" opacity="0.5"/>
-                        <line x1="34" y1="168" x2="46" y2="168" stroke="var(--accent-purple)" stroke-width="0.5" opacity="0.5"/>
-                        <line x1="34" y1="174" x2="46" y2="174" stroke="var(--accent-purple)" stroke-width="0.5" opacity="0.5"/>
-                        <line x1="34" y1="180" x2="46" y2="180" stroke="var(--accent-purple)" stroke-width="0.5" opacity="0.5"/>
-                        <!-- 底盖 -->
-                        <ellipse cx="40" cy="190" rx="8" ry="3.5" fill="rgba(123,104,238,0.2)" stroke="var(--accent-purple)" stroke-width="1.2"/>
-                        <!-- 品牌logo区域 -->
-                        <ellipse cx="40" cy="48" rx="6" ry="8" fill="none" stroke="var(--accent-purple)" stroke-width="0.6" opacity="0.4"/>
-                    </svg>
-                </div>
-
-                <!-- 羽毛飘落效果 -->
-                <div class="falling-feather"><svg viewBox="0 0 16 24"><path d="M8 0 Q4 8 2 16 Q6 14 8 20 Q10 14 14 16 Q12 8 8 0Z"/></svg></div>
-                <div class="falling-feather"><svg viewBox="0 0 16 24"><path d="M8 0 Q4 8 2 16 Q6 14 8 20 Q10 14 14 16 Q12 8 8 0Z"/></svg></div>
-                <div class="falling-feather"><svg viewBox="0 0 16 24"><path d="M8 0 Q4 8 2 16 Q6 14 8 20 Q10 14 14 16 Q12 8 8 0Z"/></svg></div>
-                <div class="falling-feather"><svg viewBox="0 0 16 24"><path d="M8 0 Q4 8 2 16 Q6 14 8 20 Q10 14 14 16 Q12 8 8 0Z"/></svg></div>
-                <div class="falling-feather"><svg viewBox="0 0 16 24"><path d="M8 0 Q4 8 2 16 Q6 14 8 20 Q10 14 14 16 Q12 8 8 0Z"/></svg></div>
-                <div class="falling-feather"><svg viewBox="0 0 16 24"><path d="M8 0 Q4 8 2 16 Q6 14 8 20 Q10 14 14 16 Q12 8 8 0Z"/></svg></div>
-                <div class="falling-feather"><svg viewBox="0 0 16 24"><path d="M8 0 Q4 8 2 16 Q6 14 8 20 Q10 14 14 16 Q12 8 8 0Z"/></svg></div>
-                <div class="falling-feather"><svg viewBox="0 0 16 24"><path d="M8 0 Q4 8 2 16 Q6 14 8 20 Q10 14 14 16 Q12 8 8 0Z"/></svg></div>
-
                 <div class="feature-grid-pin">
                     <div class="feature-row">
                         <div class="feature-card" onclick="showPage('court-size')">
-                            <div class="feature-icon">📏</div>
+                            <div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="20" height="12" rx="2"/><path d="M6 6v12"/><path d="M18 6v12"/><path d="M12 6v12"/></svg></div>
                             <div class="feature-title">场地规则</div>
                             <div class="feature-desc">了解标准场地尺寸、线条含义和球网规格</div>
                         </div>
                         <div class="feature-card" onclick="showPage('service-singles')">
-                            <div class="feature-icon">🎯</div>
+                            <div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="3"/></svg></div>
                             <div class="feature-title">发球规则</div>
                             <div class="feature-desc">掌握单双打发球规则，避免违例</div>
                         </div>
                     </div>
                     <div class="feature-row">
                         <div class="feature-card" onclick="showPage('score-system')">
-                            <div class="feature-icon">📊</div>
+                            <div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg></div>
                             <div class="feature-title">计分规则</div>
                             <div class="feature-desc">学习21分制计分方法和换球规则</div>
                         </div>
                         <div class="feature-card" onclick="showPage('violation-service')">
-                            <div class="feature-icon">🚫</div>
+                            <div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg></div>
                             <div class="feature-title">违例规则</div>
                             <div class="feature-desc">了解发球、击球和行为违例规定</div>
                         </div>
