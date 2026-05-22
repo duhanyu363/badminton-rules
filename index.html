@@ -125,12 +125,16 @@
         }
 
         /* 点击后临时强制收起二级菜单 */
+        .menu-closing .main-nav li {
+            pointer-events: none !important;
+        }
+
         .menu-closing .sub-menu,
         .menu-closing .main-nav li:hover .sub-menu {
             opacity: 0 !important;
             visibility: hidden !important;
             transform: translateY(-5px) !important;
-            pointer-events: none !important;
+            transition: none !important;
         }
 
         .sub-menu li {
@@ -2252,7 +2256,7 @@
         function showPage(pageName) {
             // 临时强制收起二级菜单，避免遮挡新页面内容
             document.body.classList.add('menu-closing');
-            setTimeout(() => document.body.classList.remove('menu-closing'), 350);
+            setTimeout(() => document.body.classList.remove('menu-closing'), 600);
 
             // 隐藏所有页面
             document.querySelectorAll('.page-container').forEach(page => {
