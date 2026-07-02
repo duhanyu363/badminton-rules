@@ -35,10 +35,13 @@
             --border-subtle: rgba(255,255,255,0.08);
         }
 
+        html, body {
+            height: 100vh;
+            overflow: hidden;
+        }
         body {
             font-family: var(--font-body);
             background: var(--bg-deep);
-            min-height: 100vh;
             color: var(--text-primary);
             -webkit-font-smoothing: antialiased;
             -moz-osx-font-smoothing: grayscale;
@@ -74,6 +77,39 @@
             letter-spacing: 0.5px;
             margin-right: 40px;
             padding: 14px 0;
+        }
+
+        /* 汉堡菜单按钮 */
+        .hamburger {
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            gap: 5px;
+            width: 28px;
+            height: 28px;
+            cursor: pointer;
+            margin-left: auto;
+            padding: 2px;
+            background: none;
+            border: none;
+            z-index: 1001;
+        }
+        .hamburger span {
+            display: block;
+            width: 100%;
+            height: 2px;
+            background: var(--text-secondary);
+            border-radius: 2px;
+            transition: all 0.3s ease;
+        }
+        .hamburger.active span:nth-child(1) {
+            transform: translateY(7px) rotate(45deg);
+        }
+        .hamburger.active span:nth-child(2) {
+            opacity: 0;
+        }
+        .hamburger.active span:nth-child(3) {
+            transform: translateY(-7px) rotate(-45deg);
         }
 
         /* 一级菜单 */
@@ -160,10 +196,11 @@
         /* 主内容区 */
         .main-content {
             margin-top: 60px;
-            min-height: calc(100vh - 60px);
+            height: calc(100vh - 60px);
             display: flex;
             align-items: center;
             position: relative;
+            overflow: hidden;
         }
 
         /* 页面容器 */
@@ -174,11 +211,14 @@
             right: 0;
             display: flex;
             flex-direction: column;
-            justify-content: center;
-            padding: var(--space-md) var(--space-lg);
+            justify-content: flex-start;
+            padding: 10px var(--space-lg) 0;
             max-width: 100%;
             margin: 0 auto;
-            min-height: calc(100vh - 60px);
+            height: calc(100vh - 60px);
+            overflow-y: auto;
+            overflow-x: hidden;
+            scrollbar-width: none;
             width: 100%;
             opacity: 0;
             visibility: hidden;
@@ -228,7 +268,7 @@
         /* 首页样式 */
         .hero-section {
             text-align: center;
-            padding: var(--space-xl) var(--space-lg);
+            padding: 20px var(--space-lg);
             position: relative;
             overflow: hidden;
             flex: 1;
@@ -256,11 +296,13 @@
         }
 
         .hero-icon {
-            width: 0.8em;
-            height: 0.8em;
-            color: var(--accent-cyan);
-            filter: drop-shadow(0 0 12px rgba(0,200,255,0.4));
+            width: 1.1em;
+            height: 1.1em;
+            object-fit: contain;
+            filter: drop-shadow(0 0 10px rgba(0,200,255,0.45));
             -webkit-text-fill-color: initial;
+            flex-shrink: 0;
+            vertical-align: middle;
         }
 
         .hero-subtitle {
@@ -268,7 +310,7 @@
             font-size: 1.25em;
             font-weight: 300;
             color: var(--text-secondary);
-            margin-bottom: var(--space-lg);
+            margin-bottom: 20px;
             letter-spacing: 1px;
             position: relative;
             z-index: 1;
@@ -283,9 +325,13 @@
             height: 100%;
             pointer-events: none;
             z-index: 0;
-            background: radial-gradient(ellipse 80% 60% at 50% -10%, rgba(0,200,255,0.08) 0%, transparent 60%),
-                        radial-gradient(ellipse 60% 50% at 80% 90%, rgba(123,104,238,0.06) 0%, transparent 50%),
-                        var(--bg-deep);
+            background:
+                radial-gradient(ellipse 70% 50% at 15% 20%, rgba(0,200,255,0.12) 0%, transparent 55%),
+                radial-gradient(ellipse 60% 45% at 85% 15%, rgba(123,104,238,0.10) 0%, transparent 50%),
+                radial-gradient(ellipse 50% 40% at 75% 80%, rgba(255,107,157,0.09) 0%, transparent 50%),
+                radial-gradient(ellipse 45% 35% at 20% 75%, rgba(255,169,77,0.08) 0%, transparent 45%),
+                radial-gradient(ellipse 40% 30% at 50% 50%, rgba(34,197,94,0.06) 0%, transparent 40%),
+                var(--bg-deep);
             overflow: hidden;
         }
 
@@ -297,10 +343,26 @@
             width: 160%;
             height: 160%;
             background:
-                radial-gradient(circle at 25% 25%, rgba(0,200,255,0.06) 0%, transparent 45%),
-                radial-gradient(circle at 75% 15%, rgba(123,104,238,0.05) 0%, transparent 40%),
-                radial-gradient(circle at 50% 85%, rgba(0,200,255,0.04) 0%, transparent 50%);
+                radial-gradient(circle at 20% 30%, rgba(0,200,255,0.09) 0%, transparent 40%),
+                radial-gradient(circle at 80% 20%, rgba(123,104,238,0.08) 0%, transparent 35%),
+                radial-gradient(circle at 60% 75%, rgba(255,107,157,0.07) 0%, transparent 40%),
+                radial-gradient(circle at 30% 80%, rgba(255,169,77,0.06) 0%, transparent 35%),
+                radial-gradient(circle at 50% 10%, rgba(34,197,94,0.05) 0%, transparent 30%);
             animation: gradientMove 20s ease-in-out infinite;
+        }
+
+        .gradient-bg::after {
+            content: '';
+            position: absolute;
+            top: -20%;
+            left: -20%;
+            width: 140%;
+            height: 140%;
+            background:
+                radial-gradient(circle at 70% 40%, rgba(0,200,255,0.06) 0%, transparent 35%),
+                radial-gradient(circle at 25% 60%, rgba(255,107,157,0.05) 0%, transparent 30%),
+                radial-gradient(circle at 55% 25%, rgba(255,169,77,0.05) 0%, transparent 30%);
+            animation: gradientMove2 25s ease-in-out infinite;
         }
 
         @keyframes gradientMove {
@@ -310,20 +372,99 @@
             75% { transform: translate(3%, -2%) rotate(1deg); }
         }
 
+        @keyframes gradientMove2 {
+            0%, 100% { transform: translate(0, 0) rotate(0deg); }
+            33% { transform: translate(-3%, 2%) rotate(-1.5deg); }
+            66% { transform: translate(2%, -3%) rotate(1.5deg); }
+        }
+
+        /* 浮动羽毛球装饰 */
+        .floating-shuttlecock {
+            position: absolute;
+            pointer-events: none;
+            z-index: 0;
+            opacity: 0.08;
+            animation: floatSlow linear infinite;
+        }
+
+        .floating-shuttlecock img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .fs1 { width: 80px; height: 80px; top: 8%; left: 6%; animation-duration: 30s; transform: rotate(-25deg); }
+        .fs2 { width: 60px; height: 60px; top: 18%; right: 10%; animation-duration: 35s; animation-delay: -8s; transform: rotate(40deg); opacity: 0.06; }
+        .fs3 { width: 100px; height: 100px; bottom: 20%; left: 3%; animation-duration: 28s; animation-delay: -4s; transform: rotate(15deg); opacity: 0.05; }
+        .fs4 { width: 50px; height: 50px; bottom: 12%; right: 8%; animation-duration: 32s; animation-delay: -12s; transform: rotate(-50deg); opacity: 0.07; }
+        .fs5 { width: 70px; height: 70px; top: 50%; right: 4%; animation-duration: 26s; animation-delay: -16s; transform: rotate(65deg); opacity: 0.05; }
+        .fs6 { width: 55px; height: 55px; top: 35%; left: 12%; animation-duration: 34s; animation-delay: -20s; transform: rotate(-70deg); opacity: 0.06; }
+
+        @keyframes floatSlow {
+            0%, 100% { transform: translateY(0) rotate(var(--rot, 0deg)); }
+            25% { transform: translateY(-15px) rotate(calc(var(--rot, 0deg) + 5deg)); }
+            50% { transform: translateY(-8px) rotate(calc(var(--rot, 0deg) - 3deg)); }
+            75% { transform: translateY(-20px) rotate(calc(var(--rot, 0deg) + 3deg)); }
+        }
+
+        /* 球场线条装饰 */
+        .court-lines-deco {
+            position: absolute;
+            bottom: 5%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 500px;
+            height: 250px;
+            pointer-events: none;
+            z-index: 0;
+            opacity: 0.04;
+        }
+
+        /* 飘落羽毛 */
+        .deco-feather {
+            position: absolute;
+            pointer-events: none;
+            z-index: 0;
+            opacity: 0;
+            animation: featherDrift linear infinite;
+        }
+
+        .deco-feather svg {
+            width: 20px;
+            height: 32px;
+        }
+
+        .df1 { left: 8%; animation-duration: 18s; animation-delay: 0s; }
+        .df2 { left: 22%; animation-duration: 22s; animation-delay: 4s; }
+        .df3 { left: 45%; animation-duration: 16s; animation-delay: 8s; }
+        .df4 { left: 65%; animation-duration: 20s; animation-delay: 2s; }
+        .df5 { left: 82%; animation-duration: 19s; animation-delay: 6s; }
+        .df6 { left: 35%; animation-duration: 24s; animation-delay: 10s; }
+        .df7 { left: 55%; animation-duration: 17s; animation-delay: 12s; }
+        .df8 { left: 92%; animation-duration: 21s; animation-delay: 3s; }
+
+        @keyframes featherDrift {
+            0% { transform: translateY(-5vh) rotate(0deg) translateX(0); opacity: 0; }
+            8% { opacity: 0.35; }
+            50% { transform: translateY(50vh) rotate(180deg) translateX(30px); opacity: 0.25; }
+            90% { opacity: 0.1; }
+            100% { transform: translateY(105vh) rotate(360deg) translateX(-20px); opacity: 0; }
+        }
+
         /* 品字形布局 */
         .feature-grid-pin {
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: var(--space-md);
-            margin-top: var(--space-lg);
+            gap: 16px;
+            margin-top: 16px;
             position: relative;
             z-index: 1;
         }
 
         .feature-row {
             display: flex;
-            gap: var(--space-md);
+            gap: 16px;
             justify-content: center;
         }
 
@@ -500,12 +641,29 @@
             flex: 1;
             width: 100%;
             min-height: 0;
+            position: relative;
+            z-index: 2;
         }
 
         .demo-area > div {
             width: 100%;
             max-width: 100%;
             height: calc(100vh - 160px);
+        }
+
+        /* 交互提示栏 - 固定底部 */
+        .court-tip-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 8px 16px;
+            background: rgba(10,16,28,0.92);
+            border-top: 1px solid #2a3a50;
+            color: #a0b0c8;
+            font-size: 14px;
+            text-align: center;
+            z-index: 100;
         }
 
         /* 场地参数说明栏 */
@@ -520,6 +678,8 @@
             font-size: 1.1em;
             line-height: 2;
             width: 100%;
+            position: relative;
+            z-index: 2;
             box-shadow: 0 4px 16px rgba(0,200,255,0.08);
             transition: all 0.3s;
         }
@@ -576,12 +736,13 @@
 
         /* 计分制度页面 */
         .score-scene-wrapper {
-            position: relative;
-            width: 100%;
-            height: 520px;
-            min-height: 520px;
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
             overflow: hidden;
-            background: linear-gradient(135deg, #0a0e1a 0%, #0f1a2e 40%, #0d1525 100%);
+            background: transparent;
         }
 
         .shuttlecock-bg {
@@ -597,18 +758,6 @@
 
         .shuttlecock-bg-item {
             position: absolute;
-            pointer-events: none;
-        }
-
-        .score-scene-wrapper::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(10, 14, 26, 0.5);
-            z-index: 2;
             pointer-events: none;
         }
 
@@ -635,8 +784,9 @@
         }
 
         .score-rule-text {
-            background: rgba(0, 0, 0, 0.65);
-            border: 1px solid rgba(0, 200, 255, 0.4);
+            background: rgba(6, 10, 20, 0.8);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(0, 200, 255, 0.35);
             border-radius: 12px;
             padding: 20px 32px;
             color: #00c8ff;
@@ -645,11 +795,13 @@
             max-width: 700px;
             text-align: center;
             min-height: 3.6em;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.4);
         }
 
         .scoreboard {
-            background: rgba(0, 0, 0, 0.7);
-            border: 2px solid rgba(0, 200, 255, 0.5);
+            background: rgba(6, 10, 20, 0.8);
+            backdrop-filter: blur(12px);
+            border: 2px solid rgba(0, 200, 255, 0.45);
             border-radius: 16px;
             padding: 24px 40px;
             display: flex;
@@ -657,6 +809,7 @@
             align-items: center;
             gap: 16px;
             min-width: 320px;
+            box-shadow: 0 12px 48px rgba(0,0,0,0.5), 0 0 20px rgba(0,200,255,0.08);
         }
 
         .scoreboard-title {
@@ -950,6 +1103,257 @@
             opacity: 1;
         }
 
+        /* === 场地规则页面背景 === */
+        #page-court-size {
+            background:
+                radial-gradient(ellipse 60% 50% at 10% 15%, rgba(0,200,255,0.10) 0%, transparent 50%),
+                radial-gradient(ellipse 50% 40% at 90% 10%, rgba(123,104,238,0.08) 0%, transparent 45%),
+                radial-gradient(ellipse 55% 45% at 80% 85%, rgba(255,107,157,0.07) 0%, transparent 50%),
+                radial-gradient(ellipse 40% 35% at 15% 80%, rgba(255,169,77,0.06) 0%, transparent 45%),
+                radial-gradient(ellipse 35% 30% at 50% 45%, rgba(34,197,94,0.05) 0%, transparent 40%);
+            overflow: visible;
+        }
+        /* 3D场地限制区域，超出截断 */
+        #page-court-size .demo-area,
+        #page-service-singles .demo-area,
+        #page-service-doubles .demo-area {
+            position: relative;
+            z-index: 2;
+            padding: 0;
+            margin: 0;
+            flex: 1;
+            overflow: hidden;
+            border-radius: 8px;
+        }
+        #page-court-size .demo-area > div,
+        #page-service-singles .demo-area > div,
+        #page-service-doubles .demo-area > div {
+            width: 100%;
+            height: 100%;
+            max-width: none;
+            border-radius: 0;
+            overflow: hidden;
+        }
+        #page-court-size .content-card,
+        #page-court-size .court-info-bar {
+            position: relative;
+            z-index: 2;
+            background: rgba(10,16,28,0.85);
+        }
+
+        /* 发球规则页面内容层级（羽毛在文字后面） */
+        #page-service-singles > .content-card,
+        #page-service-singles > .step-nav,
+        #page-service-doubles > .content-card {
+            position: relative;
+            z-index: 2;
+        }
+        #page-service-singles > .shuttlecock-deco,
+        #page-service-doubles > .shuttlecock-deco {
+            z-index: 2;
+        }
+        #page-service-singles > .court-info-bar,
+        #page-service-singles > .singles-rule-text,
+        #page-service-doubles > .court-info-bar,
+        #page-service-doubles > .singles-rule-text {
+            position: relative;
+            z-index: 2;
+            background: rgba(10,16,28,0.92);
+        }
+
+        /* 场地页浮动光斑 */
+        .court-page-particle {
+            position: absolute;
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 0;
+            filter: blur(65px);
+            animation: courtParticleFloat ease-in-out infinite;
+        }
+        .cpp1 { width: 240px; height: 240px; background: rgba(0,200,255,0.14); top: 0; left: 0; animation-duration: 20s; }
+        .cpp2 { width: 180px; height: 180px; background: rgba(123,104,238,0.12); top: 10%; right: 0; animation-duration: 24s; animation-delay: -6s; }
+        .cpp3 { width: 200px; height: 200px; background: rgba(255,107,157,0.10); bottom: 5%; left: 10%; animation-duration: 22s; animation-delay: -10s; }
+        .cpp4 { width: 150px; height: 150px; background: rgba(255,169,77,0.10); bottom: 15%; right: 10%; animation-duration: 18s; animation-delay: -3s; }
+
+        @keyframes courtParticleFloat {
+            0%, 100% { transform: translate(0, 0); }
+            25% { transform: translate(15px, -20px); }
+            50% { transform: translate(-10px, 10px); }
+            75% { transform: translate(20px, 15px); }
+        }
+
+        /* 场地页浮动羽毛球 */
+        .court-shuttle {
+            position: absolute;
+            pointer-events: none;
+            z-index: 0;
+            animation: courtShuttleFloat ease-in-out infinite;
+        }
+        .court-shuttle img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+        .cs1 { width: 70px; height: 70px; top: 3%; left: 4%; opacity: 0.07; transform: rotate(-20deg); animation-duration: 22s; }
+        .cs2 { width: 55px; height: 55px; top: 12%; right: 3%; opacity: 0.06; transform: rotate(35deg); animation-duration: 26s; animation-delay: -7s; }
+        .cs3 { width: 90px; height: 90px; bottom: 8%; left: 2%; opacity: 0.05; transform: rotate(50deg); animation-duration: 20s; animation-delay: -4s; }
+        .cs4 { width: 45px; height: 45px; bottom: 15%; right: 5%; opacity: 0.07; transform: rotate(-55deg); animation-duration: 28s; animation-delay: -12s; }
+        .cs5 { width: 60px; height: 60px; top: 45%; left: 1%; opacity: 0.05; transform: rotate(80deg); animation-duration: 24s; animation-delay: -15s; }
+
+        @keyframes courtShuttleFloat {
+            0%, 100% { transform: translateY(0) rotate(var(--r, 0deg)); }
+            30% { transform: translateY(-12px) rotate(calc(var(--r, 0deg) + 4deg)); }
+            60% { transform: translateY(8px) rotate(calc(var(--r, 0deg) - 3deg)); }
+        }
+
+        /* 全页飘落羽毛（固定定位，覆盖整个视口） */
+        .court-feather {
+            position: fixed;
+            top: -80px;
+            pointer-events: none;
+            z-index: 1;
+            opacity: 0;
+            animation: courtFeatherFall linear infinite;
+        }
+        .court-feather svg { width: 28px; height: 46px; }
+        .cf1  { left: 5%;  animation-duration: 16s; animation-delay: 0s; }
+        .cf2  { left: 18%; animation-duration: 19s; animation-delay: 4s; }
+        .cf3  { left: 35%; animation-duration: 17s; animation-delay: 9s; }
+        .cf4  { left: 50%; animation-duration: 20s; animation-delay: 2s; }
+        .cf5  { left: 65%; animation-duration: 18s; animation-delay: 7s; }
+        .cf6  { left: 80%; animation-duration: 16s; animation-delay: 12s; }
+        .cf7  { left: 92%; animation-duration: 19s; animation-delay: 5s; }
+        .cf8  { left: 42%; animation-duration: 21s; animation-delay: 14s; }
+        .cf9  { display: none; }
+        .cf10 { display: none; }
+        .cf11 { display: none; }
+        .cf12 { display: none; }
+        .cf13 { display: none; }
+        .cf14 { display: none; }
+        .cf15 { display: none; }
+        .cf16 { display: none; }
+        .cf17 { display: none; }
+        .cf18 { display: none; }
+        .cf19 { display: none; }
+        .cf20 { display: none; }
+
+        @keyframes courtFeatherFall {
+            0% { transform: translateY(0) rotate(0deg) translateX(0); opacity: 0; }
+            3% { opacity: 0.55; }
+            25% { transform: translateY(30vh) rotate(100deg) translateX(30px); opacity: 0.5; }
+            50% { transform: translateY(55vh) rotate(200deg) translateX(-15px); opacity: 0.45; }
+            75% { transform: translateY(80vh) rotate(310deg) translateX(20px); opacity: 0.3; }
+            90% { opacity: 0.15; }
+            100% { transform: translateY(110vh) rotate(400deg) translateX(-10px); opacity: 0; }
+        }
+
+        /* === 计分规则页面背景装饰 === */
+        #page-score-system,
+        #page-score-change,
+        #page-score-rest {
+            overflow: visible;
+            background:
+                radial-gradient(ellipse 50% 40% at 20% 20%, rgba(255,215,0,0.06) 0%, transparent 50%),
+                radial-gradient(ellipse 45% 35% at 85% 15%, rgba(255,165,0,0.05) 0%, transparent 45%),
+                radial-gradient(ellipse 50% 40% at 75% 80%, rgba(255,200,50,0.04) 0%, transparent 50%),
+                radial-gradient(ellipse 40% 30% at 10% 75%, rgba(0,200,255,0.04) 0%, transparent 45%);
+        }
+        /* 浮动羽毛球轨迹弧线 */
+        .score-arc {
+            position: fixed;
+            pointer-events: none;
+            z-index: 0;
+            opacity: 0;
+            animation: scoreArcDrift ease-in-out infinite;
+        }
+        .score-arc svg { width: 100%; height: 100%; }
+        .sa1 { width: 300px; height: 120px; top: 8%;  left: -100px; animation-duration: 24s; animation-delay: 0s; }
+        .sa2 { width: 250px; height: 100px; top: 35%; right: -80px; animation-duration: 28s; animation-delay: 6s; }
+        .sa3 { width: 280px; height: 110px; top: 65%; left: -60px;  animation-duration: 22s; animation-delay: 12s; }
+        .sa4 { width: 220px; height: 90px;  top: 85%; right: -70px; animation-duration: 26s; animation-delay: 3s; }
+        .sa5 { width: 260px; height: 100px; top: 18%; right: -90px; animation-duration: 30s; animation-delay: 9s; }
+
+        @keyframes scoreArcDrift {
+            0%   { transform: translateX(0); opacity: 0; }
+            8%   { opacity: 0.12; }
+            50%  { transform: translateX(60vw); opacity: 0.08; }
+            92%  { opacity: 0.12; }
+            100% { transform: translateX(120vw); opacity: 0; }
+        }
+
+        /* 慢速旋转的羽毛球图标 */
+        .score-shuttle {
+            position: fixed;
+            pointer-events: none;
+            z-index: 0;
+            opacity: 0;
+            animation: scoreShuttleSpin linear infinite;
+        }
+        .score-shuttle img {
+            width: 100%; height: 100%; object-fit: contain;
+            filter: brightness(1.2) drop-shadow(0 0 6px rgba(255,215,0,0.3));
+        }
+        .ss1 { width: 40px; height: 40px; top: 12%; left: 8%;  animation-duration: 35s; animation-delay: 0s; }
+        .ss2 { width: 30px; height: 30px; top: 55%; right: 6%; animation-duration: 40s; animation-delay: 8s; }
+        .ss3 { width: 35px; height: 35px; top: 80%; left: 15%; animation-duration: 32s; animation-delay: 4s; }
+        .ss4 { width: 28px; height: 28px; top: 30%; right: 12%;animation-duration: 38s; animation-delay: 15s; }
+
+        @keyframes scoreShuttleSpin {
+            0%   { transform: translateY(0) rotate(0deg); opacity: 0; }
+            5%   { opacity: 0.07; }
+            50%  { transform: translateY(20px) rotate(180deg); opacity: 0.05; }
+            95%  { opacity: 0.07; }
+            100% { transform: translateY(0) rotate(360deg); opacity: 0; }
+        }
+
+        /* 淡金色光晕脉动 */
+        .score-glow {
+            position: absolute;
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 0;
+            filter: blur(80px);
+            animation: scoreGlowPulse ease-in-out infinite;
+        }
+        .sg1 { width: 280px; height: 280px; background: rgba(255,215,0,0.06); top: 5%;  left: 5%;  animation-duration: 18s; }
+        .sg2 { width: 200px; height: 200px; background: rgba(255,165,0,0.05); top: 40%; right: 8%; animation-duration: 22s; animation-delay: -5s; }
+        .sg3 { width: 240px; height: 240px; background: rgba(255,200,50,0.04); bottom: 10%; left: 15%; animation-duration: 20s; animation-delay: -10s; }
+
+        @keyframes scoreGlowPulse {
+            0%, 100% { transform: scale(1); opacity: 0.6; }
+            50%      { transform: scale(1.3); opacity: 1; }
+        }
+
+        /* 计分页内容层级 */
+        #page-score-system > .shuttlecock-deco {
+            z-index: 2;
+        }
+        #page-score-system > .score-scene-wrapper {
+            z-index: 0;
+        }
+        #page-score-change > .shuttlecock-deco,
+        #page-score-rest > .shuttlecock-deco {
+            z-index: 2;
+        }
+        #page-score-change > div[style],
+        #page-score-rest > div[style] {
+            position: relative;
+            z-index: 2;
+        }
+
+        /* 场地页网格纹理 */
+        .court-page-grid {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background-image:
+                linear-gradient(rgba(0,200,255,0.02) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0,200,255,0.02) 1px, transparent 1px);
+            background-size: 50px 50px;
+            pointer-events: none;
+            z-index: 0;
+        }
+
         /* 羽毛球装饰元素 */
         .shuttlecock-deco {
             position: absolute;
@@ -1094,20 +1498,327 @@
         .falling-feather:nth-child(7) { left: 15%; animation-duration: 10s; animation-delay: 7s; }
         .falling-feather:nth-child(8) { left: 90%; animation-duration: 14s; animation-delay: 4s; }
 
+        /* 首页入场动画 */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0) translateX(0); }
+            25% { transform: translateY(-20px) translateX(10px); }
+            50% { transform: translateY(-10px) translateX(-5px); }
+            75% { transform: translateY(-25px) translateX(8px); }
+        }
+
+        @keyframes pulse-glow {
+            0%, 100% { opacity: 0.4; transform: translate(-50%, -50%) scale(1); }
+            50% { opacity: 0.7; transform: translate(-50%, -50%) scale(1.15); }
+        }
+
+
+        /* 英雄区浮动粒子 */
+        .hero-particles {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+            overflow: hidden;
+        }
+
+        .hero-particle {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(70px);
+            opacity: 0.18;
+            animation: float linear infinite;
+        }
+
+        .hp1 { width: 280px; height: 280px; background: var(--accent-cyan); top: 5%; left: 5%; animation-duration: 18s; }
+        .hp2 { width: 220px; height: 220px; background: var(--accent-purple); top: 55%; right: 8%; animation-duration: 22s; animation-delay: -5s; }
+        .hp3 { width: 200px; height: 200px; background: var(--accent-pink); bottom: 10%; left: 20%; animation-duration: 20s; animation-delay: -8s; }
+        .hp4 { width: 180px; height: 180px; background: var(--accent-gold); top: 20%; right: 25%; animation-duration: 16s; animation-delay: -3s; }
+        .hp5 { width: 150px; height: 150px; background: var(--accent-green); top: 40%; left: 45%; animation-duration: 24s; animation-delay: -10s; }
+        .hp6 { width: 160px; height: 160px; background: #e879f9; bottom: 30%; right: 20%; animation-duration: 27s; animation-delay: -14s; opacity: 0.12; }
+        .hp7 { width: 130px; height: 130px; background: #38bdf8; top: 70%; left: 10%; animation-duration: 21s; animation-delay: -7s; opacity: 0.10; }
+
+        /* 英雄区标题光晕 */
+        .hero-glow {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 500px;
+            height: 200px;
+            background: radial-gradient(ellipse, rgba(0,200,255,0.12) 0%, rgba(123,104,238,0.06) 40%, transparent 70%);
+            transform: translate(-50%, -50%);
+            animation: pulse-glow 4s ease-in-out infinite;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* 点状纹理 */
+        .dot-pattern {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: radial-gradient(rgba(255,255,255,0.03) 1px, transparent 1px);
+            background-size: 30px 30px;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* 统计条 */
+        .hero-stats {
+            display: flex;
+            justify-content: center;
+            gap: var(--space-lg);
+            margin-bottom: 16px;
+            position: relative;
+            z-index: 1;
+            animation: fadeIn 1s ease 0.5s both;
+        }
+
+        .hero-stat {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--text-secondary);
+            font-size: 0.95em;
+            font-weight: 400;
+        }
+
+        .hero-stat-num {
+            font-family: var(--font-display);
+            font-size: 1.6em;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--accent-cyan), var(--accent-purple));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero-stat-dot {
+            width: 4px;
+            height: 4px;
+            border-radius: 50%;
+            background: var(--text-secondary);
+            opacity: 0.4;
+        }
+
+        /* CTA 按钮 */
+        .hero-cta {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 14px 36px;
+            background: linear-gradient(135deg, var(--accent-cyan), var(--accent-purple));
+            color: #fff;
+            font-size: 1.05em;
+            font-weight: 600;
+            font-family: var(--font-body);
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            position: relative;
+            z-index: 1;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 20px rgba(0,200,255,0.25);
+            animation: fadeInUp 0.8s ease 0.7s both;
+            text-decoration: none;
+            letter-spacing: 0.5px;
+        }
+
+        .hero-cta:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(0,200,255,0.4);
+        }
+
+        .hero-cta svg {
+            width: 18px;
+            height: 18px;
+            transition: transform 0.3s ease;
+        }
+
+        .hero-cta:hover svg {
+            transform: translateX(3px);
+        }
+
+        /* 卡片入场动画 */
+        .feature-card {
+            animation: fadeInUp 0.6s ease both;
+        }
+
+        .feature-row:nth-child(1) .feature-card:nth-child(1) { animation-delay: 0.3s; }
+        .feature-row:nth-child(1) .feature-card:nth-child(2) { animation-delay: 0.45s; }
+        .feature-row:nth-child(2) .feature-card:nth-child(1) { animation-delay: 0.6s; }
+        .feature-row:nth-child(2) .feature-card:nth-child(2) { animation-delay: 0.75s; }
+
+        /* 卡片旋转渐变边框 */
+        .feature-card::after {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            border-radius: 18px;
+            background: conic-gradient(from 0deg, transparent, transparent, transparent, transparent);
+            z-index: -1;
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+
+        .feature-card-cyan:hover::after {
+            background: var(--accent-cyan);
+            opacity: 0.35;
+        }
+        .feature-card-purple:hover::after {
+            background: var(--accent-purple);
+            opacity: 0.35;
+        }
+        .feature-card-pink:hover::after {
+            background: var(--accent-pink);
+            opacity: 0.35;
+        }
+        .feature-card-gold:hover::after {
+            background: var(--accent-gold);
+            opacity: 0.35;
+        }
+
+        /* 卡片箭头图标 */
+        .card-arrow {
+            position: absolute;
+            bottom: 16px;
+            right: 16px;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transform: translateX(-5px);
+            transition: all 0.3s ease;
+        }
+
+        .card-arrow svg {
+            width: 16px;
+            height: 16px;
+            stroke-width: 2;
+        }
+
+        .feature-card-cyan .card-arrow { background: rgba(0,200,255,0.15); color: var(--accent-cyan); }
+        .feature-card-purple .card-arrow { background: rgba(123,104,238,0.15); color: var(--accent-purple); }
+        .feature-card-pink .card-arrow { background: rgba(255,107,157,0.15); color: var(--accent-pink); }
+        .feature-card-gold .card-arrow { background: rgba(255,169,77,0.15); color: var(--accent-gold); }
+
+        .feature-card:hover .card-arrow {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        /* 页脚 */
+        .site-footer {
+            text-align: center;
+            padding: 10px var(--space-md);
+            border-top: 1px solid var(--border-subtle);
+            color: var(--text-secondary);
+            font-size: 0.85em;
+            background: rgba(6,10,20,0.6);
+            position: relative;
+            z-index: 1;
+        }
+
+        .site-footer a {
+            color: var(--accent-cyan);
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        .site-footer a:hover {
+            color: var(--accent-purple);
+        }
+
+        .footer-brand {
+            font-family: var(--font-display);
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 6px;
+            font-size: 1.05em;
+        }
+
         /* 响应式 */
         @media (max-width: 768px) {
+            .hamburger {
+                display: flex;
+            }
+
             .nav-container {
-                flex-direction: row;
-                padding: 6px 8px;
+                flex-wrap: wrap;
+                padding: 6px 12px;
             }
 
             .main-nav {
-                flex-wrap: nowrap;
+                display: none;
+                flex-direction: column;
+                width: 100%;
+                padding: 8px 0 12px;
+                border-top: 1px solid var(--border-subtle);
+            }
+
+            .main-nav.open {
+                display: flex;
+            }
+
+            .main-nav li {
+                width: 100%;
             }
 
             .main-nav a {
-                padding: 8px 6px;
-                font-size: 0.72em;
+                padding: 12px 16px;
+                font-size: 0.9em;
+            }
+
+            .sub-menu {
+                position: static;
+                opacity: 1;
+                visibility: visible;
+                transform: none;
+                display: none;
+                border: none;
+                border-top: none;
+                box-shadow: none;
+                background: rgba(255,255,255,0.02);
+                min-width: 0;
+            }
+
+            .main-nav li.sub-open .sub-menu {
+                display: block;
+            }
+
+            .sub-menu a {
+                padding-left: 32px !important;
+                font-size: 0.85em !important;
+            }
+
+            .logo {
+                margin-right: auto;
             }
 
             .hero-title {
@@ -1117,6 +1828,20 @@
 
             .hero-subtitle {
                 font-size: 1em;
+            }
+
+            .hero-stats {
+                gap: var(--space-sm);
+                flex-wrap: wrap;
+            }
+
+            .hero-stat-num {
+                font-size: 1.3em;
+            }
+
+            .hero-cta {
+                padding: 12px 28px;
+                font-size: 0.95em;
             }
 
             .feature-grid-pin {
@@ -1461,6 +2186,11 @@
     <header class="header">
         <div class="nav-container">
             <div class="logo">🏸 羽毛球规则教学</div>
+            <button class="hamburger" onclick="toggleMobileMenu()" aria-label="菜单">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
             <nav>
                 <ul class="main-nav">
                     <li><a href="#" class="nav-link active" data-page="home">首页</a></li>
@@ -1501,11 +2231,76 @@
         <!-- 首页 -->
         <div class="page-container active" id="page-home">
             <section class="hero-section">
-                <h1 class="hero-title"><svg class="hero-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2a2 2 0 0 0-2 2v2.5c0 2.5 1.5 4.5 3 6s3 3.5 3 6V20a2 2 0 0 0 2 2"/><path d="M16 2a2 2 0 0 1 2 2v2.5c0 2.5-1.5 4.5-3 6s-3 3.5-3 6V20a2 2 0 0 1-2 2"/></svg>羽毛球规则<svg class="hero-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2a2 2 0 0 0-2 2v2.5c0 2.5 1.5 4.5 3 6s3 3.5 3 6V20a2 2 0 0 0 2 2"/><path d="M16 2a2 2 0 0 1 2 2v2.5c0 2.5-1.5 4.5-3 6s-3 3.5-3 6V20a2 2 0 0 1-2 2"/></svg></h1>
-                <p class="hero-subtitle">通过交互式动画，轻松学习羽毛球规则</p>
+                <!-- 浮动粒子 -->
+                <div class="hero-particles">
+                    <div class="hero-particle hp1"></div>
+                    <div class="hero-particle hp2"></div>
+                    <div class="hero-particle hp3"></div>
+                    <div class="hero-particle hp4"></div>
+                    <div class="hero-particle hp5"></div>
+                    <div class="hero-particle hp6"></div>
+                    <div class="hero-particle hp7"></div>
+                </div>
+
+                <!-- 浮动羽毛球 -->
+                <div class="floating-shuttlecock fs1"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/20/Badminton_shuttlecock.svg/120px-Badminton_shuttlecock.svg.png" alt=""></div>
+                <div class="floating-shuttlecock fs2"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/20/Badminton_shuttlecock.svg/120px-Badminton_shuttlecock.svg.png" alt=""></div>
+                <div class="floating-shuttlecock fs3"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/20/Badminton_shuttlecock.svg/120px-Badminton_shuttlecock.svg.png" alt=""></div>
+                <div class="floating-shuttlecock fs4"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/20/Badminton_shuttlecock.svg/120px-Badminton_shuttlecock.svg.png" alt=""></div>
+                <div class="floating-shuttlecock fs5"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/20/Badminton_shuttlecock.svg/120px-Badminton_shuttlecock.svg.png" alt=""></div>
+                <div class="floating-shuttlecock fs6"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/20/Badminton_shuttlecock.svg/120px-Badminton_shuttlecock.svg.png" alt=""></div>
+
+                <!-- 飘落羽毛 -->
+                <div class="deco-feather df1"><svg viewBox="0 0 24 40"><path d="M12 0 C8 8 2 16 4 28 Q8 36 12 40 Q16 36 20 28 C22 16 16 8 12 0Z" fill="rgba(0,200,255,0.4)"/><line x1="12" y1="2" x2="12" y2="38" stroke="rgba(0,200,255,0.3)" stroke-width="0.5"/></svg></div>
+                <div class="deco-feather df2"><svg viewBox="0 0 24 40"><path d="M12 0 C8 8 2 16 4 28 Q8 36 12 40 Q16 36 20 28 C22 16 16 8 12 0Z" fill="rgba(123,104,238,0.4)"/><line x1="12" y1="2" x2="12" y2="38" stroke="rgba(123,104,238,0.3)" stroke-width="0.5"/></svg></div>
+                <div class="deco-feather df3"><svg viewBox="0 0 24 40"><path d="M12 0 C8 8 2 16 4 28 Q8 36 12 40 Q16 36 20 28 C22 16 16 8 12 0Z" fill="rgba(255,107,157,0.4)"/><line x1="12" y1="2" x2="12" y2="38" stroke="rgba(255,107,157,0.3)" stroke-width="0.5"/></svg></div>
+                <div class="deco-feather df4"><svg viewBox="0 0 24 40"><path d="M12 0 C8 8 2 16 4 28 Q8 36 12 40 Q16 36 20 28 C22 16 16 8 12 0Z" fill="rgba(255,169,77,0.4)"/><line x1="12" y1="2" x2="12" y2="38" stroke="rgba(255,169,77,0.3)" stroke-width="0.5"/></svg></div>
+                <div class="deco-feather df5"><svg viewBox="0 0 24 40"><path d="M12 0 C8 8 2 16 4 28 Q8 36 12 40 Q16 36 20 28 C22 16 16 8 12 0Z" fill="rgba(0,200,255,0.35)"/><line x1="12" y1="2" x2="12" y2="38" stroke="rgba(0,200,255,0.25)" stroke-width="0.5"/></svg></div>
+                <div class="deco-feather df6"><svg viewBox="0 0 24 40"><path d="M12 0 C8 8 2 16 4 28 Q8 36 12 40 Q16 36 20 28 C22 16 16 8 12 0Z" fill="rgba(123,104,238,0.35)"/><line x1="12" y1="2" x2="12" y2="38" stroke="rgba(123,104,238,0.25)" stroke-width="0.5"/></svg></div>
+                <div class="deco-feather df7"><svg viewBox="0 0 24 40"><path d="M12 0 C8 8 2 16 4 28 Q8 36 12 40 Q16 36 20 28 C22 16 16 8 12 0Z" fill="rgba(255,107,157,0.35)"/><line x1="12" y1="2" x2="12" y2="38" stroke="rgba(255,107,157,0.25)" stroke-width="0.5"/></svg></div>
+                <div class="deco-feather df8"><svg viewBox="0 0 24 40"><path d="M12 0 C8 8 2 16 4 28 Q8 36 12 40 Q16 36 20 28 C22 16 16 8 12 0Z" fill="rgba(255,169,77,0.35)"/><line x1="12" y1="2" x2="12" y2="38" stroke="rgba(255,169,77,0.25)" stroke-width="0.5"/></svg></div>
+
+                <!-- 球场线条装饰 -->
+                <div class="court-lines-deco">
+                    <svg viewBox="0 0 500 250" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <rect x="10" y="10" width="480" height="230" rx="2" stroke="rgba(255,255,255,0.5)" stroke-width="1.5"/>
+                        <line x1="250" y1="10" x2="250" y2="240" stroke="rgba(255,255,255,0.5)" stroke-width="1"/>
+                        <rect x="80" y="10" width="340" height="230" rx="1" stroke="rgba(255,200,0,0.4)" stroke-width="0.8" stroke-dasharray="4 3"/>
+                        <line x1="10" y1="60" x2="490" y2="60" stroke="rgba(255,100,0,0.35)" stroke-width="0.8"/>
+                        <line x1="10" y1="190" x2="490" y2="190" stroke="rgba(255,100,0,0.35)" stroke-width="0.8"/>
+                        <line x1="250" y1="120" x2="250" y2="130" stroke="rgba(0,255,255,0.4)" stroke-width="2"/>
+                        <circle cx="250" cy="125" r="3" fill="rgba(255,50,50,0.4)"/>
+                    </svg>
+                </div>
+
+                <!-- 点状纹理 -->
+                <div class="dot-pattern"></div>
+
+                <!-- 标题光晕 -->
+                <div class="hero-glow"></div>
 
                 <!-- 动态渐变背景 -->
                 <div class="gradient-bg"></div>
+
+                <h1 class="hero-title"><img class="hero-icon" src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/20/Badminton_shuttlecock.svg/120px-Badminton_shuttlecock.svg.png" alt="羽毛球">羽毛球规则<img class="hero-icon" src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/20/Badminton_shuttlecock.svg/120px-Badminton_shuttlecock.svg.png" alt="羽毛球"></h1>
+                <p class="hero-subtitle">通过交互式动画，轻松学习羽毛球规则</p>
+
+                <!-- 统计条 -->
+                <div class="hero-stats">
+                    <div class="hero-stat"><span class="hero-stat-num">4</span> 大模块</div>
+                    <div class="hero-stat-dot"></div>
+                    <div class="hero-stat"><span class="hero-stat-num">10+</span> 规则详解</div>
+                    <div class="hero-stat-dot"></div>
+                    <div class="hero-stat"><span class="hero-stat-num">3D</span> 交互演示</div>
+                </div>
+
+                <!-- CTA 按钮 -->
+                <div style="position:relative;z-index:1;text-align:center;">
+                    <button class="hero-cta" onclick="showPage('court-size')">
+                        开始学习
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+                    </button>
+                </div>
 
                 <div class="feature-grid-pin">
                     <div class="feature-row">
@@ -1513,11 +2308,13 @@
                             <div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="20" height="12" rx="2"/><path d="M6 6v12"/><path d="M18 6v12"/><path d="M12 6v12"/></svg></div>
                             <div class="feature-title">场地规则</div>
                             <div class="feature-desc">了解标准场地尺寸、线条含义和球网规格</div>
+                            <div class="card-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></div>
                         </div>
                         <div class="feature-card feature-card-purple" onclick="showPage('service-singles')">
                             <div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="3"/></svg></div>
                             <div class="feature-title">发球规则</div>
                             <div class="feature-desc">掌握单双打发球规则，避免违例</div>
+                            <div class="card-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></div>
                         </div>
                     </div>
                     <div class="feature-row">
@@ -1525,19 +2322,65 @@
                             <div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg></div>
                             <div class="feature-title">计分规则</div>
                             <div class="feature-desc">学习21分制计分方法和换球规则</div>
+                            <div class="card-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></div>
                         </div>
                         <div class="feature-card feature-card-gold" onclick="showPage('violation-service')">
                             <div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg></div>
                             <div class="feature-title">违例规则</div>
                             <div class="feature-desc">了解发球、击球和行为违例规定</div>
+                            <div class="card-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></div>
                         </div>
                     </div>
                 </div>
             </section>
+
+            <!-- 页脚 -->
+            <footer class="site-footer">
+                <div class="footer-brand">🏸 羽毛球规则教学</div>
+                <p>&copy; 2026 Badminton Rules Teaching &middot; <a href="https://github.com/duhanyu363/badminton-rules" target="_blank">GitHub</a></p>
+            </footer>
         </div>
 
         <!-- 场地尺寸页面 -->
         <div class="page-container" id="page-court-size">
+            <!-- 浮动光斑 -->
+            <div class="court-page-particle cpp1"></div>
+            <div class="court-page-particle cpp2"></div>
+            <div class="court-page-particle cpp3"></div>
+            <div class="court-page-particle cpp4"></div>
+
+            <!-- 浮动羽毛球 -->
+            <div class="court-shuttle cs1"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/20/Badminton_shuttlecock.svg/120px-Badminton_shuttlecock.svg.png" alt=""></div>
+            <div class="court-shuttle cs2"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/20/Badminton_shuttlecock.svg/120px-Badminton_shuttlecock.svg.png" alt=""></div>
+            <div class="court-shuttle cs3"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/20/Badminton_shuttlecock.svg/120px-Badminton_shuttlecock.svg.png" alt=""></div>
+            <div class="court-shuttle cs4"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/20/Badminton_shuttlecock.svg/120px-Badminton_shuttlecock.svg.png" alt=""></div>
+            <div class="court-shuttle cs5"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/20/Badminton_shuttlecock.svg/120px-Badminton_shuttlecock.svg.png" alt=""></div>
+
+            <!-- 飘落羽毛（从页面顶部落下） -->
+            <div class="court-feather cf1"><svg viewBox="0 0 24 40"><path d="M12 0 C8 8 2 16 4 28 Q8 36 12 40 Q16 36 20 28 C22 16 16 8 12 0Z" fill="rgba(255,255,255,0.55)"/><line x1="12" y1="2" x2="12" y2="38" stroke="rgba(255,255,255,0.3)" stroke-width="0.5"/></svg></div>
+            <div class="court-feather cf2"><svg viewBox="0 0 24 40"><path d="M12 0 C8 8 2 16 4 28 Q8 36 12 40 Q16 36 20 28 C22 16 16 8 12 0Z" fill="rgba(255,255,255,0.5)"/><line x1="12" y1="2" x2="12" y2="38" stroke="rgba(255,255,255,0.3)" stroke-width="0.5"/></svg></div>
+            <div class="court-feather cf3"><svg viewBox="0 0 24 40"><path d="M12 0 C8 8 2 16 4 28 Q8 36 12 40 Q16 36 20 28 C22 16 16 8 12 0Z" fill="rgba(255,255,255,0.55)"/><line x1="12" y1="2" x2="12" y2="38" stroke="rgba(255,255,255,0.3)" stroke-width="0.5"/></svg></div>
+            <div class="court-feather cf4"><svg viewBox="0 0 24 40"><path d="M12 0 C8 8 2 16 4 28 Q8 36 12 40 Q16 36 20 28 C22 16 16 8 12 0Z" fill="rgba(255,255,255,0.5)"/><line x1="12" y1="2" x2="12" y2="38" stroke="rgba(255,255,255,0.3)" stroke-width="0.5"/></svg></div>
+            <div class="court-feather cf5"><svg viewBox="0 0 24 40"><path d="M12 0 C8 8 2 16 4 28 Q8 36 12 40 Q16 36 20 28 C22 16 16 8 12 0Z" fill="rgba(255,255,255,0.5)"/><line x1="12" y1="2" x2="12" y2="38" stroke="rgba(255,255,255,0.3)" stroke-width="0.5"/></svg></div>
+            <div class="court-feather cf6"><svg viewBox="0 0 24 40"><path d="M12 0 C8 8 2 16 4 28 Q8 36 12 40 Q16 36 20 28 C22 16 16 8 12 0Z" fill="rgba(255,255,255,0.55)"/><line x1="12" y1="2" x2="12" y2="38" stroke="rgba(255,255,255,0.3)" stroke-width="0.5"/></svg></div>
+            <div class="court-feather cf7"><svg viewBox="0 0 24 40"><path d="M12 0 C8 8 2 16 4 28 Q8 36 12 40 Q16 36 20 28 C22 16 16 8 12 0Z" fill="rgba(255,255,255,0.5)"/><line x1="12" y1="2" x2="12" y2="38" stroke="rgba(255,255,255,0.3)" stroke-width="0.5"/></svg></div>
+            <div class="court-feather cf8"><svg viewBox="0 0 24 40"><path d="M12 0 C8 8 2 16 4 28 Q8 36 12 40 Q16 36 20 28 C22 16 16 8 12 0Z" fill="rgba(255,255,255,0.55)"/><line x1="12" y1="2" x2="12" y2="38" stroke="rgba(255,255,255,0.3)" stroke-width="0.5"/></svg></div>
+            <div class="court-feather cf9"><svg viewBox="0 0 24 40"><path d="M12 0 C8 8 2 16 4 28 Q8 36 12 40 Q16 36 20 28 C22 16 16 8 12 0Z" fill="rgba(255,255,255,0.5)"/><line x1="12" y1="2" x2="12" y2="38" stroke="rgba(255,255,255,0.3)" stroke-width="0.5"/></svg></div>
+            <div class="court-feather cf10"><svg viewBox="0 0 24 40"><path d="M12 0 C8 8 2 16 4 28 Q8 36 12 40 Q16 36 20 28 C22 16 16 8 12 0Z" fill="rgba(255,255,255,0.55)"/><line x1="12" y1="2" x2="12" y2="38" stroke="rgba(255,255,255,0.3)" stroke-width="0.5"/></svg></div>
+            <div class="court-feather cf11"><svg viewBox="0 0 24 40"><path d="M12 0 C8 8 2 16 4 28 Q8 36 12 40 Q16 36 20 28 C22 16 16 8 12 0Z" fill="rgba(255,255,255,0.5)"/><line x1="12" y1="2" x2="12" y2="38" stroke="rgba(255,255,255,0.3)" stroke-width="0.5"/></svg></div>
+            <div class="court-feather cf12"><svg viewBox="0 0 24 40"><path d="M12 0 C8 8 2 16 4 28 Q8 36 12 40 Q16 36 20 28 C22 16 16 8 12 0Z" fill="rgba(255,255,255,0.55)"/><line x1="12" y1="2" x2="12" y2="38" stroke="rgba(255,255,255,0.3)" stroke-width="0.5"/></svg></div>
+            <div class="court-feather cf13"><svg viewBox="0 0 24 40"><path d="M12 0 C8 8 2 16 4 28 Q8 36 12 40 Q16 36 20 28 C22 16 16 8 12 0Z" fill="rgba(255,255,255,0.5)"/><line x1="12" y1="2" x2="12" y2="38" stroke="rgba(255,255,255,0.3)" stroke-width="0.5"/></svg></div>
+            <div class="court-feather cf14"><svg viewBox="0 0 24 40"><path d="M12 0 C8 8 2 16 4 28 Q8 36 12 40 Q16 36 20 28 C22 16 16 8 12 0Z" fill="rgba(255,255,255,0.55)"/><line x1="12" y1="2" x2="12" y2="38" stroke="rgba(255,255,255,0.3)" stroke-width="0.5"/></svg></div>
+            <div class="court-feather cf15"><svg viewBox="0 0 24 40"><path d="M12 0 C8 8 2 16 4 28 Q8 36 12 40 Q16 36 20 28 C22 16 16 8 12 0Z" fill="rgba(255,255,255,0.5)"/><line x1="12" y1="2" x2="12" y2="38" stroke="rgba(255,255,255,0.3)" stroke-width="0.5"/></svg></div>
+            <div class="court-feather cf16"><svg viewBox="0 0 24 40"><path d="M12 0 C8 8 2 16 4 28 Q8 36 12 40 Q16 36 20 28 C22 16 16 8 12 0Z" fill="rgba(255,255,255,0.55)"/><line x1="12" y1="2" x2="12" y2="38" stroke="rgba(255,255,255,0.3)" stroke-width="0.5"/></svg></div>
+            <div class="court-feather cf17"><svg viewBox="0 0 24 40"><path d="M12 0 C8 8 2 16 4 28 Q8 36 12 40 Q16 36 20 28 C22 16 16 8 12 0Z" fill="rgba(255,255,255,0.5)"/><line x1="12" y1="2" x2="12" y2="38" stroke="rgba(255,255,255,0.3)" stroke-width="0.5"/></svg></div>
+            <div class="court-feather cf18"><svg viewBox="0 0 24 40"><path d="M12 0 C8 8 2 16 4 28 Q8 36 12 40 Q16 36 20 28 C22 16 16 8 12 0Z" fill="rgba(255,255,255,0.55)"/><line x1="12" y1="2" x2="12" y2="38" stroke="rgba(255,255,255,0.3)" stroke-width="0.5"/></svg></div>
+            <div class="court-feather cf19"><svg viewBox="0 0 24 40"><path d="M12 0 C8 8 2 16 4 28 Q8 36 12 40 Q16 36 20 28 C22 16 16 8 12 0Z" fill="rgba(255,255,255,0.5)"/><line x1="12" y1="2" x2="12" y2="38" stroke="rgba(255,255,255,0.3)" stroke-width="0.5"/></svg></div>
+            <div class="court-feather cf20"><svg viewBox="0 0 24 40"><path d="M12 0 C8 8 2 16 4 28 Q8 36 12 40 Q16 36 20 28 C22 16 16 8 12 0Z" fill="rgba(255,255,255,0.55)"/><line x1="12" y1="2" x2="12" y2="38" stroke="rgba(255,255,255,0.3)" stroke-width="0.5"/></svg></div>
+
+            <!-- 网格纹理 -->
+            <div class="court-page-grid"></div>
+
             <div class="shuttlecock-deco shuttlecock-deco-1" style="opacity:0.06; top:8%; right:5%;">
                 <svg viewBox="0 0 100 150">
                         <ellipse cx="50" cy="138" rx="14" ry="6" fill="rgba(0,200,255,0.3)" stroke="var(--accent-cyan)" stroke-width="1"/>
@@ -1583,12 +2426,12 @@
             </div>
             <div class="demo-area" id="court-size-demo" style="position: relative;">
                 <!-- 场地示意图 -->
-                <div id="court-size-container" style="position: relative; width: 100%; height: 100%; background: linear-gradient(135deg, #1a3d2e 0%, #265940 30%, #2d6b4d 50%, #265940 70%, #1a3d2e 100%); border-radius: 8px; overflow: hidden;">
+                <div id="court-size-container" style="position: relative; width: 100%; height: 100%;">
                     <!-- 球场将通过JS动态生成 -->
                 </div>
             </div>
-            <div style="margin-top: 6px; padding: 12px 16px; background: #141e2e; border: 1px solid #2a3a50; border-radius: 8px; color: #a0b0c8; font-size: 15px; text-align: center; line-height: 1.6;">
-                <strong style="color: #e0e8f0;">交互提示：</strong>鼠标左键拖动旋转 · 滚轮缩放 · 右键平移；手机端单指拖动旋转 · 双指缩放
+            <div class="court-tip-bar">
+                <strong style="color: #e0e8f0;">交互提示：</strong>鼠标左键拖动旋转 · 滚轮缩放 · 右键平移
             </div>
         </div>
 
@@ -1646,13 +2489,22 @@
             <div class="singles-rule-text" id="singles-rule-text"></div>
             <div class="demo-area" id="service-singles-demo">
                 <!-- 发球演示动画将在这里显示 -->
-                <div id="singles-court-container" style="position: relative; width: 100%; height: 100%; background: linear-gradient(135deg, #1a3d3d 0%, #26594a 25%, #2d6b5a 50%, #26594a 75%, #1a3d3d 100%); border-radius: 8px; overflow: hidden;">
+                <div id="singles-court-container" style="position: relative; width: 100%; height: 100%;">
                     <!-- 球场将通过JS动态生成 -->
                 </div>
             </div>
-            <div style="margin-top: 6px; padding: 12px 16px; background: #141e2e; border: 1px solid #2a3a50; border-radius: 8px; color: #a0b0c8; font-size: 15px; text-align: center; line-height: 1.6;">
-                <strong style="color: #e0e8f0;">交互提示：</strong>鼠标左键拖动旋转 · 滚轮缩放 · 右键平移；手机端单指拖动旋转 · 双指缩放
+            <div class="court-tip-bar">
+                <strong style="color: #e0e8f0;">交互提示：</strong>鼠标左键拖动旋转 · 滚轮缩放 · 右键平移
             </div>
+            <!-- 飘落羽毛 -->
+            <div class="court-feather cf1"><svg viewBox="0 0 24 40"><path d="M12 0 C8 8 2 16 4 28 Q8 36 12 40 Q16 36 20 28 C22 16 16 8 12 0Z" fill="rgba(255,255,255,0.55)"/><line x1="12" y1="2" x2="12" y2="38" stroke="rgba(255,255,255,0.3)" stroke-width="0.5"/></svg></div>
+            <div class="court-feather cf2"><svg viewBox="0 0 24 40"><path d="M12 0 C8 8 2 16 4 28 Q8 36 12 40 Q16 36 20 28 C22 16 16 8 12 0Z" fill="rgba(255,255,255,0.5)"/><line x1="12" y1="2" x2="12" y2="38" stroke="rgba(255,255,255,0.3)" stroke-width="0.5"/></svg></div>
+            <div class="court-feather cf3"><svg viewBox="0 0 24 40"><path d="M12 0 C8 8 2 16 4 28 Q8 36 12 40 Q16 36 20 28 C22 16 16 8 12 0Z" fill="rgba(255,255,255,0.55)"/><line x1="12" y1="2" x2="12" y2="38" stroke="rgba(255,255,255,0.3)" stroke-width="0.5"/></svg></div>
+            <div class="court-feather cf4"><svg viewBox="0 0 24 40"><path d="M12 0 C8 8 2 16 4 28 Q8 36 12 40 Q16 36 20 28 C22 16 16 8 12 0Z" fill="rgba(255,255,255,0.5)"/><line x1="12" y1="2" x2="12" y2="38" stroke="rgba(255,255,255,0.3)" stroke-width="0.5"/></svg></div>
+            <div class="court-feather cf5"><svg viewBox="0 0 24 40"><path d="M12 0 C8 8 2 16 4 28 Q8 36 12 40 Q16 36 20 28 C22 16 16 8 12 0Z" fill="rgba(255,255,255,0.5)"/><line x1="12" y1="2" x2="12" y2="38" stroke="rgba(255,255,255,0.3)" stroke-width="0.5"/></svg></div>
+            <div class="court-feather cf6"><svg viewBox="0 0 24 40"><path d="M12 0 C8 8 2 16 4 28 Q8 36 12 40 Q16 36 20 28 C22 16 16 8 12 0Z" fill="rgba(255,255,255,0.55)"/><line x1="12" y1="2" x2="12" y2="38" stroke="rgba(255,255,255,0.3)" stroke-width="0.5"/></svg></div>
+            <div class="court-feather cf7"><svg viewBox="0 0 24 40"><path d="M12 0 C8 8 2 16 4 28 Q8 36 12 40 Q16 36 20 28 C22 16 16 8 12 0Z" fill="rgba(255,255,255,0.5)"/><line x1="12" y1="2" x2="12" y2="38" stroke="rgba(255,255,255,0.3)" stroke-width="0.5"/></svg></div>
+            <div class="court-feather cf8"><svg viewBox="0 0 24 40"><path d="M12 0 C8 8 2 16 4 28 Q8 36 12 40 Q16 36 20 28 C22 16 16 8 12 0Z" fill="rgba(255,255,255,0.55)"/><line x1="12" y1="2" x2="12" y2="38" stroke="rgba(255,255,255,0.3)" stroke-width="0.5"/></svg></div>
         </div>
 
         <!-- 双打发球规则页面 -->
@@ -1701,12 +2553,21 @@
             </div>
             <div class="singles-rule-text" id="doubles-rule-text"></div>
             <div class="demo-area" id="service-doubles-demo">
-                <div id="doubles-court-container" style="position: relative; width: 100%; height: 100%; background: linear-gradient(135deg, #3d2e1a 0%, #5a4526 25%, #6b5430 50%, #5a4526 75%, #3d2e1a 100%); border-radius: 8px; overflow: hidden;">
+                <div id="doubles-court-container" style="position: relative; width: 100%; height: 100%;">
                 </div>
             </div>
-            <div style="margin-top: 6px; padding: 12px 16px; background: #141e2e; border: 1px solid #2a3a50; border-radius: 8px; color: #a0b0c8; font-size: 15px; text-align: center; line-height: 1.6;">
-                <strong style="color: #e0e8f0;">交互提示：</strong>鼠标左键拖动旋转 · 滚轮缩放 · 右键平移；手机端单指拖动旋转 · 双指缩放
+            <div class="court-tip-bar">
+                <strong style="color: #e0e8f0;">交互提示：</strong>鼠标左键拖动旋转 · 滚轮缩放 · 右键平移
             </div>
+            <!-- 飘落羽毛 -->
+            <div class="court-feather cf1"><svg viewBox="0 0 24 40"><path d="M12 0 C8 8 2 16 4 28 Q8 36 12 40 Q16 36 20 28 C22 16 16 8 12 0Z" fill="rgba(255,255,255,0.55)"/><line x1="12" y1="2" x2="12" y2="38" stroke="rgba(255,255,255,0.3)" stroke-width="0.5"/></svg></div>
+            <div class="court-feather cf2"><svg viewBox="0 0 24 40"><path d="M12 0 C8 8 2 16 4 28 Q8 36 12 40 Q16 36 20 28 C22 16 16 8 12 0Z" fill="rgba(255,255,255,0.5)"/><line x1="12" y1="2" x2="12" y2="38" stroke="rgba(255,255,255,0.3)" stroke-width="0.5"/></svg></div>
+            <div class="court-feather cf3"><svg viewBox="0 0 24 40"><path d="M12 0 C8 8 2 16 4 28 Q8 36 12 40 Q16 36 20 28 C22 16 16 8 12 0Z" fill="rgba(255,255,255,0.55)"/><line x1="12" y1="2" x2="12" y2="38" stroke="rgba(255,255,255,0.3)" stroke-width="0.5"/></svg></div>
+            <div class="court-feather cf4"><svg viewBox="0 0 24 40"><path d="M12 0 C8 8 2 16 4 28 Q8 36 12 40 Q16 36 20 28 C22 16 16 8 12 0Z" fill="rgba(255,255,255,0.5)"/><line x1="12" y1="2" x2="12" y2="38" stroke="rgba(255,255,255,0.3)" stroke-width="0.5"/></svg></div>
+            <div class="court-feather cf5"><svg viewBox="0 0 24 40"><path d="M12 0 C8 8 2 16 4 28 Q8 36 12 40 Q16 36 20 28 C22 16 16 8 12 0Z" fill="rgba(255,255,255,0.5)"/><line x1="12" y1="2" x2="12" y2="38" stroke="rgba(255,255,255,0.3)" stroke-width="0.5"/></svg></div>
+            <div class="court-feather cf6"><svg viewBox="0 0 24 40"><path d="M12 0 C8 8 2 16 4 28 Q8 36 12 40 Q16 36 20 28 C22 16 16 8 12 0Z" fill="rgba(255,255,255,0.55)"/><line x1="12" y1="2" x2="12" y2="38" stroke="rgba(255,255,255,0.3)" stroke-width="0.5"/></svg></div>
+            <div class="court-feather cf7"><svg viewBox="0 0 24 40"><path d="M12 0 C8 8 2 16 4 28 Q8 36 12 40 Q16 36 20 28 C22 16 16 8 12 0Z" fill="rgba(255,255,255,0.5)"/><line x1="12" y1="2" x2="12" y2="38" stroke="rgba(255,255,255,0.3)" stroke-width="0.5"/></svg></div>
+            <div class="court-feather cf8"><svg viewBox="0 0 24 40"><path d="M12 0 C8 8 2 16 4 28 Q8 36 12 40 Q16 36 20 28 C22 16 16 8 12 0Z" fill="rgba(255,255,255,0.55)"/><line x1="12" y1="2" x2="12" y2="38" stroke="rgba(255,255,255,0.3)" stroke-width="0.5"/></svg></div>
         </div>
 
         <div class="page-container" id="page-score-system">
@@ -1729,7 +2590,7 @@
             </div>
             <div class="score-scene-wrapper" id="score-scene-wrapper">
                 <div class="shuttlecock-bg" id="shuttlecock-bg"></div>
-                <div id="score-system-container" style="position: relative; width: 100%; height: 100%;"></div>
+                <div id="score-system-container" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;"></div>
                 <div class="score-overlay" id="score-overlay">
                     <div class="score-rule-text" id="score-rule-text"></div>
                     <div class="scoreboard" id="scoreboard">
@@ -1777,6 +2638,14 @@
                     </div>
                 </div>
             </div>
+            <!-- 计分页装饰 -->
+            <div class="score-arc sa1"><svg viewBox="0 0 300 120"><path d="M0 100 Q75 10 150 60 T300 20" fill="none" stroke="rgba(255,215,0,0.15)" stroke-width="1.5" stroke-dasharray="8 6"/></svg></div>
+            <div class="score-arc sa2"><svg viewBox="0 0 250 100"><path d="M250 90 Q175 5 125 50 T0 15" fill="none" stroke="rgba(255,165,0,0.12)" stroke-width="1.2" stroke-dasharray="6 8"/></svg></div>
+            <div class="score-arc sa3"><svg viewBox="0 0 280 110"><path d="M0 80 Q70 0 140 55 T280 25" fill="none" stroke="rgba(255,200,50,0.13)" stroke-width="1.3" stroke-dasharray="10 5"/></svg></div>
+            <div class="score-shuttle ss1"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/20/Badminton_shuttlecock.svg/120px-Badminton_shuttlecock.svg.png" alt=""></div>
+            <div class="score-shuttle ss2"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/20/Badminton_shuttlecock.svg/120px-Badminton_shuttlecock.svg.png" alt=""></div>
+            <div class="score-glow sg1"></div>
+            <div class="score-glow sg2"></div>
         </div>
 
         <div class="page-container" id="page-score-change">
@@ -1869,6 +2738,13 @@
                     </div>
                 </div>
             </div>
+            <!-- 计分页装饰 -->
+            <div class="score-arc sa2"><svg viewBox="0 0 250 100"><path d="M250 90 Q175 5 125 50 T0 15" fill="none" stroke="rgba(255,165,0,0.12)" stroke-width="1.2" stroke-dasharray="6 8"/></svg></div>
+            <div class="score-arc sa4"><svg viewBox="0 0 220 90"><path d="M0 70 Q55 5 110 45 T220 10" fill="none" stroke="rgba(255,215,0,0.1)" stroke-width="1" stroke-dasharray="5 7"/></svg></div>
+            <div class="score-shuttle ss3"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/20/Badminton_shuttlecock.svg/120px-Badminton_shuttlecock.svg.png" alt=""></div>
+            <div class="score-shuttle ss4"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/20/Badminton_shuttlecock.svg/120px-Badminton_shuttlecock.svg.png" alt=""></div>
+            <div class="score-glow sg1"></div>
+            <div class="score-glow sg3"></div>
         </div>
 
         <div class="page-container" id="page-score-rest">
@@ -2019,6 +2895,13 @@
                     </div>
                 </div>
             </div>
+            <!-- 计分页装饰 -->
+            <div class="score-arc sa1"><svg viewBox="0 0 300 120"><path d="M0 100 Q75 10 150 60 T300 20" fill="none" stroke="rgba(255,215,0,0.15)" stroke-width="1.5" stroke-dasharray="8 6"/></svg></div>
+            <div class="score-arc sa5"><svg viewBox="0 0 260 100"><path d="M260 80 Q195 0 130 50 T0 20" fill="none" stroke="rgba(255,200,50,0.11)" stroke-width="1.2" stroke-dasharray="7 6"/></svg></div>
+            <div class="score-shuttle ss1"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/20/Badminton_shuttlecock.svg/120px-Badminton_shuttlecock.svg.png" alt=""></div>
+            <div class="score-shuttle ss3"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/20/Badminton_shuttlecock.svg/120px-Badminton_shuttlecock.svg.png" alt=""></div>
+            <div class="score-glow sg2"></div>
+            <div class="score-glow sg3"></div>
         </div>
 
         <div class="page-container" id="page-violation-service">
@@ -2252,8 +3135,26 @@
     </main>
 
     <script>
+        // 汉堡菜单
+        function toggleMobileMenu() {
+            const nav = document.querySelector('.main-nav');
+            const btn = document.querySelector('.hamburger');
+            nav.classList.toggle('open');
+            btn.classList.toggle('active');
+        }
+
         // 页面切换功能
         function showPage(pageName) {
+            // 父级菜单自动跳转到第一个子页面
+            const redirectMap = {
+                'service': 'service-singles',
+                'score': 'score-system',
+                'violation': 'violation-service'
+            };
+            if (redirectMap[pageName]) {
+                pageName = redirectMap[pageName];
+            }
+
             // 临时强制收起二级菜单，避免遮挡新页面内容
             document.body.classList.add('menu-closing');
             setTimeout(() => document.body.classList.remove('menu-closing'), 600);
@@ -2323,6 +3224,11 @@
                     return;
                 }
                 showPage(pageName);
+                // 关闭移动端菜单
+                if (window.innerWidth <= 768) {
+                    document.querySelector('.main-nav').classList.remove('open');
+                    document.querySelector('.hamburger').classList.remove('active');
+                }
             });
         });
 
@@ -2345,7 +3251,11 @@
             const height = container.clientHeight || 500;
 
             const scene = new THREE.Scene();
-            scene.background = new THREE.Color(backgroundColor || 0x0d2137);
+            if (backgroundColor === null) {
+                scene.background = null;
+            } else {
+                scene.background = new THREE.Color(backgroundColor || 0x0d2137);
+            }
 
             const camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 1000);
             if (containerId === 'court-size-container' || containerId === 'singles-court-container' || containerId === 'doubles-court-container') {
@@ -2354,7 +3264,7 @@
                 camera.position.set(14, 16, 14);
             }
 
-            const renderer = new THREE.WebGLRenderer({ antialias: true });
+            const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
             renderer.setSize(width, height);
             renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
             container.appendChild(renderer.domElement);
@@ -2588,7 +3498,7 @@
         let singlesAnimTimers = [];
 
         function initSinglesCourt() {
-            init3DCourt('singles-court-container', 0x1a3d3d);
+            init3DCourt('singles-court-container', null);
             startSinglesAnimation();
         }
 
@@ -2596,13 +3506,13 @@
         let doublesAnimTimers = [];
 
         function initDoublesCourt() {
-            init3DCourt('doubles-court-container', 0x3d2e1a);
+            init3DCourt('doubles-court-container', null);
             startDoublesAnimation();
         }
 
         // 初始化场地尺寸页面 - 3D场地示意图
         function initCourtSizeCourt() {
-            init3DCourt('court-size-container', 0x1a3d2e);
+            init3DCourt('court-size-container', null);
 
 
         }
@@ -2958,8 +3868,8 @@ let netViewAnimId = null;
             const height = container.clientHeight || 500;
 
             const scene = new THREE.Scene();
-            scene.background = new THREE.Color(0x0d1f0d);
-            scene.fog = new THREE.Fog(0x0d1f0d, 6, 18);
+            scene.background = null;
+            scene.fog = new THREE.Fog(0x060a14, 8, 22);
 
             const camera = new THREE.PerspectiveCamera(50, width / height, 0.1, 1000);
             const sx = 13.40 / 700;
@@ -2995,8 +3905,8 @@ let netViewAnimId = null;
             scene.add(spot.target);
 
             // 地面
-            const groundGeo = new THREE.PlaneGeometry(18, 12);
-            const groundMat = new THREE.MeshStandardMaterial({ color: 0x2a5a3a, roughness: 0.92 });
+            const groundGeo = new THREE.PlaneGeometry(40, 30);
+            const groundMat = new THREE.MeshStandardMaterial({ color: 0x1a3d2a, roughness: 0.92 });
             const ground = new THREE.Mesh(groundGeo, groundMat);
             ground.rotation.x = -Math.PI / 2;
             ground.position.set(netX, 0, netZ);
