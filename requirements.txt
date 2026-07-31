@@ -1,0 +1,4 @@
+# Python dependencies for the embedded Good-Badminton AI Hawkeye backend.
+# Install via: pip install -r ai-hawkeye/requirements.txt
+# This root file is provided for deployment tools that expect requirements.txt at repo root.
+-r ai-hawkeye/requirements.txt

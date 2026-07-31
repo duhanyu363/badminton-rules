@@ -5,6 +5,16 @@
 # Claude
 .claude/
 
+# AI Hawkeye runtime (cloned backend, venv, downloads, analysis outputs)
+ai-hawkeye/Good-Badminton/
+ai-hawkeye/.venv/
+ai-hawkeye/downloads/
+ai-hawkeye/.yolo-config/
+ai-hawkeye/**/*.log
+__pycache__/
+**/__pycache__/
+*.pyc
+
 # Large unused video files
 *_noscore.mp4
 

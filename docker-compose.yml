@@ -1,0 +1,30 @@
+services:
+  ai-backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      AI_HAWKEYE_ALLOWED_ORIGINS: ${AI_HAWKEYE_ALLOWED_ORIGINS:-}
+      AI_HAWKEYE_MAX_UPLOAD_MB: ${AI_HAWKEYE_MAX_UPLOAD_MB:-1024}
+      AI_HAWKEYE_GOOD_ROOT: /app/ai-hawkeye/Good-Badminton
+    volumes:
+      - good-badminton-videos:/app/ai-hawkeye/Good-Badminton/videos
+      - good-badminton-outputs:/app/ai-hawkeye/Good-Badminton/outputs
+      - good-badminton-templates:/app/ai-hawkeye/Good-Badminton/templates
+    restart: unless-stopped
+
+  nginx:
+    image: nginx:1.27-alpine
+    depends_on:
+      - ai-backend
+    ports:
+      - "${HTTP_PORT:-8080}:80"
+    volumes:
+      - ./:/usr/share/nginx/html:ro
+      - ./deploy/nginx.conf:/etc/nginx/conf.d/default.conf:ro
+    restart: unless-stopped
+
+volumes:
+  good-badminton-videos:
+  good-badminton-outputs:
+  good-badminton-templates:

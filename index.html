@@ -1763,6 +1763,468 @@
             font-size: 1.05em;
         }
 
+        /* AI 视频分析页面（原生集成，无 iframe） */
+        .ai-analysis-layout {
+            width: 100%;
+            max-width: 1480px;
+            margin: 0 auto;
+            display: grid;
+            gap: 18px;
+            padding-bottom: 36px;
+        }
+
+        .ai-hero-card,
+        .ai-native-card {
+            background: linear-gradient(135deg, rgba(0,200,255,0.11), rgba(123,104,238,0.08));
+            border: 1px solid rgba(0,200,255,0.24);
+            border-radius: 18px;
+            padding: 22px;
+            box-shadow: 0 18px 45px rgba(0,0,0,0.22);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .ai-hero-card h2,
+        .ai-native-card h3 {
+            color: var(--accent-cyan);
+            margin-bottom: 8px;
+        }
+
+        .ai-hero-card h2 {
+            font-size: 2em;
+        }
+
+        .ai-status-grid {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(180px, 1fr));
+            gap: 12px;
+            margin-top: 16px;
+        }
+
+        .ai-status-card {
+            background: rgba(255,255,255,0.04);
+            border: 1px solid var(--border-subtle);
+            border-radius: 12px;
+            padding: 14px;
+        }
+
+        .ai-status-card strong {
+            color: var(--accent-gold);
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .ai-code {
+            font-family: Consolas, Monaco, monospace;
+            background: rgba(0,0,0,0.28);
+            border: 1px solid var(--border-subtle);
+            border-radius: 8px;
+            padding: 2px 6px;
+            color: var(--accent-cyan);
+        }
+
+        .ai-workspace {
+            display: grid;
+            grid-template-columns: minmax(330px, 430px) 1fr;
+            gap: 18px;
+            align-items: start;
+        }
+
+        .ai-left-column,
+        .ai-right-column {
+            display: grid;
+            gap: 18px;
+        }
+
+        .ai-upload-zone {
+            min-height: 210px;
+            border: 2px dashed rgba(0,200,255,0.34);
+            border-radius: 18px;
+            background: rgba(0,200,255,0.045);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            gap: 10px;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.25s ease;
+            padding: 28px 18px;
+        }
+
+        .ai-upload-zone:hover,
+        .ai-upload-zone.dragging {
+            color: var(--accent-cyan);
+            border-color: var(--accent-cyan);
+            background: rgba(0,200,255,0.09);
+            transform: translateY(-2px);
+        }
+
+        .ai-upload-icon {
+            font-size: 3em;
+            filter: drop-shadow(0 0 12px rgba(0,200,255,0.4));
+        }
+
+        .ai-progress-track {
+            height: 10px;
+            background: rgba(255,255,255,0.08);
+            border-radius: 999px;
+            overflow: hidden;
+            border: 1px solid rgba(255,255,255,0.08);
+            margin-top: 12px;
+        }
+
+        .ai-progress-fill {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, var(--accent-cyan), var(--accent-purple), var(--accent-pink));
+            transition: width 0.25s ease;
+        }
+
+        .ai-progress-meta {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            color: var(--text-secondary);
+            font-size: 0.9em;
+            margin-top: 8px;
+        }
+
+        .ai-action-row {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-top: 14px;
+        }
+
+        .ai-action-btn {
+            border: 1px solid rgba(0,200,255,0.35);
+            color: var(--text-primary);
+            background: rgba(0,200,255,0.10);
+            border-radius: 999px;
+            padding: 10px 16px;
+            text-decoration: none;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            font: inherit;
+        }
+
+        .ai-action-btn:hover:not(:disabled) {
+            color: var(--accent-cyan);
+            background: rgba(0,200,255,0.18);
+            transform: translateY(-1px);
+        }
+
+        .ai-action-btn:disabled {
+            opacity: 0.45;
+            cursor: not-allowed;
+        }
+
+        .ai-action-btn.primary {
+            color: #05111d;
+            background: linear-gradient(135deg, var(--accent-cyan), var(--accent-purple));
+            border-color: transparent;
+            font-weight: 700;
+        }
+
+        .ai-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 10px;
+            border-radius: 999px;
+            border: 1px solid rgba(255,255,255,0.10);
+            background: rgba(255,255,255,0.04);
+            color: var(--text-secondary);
+            font-size: 0.88em;
+        }
+
+        .ai-dot {
+            width: 9px;
+            height: 9px;
+            border-radius: 50%;
+            display: inline-block;
+            background: var(--text-secondary);
+        }
+
+        .ai-dot.ok { background: var(--accent-green); box-shadow: 0 0 12px rgba(34,197,94,0.75); }
+        .ai-dot.run { background: var(--accent-gold); box-shadow: 0 0 12px rgba(255,169,77,0.75); animation: aiPulse 0.9s infinite; }
+        .ai-dot.err { background: #ff5c7a; box-shadow: 0 0 12px rgba(255,92,122,0.75); }
+
+        @keyframes aiPulse { 50% { opacity: 0.35; } }
+
+        .ai-file-info,
+        .ai-log-box {
+            color: var(--text-secondary);
+            font-size: 0.92em;
+            line-height: 1.7;
+            background: rgba(0,0,0,0.20);
+            border: 1px solid var(--border-subtle);
+            border-radius: 12px;
+            padding: 12px;
+            margin-top: 12px;
+        }
+
+        .ai-log-box {
+            max-height: 170px;
+            overflow: auto;
+            font-family: Consolas, Monaco, monospace;
+            scrollbar-width: thin;
+        }
+
+        .ai-court-preview {
+            width: 100%;
+            max-height: 340px;
+            object-fit: contain;
+            border-radius: 14px;
+            border: 1px solid rgba(0,200,255,0.20);
+            background: rgba(0,0,0,0.28);
+            margin-top: 12px;
+        }
+
+        .ai-annotation-wrap {
+            display: none;
+            margin-top: 12px;
+        }
+
+        .ai-annotation-wrap.active {
+            display: block;
+        }
+
+        .ai-annotation-canvas,
+        .ai-heatmap-canvas,
+        .ai-trajectory-canvas {
+            width: 100%;
+            border-radius: 16px;
+            background: rgba(0,0,0,0.28);
+            border: 1px solid rgba(0,200,255,0.20);
+        }
+
+        .ai-annotation-canvas {
+            cursor: crosshair;
+            max-height: 420px;
+            object-fit: contain;
+        }
+
+        .ai-step-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 10px;
+        }
+
+        .ai-step-chip {
+            color: var(--text-secondary);
+            border: 1px solid rgba(255,255,255,0.10);
+            border-radius: 999px;
+            padding: 5px 9px;
+            font-size: 0.86em;
+        }
+
+        .ai-step-chip.done { color: var(--accent-green); border-color: rgba(34,197,94,0.35); }
+        .ai-step-chip.current { color: var(--accent-gold); border-color: rgba(255,169,77,0.45); }
+
+        .ai-result-grid {
+            display: grid;
+            grid-template-columns: minmax(320px, 1.15fr) minmax(280px, 0.85fr);
+            gap: 18px;
+            align-items: start;
+        }
+
+        .ai-visual-tabs {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin: 12px 0;
+        }
+
+        .ai-tab-btn {
+            border: 1px solid rgba(255,255,255,0.10);
+            color: var(--text-secondary);
+            background: rgba(255,255,255,0.04);
+            border-radius: 999px;
+            padding: 8px 13px;
+            cursor: pointer;
+        }
+
+        .ai-tab-btn.active {
+            color: var(--accent-cyan);
+            border-color: rgba(0,200,255,0.45);
+            background: rgba(0,200,255,0.12);
+        }
+
+        .ai-stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(120px, 1fr));
+            gap: 10px;
+            margin-top: 12px;
+        }
+
+        .ai-stat-tile {
+            background: rgba(255,255,255,0.045);
+            border: 1px solid var(--border-subtle);
+            border-radius: 12px;
+            padding: 12px;
+        }
+
+        .ai-stat-tile strong {
+            display: block;
+            color: var(--accent-cyan);
+            font-size: 1.35em;
+            margin-bottom: 4px;
+        }
+
+        .ai-output-video,
+        .ai-output-image {
+            width: 100%;
+            border-radius: 14px;
+            border: 1px solid rgba(255,255,255,0.10);
+            background: rgba(0,0,0,0.28);
+            margin-top: 10px;
+        }
+
+        .ai-output-links {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-top: 12px;
+        }
+
+        .ai-output-links a {
+            color: var(--accent-cyan);
+            text-decoration: none;
+            border-bottom: 1px dashed rgba(0,200,255,0.45);
+            font-size: 0.92em;
+        }
+
+        .ai-speed-grid {
+            display: grid;
+            grid-template-columns: 260px 1fr;
+            gap: 18px;
+            align-items: start;
+            margin-top: 14px;
+        }
+
+        .ai-video-speed-grid {
+            display: grid;
+            grid-template-columns: minmax(320px, 1fr) 260px;
+            gap: 18px;
+            align-items: start;
+        }
+
+        .ai-speed-gauge-wrap {
+            display: grid;
+            justify-items: center;
+            gap: 10px;
+            padding: 14px;
+            border-radius: 16px;
+            border: 1px solid rgba(0,200,255,0.20);
+            background: rgba(0,0,0,0.20);
+        }
+
+        .ai-speed-gauge {
+            width: 220px;
+            height: 220px;
+        }
+
+        .ai-speed-note {
+            color: var(--accent-gold);
+            font-size: 0.86em;
+            line-height: 1.6;
+            text-align: center;
+        }
+
+        .ai-hit-list {
+            max-height: 300px;
+            overflow: auto;
+            border: 1px solid var(--border-subtle);
+            border-radius: 12px;
+            background: rgba(0,0,0,0.18);
+        }
+
+        .ai-hit-row {
+            display: grid;
+            grid-template-columns: 70px 90px 70px 1fr;
+            gap: 8px;
+            align-items: center;
+            padding: 9px 12px;
+            border-bottom: 1px solid rgba(255,255,255,0.06);
+            color: var(--text-secondary);
+            font-size: 0.92em;
+            cursor: pointer;
+        }
+
+        .ai-hit-row:hover,
+        .ai-hit-row.active {
+            background: rgba(0,200,255,0.10);
+            color: var(--text-primary);
+        }
+
+        .ai-speed-badge {
+            border-radius: 999px;
+            padding: 3px 8px;
+            color: #07111f;
+            font-weight: 700;
+            text-align: center;
+        }
+
+        .ai-speed-badge.green { background: #22c55e; }
+        .ai-speed-badge.yellow { background: #facc15; }
+        .ai-speed-badge.orange { background: #fb923c; }
+        .ai-speed-badge.red { background: #f87171; color: #fff; }
+
+        .ai-speed-chart {
+            width: 100%;
+            height: 260px;
+            border-radius: 14px;
+            border: 1px solid rgba(0,200,255,0.20);
+            background: rgba(0,0,0,0.20);
+            margin-top: 12px;
+        }
+
+        .ai-speed-compare {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(180px, 1fr));
+            gap: 12px;
+            margin-top: 12px;
+        }
+
+        .ai-speed-player-card {
+            border: 1px solid var(--border-subtle);
+            border-radius: 14px;
+            background: rgba(255,255,255,0.045);
+            padding: 14px;
+            color: var(--text-secondary);
+        }
+
+        .ai-speed-player-card strong {
+            display: block;
+            color: var(--accent-cyan);
+            font-size: 1.55em;
+            margin: 4px 0;
+        }
+
+        .ai-hidden { display: none !important; }
+
+        @media (max-width: 1100px) {
+            .ai-workspace,
+            .ai-result-grid,
+            .ai-speed-grid,
+            .ai-video-speed-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 900px) {
+            .ai-status-grid,
+            .ai-stats-grid,
+            .ai-speed-compare {
+                grid-template-columns: 1fr;
+            }
+        }
+
         /* 响应式 */
         @media (max-width: 768px) {
             .hamburger {
@@ -2219,6 +2681,9 @@
                             <li><a href="#" class="nav-link" data-page="violation-play">击球违例</a></li>
                             <li><a href="#" class="nav-link" data-page="violation-behavior">行为违例</a></li>
                         </ul>
+                    </li>
+                    <li>
+                        <a href="#" class="nav-link" data-page="ai-analysis">AI视频分析</a>
                     </li>
 
                 </ul>
@@ -3132,6 +3597,124 @@
             </div>
         </div>
 
+        <div class="page-container" id="page-ai-analysis">
+            <div class="ai-analysis-layout">
+                <section class="ai-hero-card">
+                    <h2>AI 视频分析 · 羽毛球鹰眼系统</h2>
+                    <p style="color: rgba(255,255,255,0.78); line-height: 1.8;">
+                        原生集成 Good-Badminton 核心分析能力：在本站页面内完成视频上传、球场检测/手动标注、AI 分析进度反馈，并用 Canvas 基于真实球场坐标绘制运动员跑动热力图和轨迹图。
+                    </p>
+                    <div class="ai-status-grid">
+                        <div class="ai-status-card"><strong>后端服务</strong><span id="ai-health-label"><span class="ai-dot run"></span> 检查中...</span></div>
+                        <div class="ai-status-card"><strong>核心模型</strong><span>YOLO 羽毛球 + YOLO/RTMPose/RTMO 姿态</span></div>
+                        <div class="ai-status-card"><strong>坐标系统</strong><span>6.10m × 13.40m 米制球场</span></div>
+                        <div class="ai-status-card"><strong>运行命令</strong><span class="ai-code">python ai-hawkeye\run_site_with_hawkeye.py</span></div>
+                    </div>
+                    <div class="ai-action-row">
+                        <button class="ai-action-btn" id="ai-refresh-health" type="button">重新检查后端</button>
+                        <a class="ai-action-btn" href="ai-hawkeye/README.md" target="_blank" rel="noopener">查看部署说明</a>
+                    </div>
+                    <p id="ai-health-help" style="margin-top: 12px; color: rgba(255,255,255,0.58); font-size: 0.92em; line-height: 1.7;">
+                        若提示后端未就绪，请先运行 <span class="ai-code">python ai-hawkeye\setup_good_badminton.py --download-weights</span>，再运行 <span class="ai-code">python ai-hawkeye\run_site_with_hawkeye.py</span>。
+                    </p>
+                </section>
+
+                <div class="ai-workspace">
+                    <div class="ai-left-column">
+                        <section class="ai-native-card">
+                            <h3>1. 上传比赛视频</h3>
+                            <div class="ai-upload-zone" id="ai-upload-zone">
+                                <div class="ai-upload-icon">📤</div>
+                                <strong>拖拽视频到此处，或点击选择文件</strong>
+                                <span>支持 MP4 / MOV / AVI / MKV / WEBM，最大 1GB</span>
+                            </div>
+                            <input id="ai-video-input" type="file" accept="video/*" class="ai-hidden">
+                            <div class="ai-progress-track"><div class="ai-progress-fill" id="ai-upload-progress-fill"></div></div>
+                            <div class="ai-progress-meta"><span id="ai-upload-status">等待上传</span><span id="ai-upload-percent">0%</span></div>
+                            <div class="ai-file-info ai-hidden" id="ai-file-info"></div>
+                            <div class="ai-action-row">
+                                <button class="ai-action-btn" id="ai-detect-court-btn" type="button" disabled>自动检测球场</button>
+                                <button class="ai-action-btn primary" id="ai-start-analysis-btn" type="button" disabled>开始 AI 分析</button>
+                            </div>
+                        </section>
+
+                        <section class="ai-native-card" id="ai-court-card">
+                            <h3>2. 球场映射</h3>
+                            <p id="ai-court-status" style="color: var(--text-secondary); line-height: 1.7;">上传视频后，先检测球场边界。自动检测失败时可在模板帧上手动点击四个角点。</p>
+                            <img id="ai-court-preview" class="ai-court-preview ai-hidden" alt="球场检测预览">
+                            <div id="ai-annotation-wrap" class="ai-annotation-wrap">
+                                <canvas id="ai-annotation-canvas" class="ai-annotation-canvas"></canvas>
+                                <div class="ai-step-list" id="ai-annotation-steps"></div>
+                                <div class="ai-action-row">
+                                    <button class="ai-action-btn" id="ai-undo-point-btn" type="button">撤销上一点</button>
+                                    <button class="ai-action-btn" id="ai-reset-points-btn" type="button">清空</button>
+                                    <button class="ai-action-btn primary" id="ai-submit-points-btn" type="button" disabled>保存四点标注</button>
+                                </div>
+                                <p style="color: var(--text-secondary); font-size: 0.9em; line-height: 1.7; margin-top: 8px;">点击顺序：左上 → 右上 → 右下 → 左下。请选择实际场地边线交点。</p>
+                            </div>
+                        </section>
+
+                        <section class="ai-native-card" id="ai-progress-card">
+                            <h3>3. 分析状态</h3>
+                            <div class="ai-pill"><span class="ai-dot" id="ai-job-dot"></span><span id="ai-job-status">等待任务</span></div>
+                            <div class="ai-progress-track"><div class="ai-progress-fill" id="ai-analysis-progress-fill"></div></div>
+                            <div class="ai-progress-meta"><span id="ai-analysis-message">尚未开始</span><span id="ai-analysis-percent">0%</span></div>
+                            <div class="ai-log-box" id="ai-log-box">日志将在这里显示...</div>
+                        </section>
+                    </div>
+
+                    <div class="ai-right-column">
+                        <section class="ai-native-card ai-hidden" id="ai-results-card">
+                            <h3>4. 结果展示</h3>
+                            <p style="color: var(--text-secondary); line-height: 1.7;">热力图和轨迹图由 <span class="ai-code">detections.jsonl</span> 中的 <span class="ai-code">players.upper/lower.court</span> 真实米制坐标实时绘制。</p>
+                            <div class="ai-visual-tabs">
+                                <button class="ai-tab-btn active" id="ai-tab-heatmap" type="button">跑动热力图</button>
+                                <button class="ai-tab-btn" id="ai-tab-trajectory" type="button">轨迹图</button>
+                            </div>
+                            <div id="ai-heatmap-panel"><canvas id="ai-heatmap-canvas" class="ai-heatmap-canvas"></canvas></div>
+                            <div id="ai-trajectory-panel" class="ai-hidden"><canvas id="ai-trajectory-canvas" class="ai-trajectory-canvas"></canvas></div>
+                            <div class="ai-stats-grid" id="ai-stats-grid"></div>
+                            <div class="ai-output-links" id="ai-output-links"></div>
+                        </section>
+
+                        <section class="ai-native-card ai-hidden" id="ai-speed-card">
+                            <h3>5. 球速分析</h3>
+                            <p style="color: var(--accent-gold); line-height: 1.7;">平面投影速度（非真实3D速度）：单目 2D 视频无法恢复羽毛球高度，以下结果基于球场平面映射，适合趋势和相对比较。</p>
+                            <div class="ai-speed-grid">
+                                <div>
+                                    <h4 style="color: var(--text-primary); margin-bottom: 8px;">速度总览</h4>
+                                    <div class="ai-stats-grid" id="ai-speed-summary-grid"></div>
+                                </div>
+                                <div>
+                                    <h4 style="color: var(--text-primary); margin-bottom: 8px;">击球事件列表</h4>
+                                    <div class="ai-hit-list" id="ai-hit-list"></div>
+                                </div>
+                            </div>
+                            <h4 style="color: var(--text-primary); margin-top: 18px;">速度分布直方图</h4>
+                            <canvas id="ai-speed-histogram" class="ai-speed-chart"></canvas>
+                            <h4 style="color: var(--text-primary); margin-top: 18px;">上/下半场推断击球对比</h4>
+                            <div class="ai-speed-compare" id="ai-speed-compare"></div>
+                        </section>
+
+                        <section class="ai-native-card ai-hidden" id="ai-media-card">
+                            <h3>Good-Badminton 原始输出</h3>
+                            <div class="ai-video-speed-grid">
+                                <video id="ai-output-video" class="ai-output-video" controls></video>
+                                <div class="ai-speed-gauge-wrap ai-hidden" id="ai-video-speed-gauge-wrap">
+                                    <canvas id="ai-speed-gauge" class="ai-speed-gauge" width="220" height="220"></canvas>
+                                    <div class="ai-speed-note" id="ai-speed-current-label">随视频播放同步显示当前球速</div>
+                                </div>
+                            </div>
+                            <div class="ai-result-grid" style="margin-top: 14px;">
+                                <div><p style="color: var(--text-secondary);">原始热力图 PNG</p><img id="ai-output-heatmap-img" class="ai-output-image" alt="Good-Badminton heatmap"></div>
+                                <div><p style="color: var(--text-secondary);">原始散点图 PNG</p><img id="ai-output-scatter-img" class="ai-output-image" alt="Good-Badminton scatter"></div>
+                            </div>
+                        </section>
+                    </div>
+                </div>
+            </div>
+        </div>
+
     </main>
 
     <script>
@@ -3193,6 +3776,11 @@
                 setTimeout(initDoublesCourt, 100);
             }
 
+            // 如果打开 AI 视频分析页面，初始化原生上传与热力图 UI
+            if (pageName === 'ai-analysis') {
+                setTimeout(initAiHawkeyeNative, 100);
+            }
+
             // 如果打开计分制度页面，初始化动画
             if (pageName === 'score-system') {
                 setTimeout(initScoreSystem, 100);
@@ -3231,6 +3819,1078 @@
                 }
             });
         });
+
+        function resolveAiApiBase() {
+            const params = new URLSearchParams(window.location.search);
+            const queryBase = params.get('api') || params.get('ai_api');
+            if (queryBase) {
+                const normalized = queryBase.replace(/\/+$/, '');
+                try { window.localStorage.setItem('AI_HAWKEYE_API_BASE', normalized); } catch (_) {}
+                return normalized;
+            }
+            if (window.AI_HAWKEYE_API_BASE) {
+                return String(window.AI_HAWKEYE_API_BASE).replace(/\/+$/, '');
+            }
+            try {
+                const storedBase = window.localStorage.getItem('AI_HAWKEYE_API_BASE');
+                if (storedBase) return storedBase.replace(/\/+$/, '');
+            } catch (_) {}
+            if ((location.hostname === '127.0.0.1' || location.hostname === 'localhost') && location.port !== '5050') {
+                return `${location.protocol}//${location.hostname}:5050`;
+            }
+            return '';
+        }
+
+        const AI_API_BASE = resolveAiApiBase();
+        const AI_COURT = { width: 6.1, length: 13.4 };
+        const aiState = {
+            initialized: false,
+            ready: false,
+            videoId: null,
+            filename: null,
+            jobId: null,
+            events: null,
+            annotationImage: null,
+            annotationScale: 1,
+            annotationClicks: [],
+            heatmapData: null,
+            speedData: null,
+            speedFrameIndex: 0,
+            activeVisual: 'heatmap'
+        };
+
+        function aiEl(id) {
+            return document.getElementById(id);
+        }
+
+        function aiApi(path) {
+            return `${AI_API_BASE}${path}`;
+        }
+
+        function aiPublicUrl(path) {
+            if (!path) return '';
+            if (/^https?:\/\//.test(path)) return path;
+            return `${AI_API_BASE}${path}`;
+        }
+
+        function aiSetText(id, text) {
+            const node = aiEl(id);
+            if (node) node.textContent = text;
+        }
+
+        function aiSetProgress(fillId, percentId, value) {
+            const pct = Math.max(0, Math.min(100, Math.round(Number(value) || 0)));
+            const fill = aiEl(fillId);
+            if (fill) fill.style.width = `${pct}%`;
+            aiSetText(percentId, `${pct}%`);
+        }
+
+        function aiSetJobDot(mode) {
+            const dot = aiEl('ai-job-dot');
+            if (!dot) return;
+            dot.className = 'ai-dot';
+            if (mode) dot.classList.add(mode);
+        }
+
+        function aiLog(message) {
+            const box = aiEl('ai-log-box');
+            if (!box || !message) return;
+            if (box.textContent === '日志将在这里显示...') box.textContent = '';
+            const line = document.createElement('div');
+            line.textContent = `[${new Date().toLocaleTimeString()}] ${message}`;
+            box.appendChild(line);
+            box.scrollTop = box.scrollHeight;
+        }
+
+        function initAiHawkeyeNative() {
+            if (!aiState.initialized) {
+                aiState.initialized = true;
+                bindAiHawkeyeNativeEvents();
+            }
+            checkAiHawkeyeHealth();
+            if (aiState.heatmapData) {
+                requestAnimationFrame(renderAiVisuals);
+            }
+        }
+
+        function bindAiHawkeyeNativeEvents() {
+            const uploadZone = aiEl('ai-upload-zone');
+            const input = aiEl('ai-video-input');
+            if (uploadZone && input) {
+                uploadZone.addEventListener('click', () => input.click());
+                uploadZone.addEventListener('dragover', (event) => {
+                    event.preventDefault();
+                    uploadZone.classList.add('dragging');
+                });
+                uploadZone.addEventListener('dragleave', () => uploadZone.classList.remove('dragging'));
+                uploadZone.addEventListener('drop', (event) => {
+                    event.preventDefault();
+                    uploadZone.classList.remove('dragging');
+                    if (event.dataTransfer.files && event.dataTransfer.files[0]) {
+                        uploadAiVideo(event.dataTransfer.files[0]);
+                    }
+                });
+                input.addEventListener('change', () => {
+                    if (input.files && input.files[0]) uploadAiVideo(input.files[0]);
+                });
+            }
+
+            aiEl('ai-refresh-health')?.addEventListener('click', checkAiHawkeyeHealth);
+            aiEl('ai-detect-court-btn')?.addEventListener('click', detectAiCourt);
+            aiEl('ai-start-analysis-btn')?.addEventListener('click', startAiAnalysis);
+            aiEl('ai-undo-point-btn')?.addEventListener('click', () => {
+                aiState.annotationClicks.pop();
+                redrawAiAnnotation();
+                updateAiAnnotationSteps();
+            });
+            aiEl('ai-reset-points-btn')?.addEventListener('click', () => {
+                aiState.annotationClicks = [];
+                redrawAiAnnotation();
+                updateAiAnnotationSteps();
+            });
+            aiEl('ai-submit-points-btn')?.addEventListener('click', submitAiAnnotation);
+            aiEl('ai-annotation-canvas')?.addEventListener('click', handleAiAnnotationClick);
+            aiEl('ai-tab-heatmap')?.addEventListener('click', () => switchAiVisual('heatmap'));
+            aiEl('ai-tab-trajectory')?.addEventListener('click', () => switchAiVisual('trajectory'));
+            aiEl('ai-output-video')?.addEventListener('timeupdate', syncAiSpeedWithVideo);
+            aiEl('ai-output-video')?.addEventListener('seeked', syncAiSpeedWithVideo);
+            aiEl('ai-output-video')?.addEventListener('error', () => {
+                const video = aiEl('ai-output-video');
+                const code = video?.error?.code || 'unknown';
+                aiLog(`视频播放失败：错误码 ${code}。请检查后端 /api/output URL、CORS/Range 响应和 H.264 转码状态。`);
+            });
+            window.addEventListener('resize', () => {
+                if (aiState.heatmapData && document.getElementById('page-ai-analysis')?.classList.contains('active')) {
+                    clearTimeout(window.__aiResizeTimer);
+                    window.__aiResizeTimer = setTimeout(renderAiVisuals, 120);
+                }
+            });
+        }
+
+        async function checkAiHawkeyeHealth() {
+            const label = aiEl('ai-health-label');
+            if (label) label.innerHTML = '<span class="ai-dot run"></span> 检查中...';
+            try {
+                const res = await fetch(aiApi('/api/health'), { cache: 'no-store' });
+                const data = await res.json();
+                aiState.ready = Boolean(data.ready);
+                if (label) {
+                    if (data.ready) {
+                        label.innerHTML = '<span class="ai-dot ok"></span> 后端已就绪';
+                    } else {
+                        label.innerHTML = '<span class="ai-dot err"></span> 后端未就绪';
+                    }
+                }
+                const help = aiEl('ai-health-help');
+                if (help && data.missing && data.missing.length) {
+                    help.textContent = `后端缺少：${data.missing.join('；')}。请先执行安装命令。`;
+                }
+                aiLog(data.ready ? 'AI 后端健康检查通过' : `AI 后端未就绪：${(data.missing || []).join('；')}`);
+            } catch (error) {
+                aiState.ready = false;
+                if (label) label.innerHTML = '<span class="ai-dot err"></span> 无法连接 API';
+                aiLog(`无法连接 AI API：${error.message}`);
+            }
+        }
+
+        function uploadAiVideo(file) {
+            if (!file) return;
+            aiSetText('ai-upload-status', `正在上传：${file.name}`);
+            aiSetProgress('ai-upload-progress-fill', 'ai-upload-percent', 0);
+            aiEl('ai-detect-court-btn').disabled = true;
+            aiEl('ai-start-analysis-btn').disabled = true;
+            aiEl('ai-results-card')?.classList.add('ai-hidden');
+            aiEl('ai-media-card')?.classList.add('ai-hidden');
+            aiState.videoId = null;
+            aiState.filename = null;
+            aiState.heatmapData = null;
+            aiState.speedData = null;
+            aiEl('ai-speed-card')?.classList.add('ai-hidden');
+            aiEl('ai-video-speed-gauge-wrap')?.classList.add('ai-hidden');
+            aiLog(`开始上传 ${file.name}`);
+
+            const form = new FormData();
+            form.append('file', file);
+            const xhr = new XMLHttpRequest();
+            xhr.open('POST', aiApi('/api/upload'));
+            xhr.upload.onprogress = (event) => {
+                if (event.lengthComputable) {
+                    aiSetProgress('ai-upload-progress-fill', 'ai-upload-percent', event.loaded / event.total * 100);
+                }
+            };
+            xhr.onload = () => {
+                let data = null;
+                try { data = JSON.parse(xhr.responseText || '{}'); } catch (error) { data = null; }
+                if (xhr.status >= 200 && xhr.status < 300 && data && data.ok) {
+                    aiState.videoId = data.video_id;
+                    aiState.filename = data.filename;
+                    aiSetText('ai-upload-status', '上传完成');
+                    aiSetProgress('ai-upload-progress-fill', 'ai-upload-percent', 100);
+                    const info = aiEl('ai-file-info');
+                    if (info) {
+                        info.classList.remove('ai-hidden');
+                        info.textContent = `视频：${data.original_filename} / ${data.size_mb} MB / ID：${data.video_id}`;
+                    }
+                    aiEl('ai-detect-court-btn').disabled = false;
+                    aiSetText('ai-court-status', '上传完成。请先自动检测球场，或检测失败后进行手动四点标注。');
+                    aiLog(`上传完成：${data.video_id}`);
+                } else {
+                    const message = data?.error || xhr.statusText || '上传失败';
+                    aiSetText('ai-upload-status', message);
+                    aiLog(`上传失败：${message}`);
+                }
+            };
+            xhr.onerror = () => {
+                aiSetText('ai-upload-status', '上传失败：网络错误');
+                aiLog('上传失败：网络错误');
+            };
+            xhr.send(form);
+        }
+
+        async function detectAiCourt() {
+            if (!aiState.videoId) return;
+            const btn = aiEl('ai-detect-court-btn');
+            btn.disabled = true;
+            aiSetText('ai-court-status', '正在从视频采样模板帧并检测球场边界...');
+            aiLog('开始自动球场检测');
+            try {
+                const res = await fetch(aiApi(`/api/videos/${encodeURIComponent(aiState.videoId)}/court/detect`), {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: '{}'
+                });
+                const data = await res.json();
+                const preview = aiEl('ai-court-preview');
+                if (data.preview && preview) {
+                    preview.src = aiPublicUrl(data.preview) + `?t=${Date.now()}`;
+                    preview.classList.remove('ai-hidden');
+                }
+                if (data.ok || data.success) {
+                    aiSetText('ai-court-status', '自动球场检测完成。若预览中边线正确，即可开始 AI 分析。');
+                    aiEl('ai-annotation-wrap')?.classList.remove('active');
+                    aiEl('ai-start-analysis-btn').disabled = false;
+                    aiLog('自动球场检测完成');
+                } else {
+                    aiSetText('ai-court-status', data.message || data.error || '自动检测失败，请手动标注四个角点。');
+                    aiEl('ai-start-analysis-btn').disabled = true;
+                    showAiManualAnnotation();
+                    aiLog(`自动检测失败：${data.message || data.error || '需要手动标注'}`);
+                }
+            } catch (error) {
+                aiSetText('ai-court-status', `自动检测异常：${error.message}`);
+                aiLog(`自动检测异常：${error.message}`);
+            } finally {
+                btn.disabled = false;
+            }
+        }
+
+        function showAiManualAnnotation() {
+            const wrap = aiEl('ai-annotation-wrap');
+            if (wrap) wrap.classList.add('active');
+            aiState.annotationClicks = [];
+            loadAiAnnotationImage();
+            updateAiAnnotationSteps();
+        }
+
+        function loadAiAnnotationImage() {
+            if (!aiState.videoId) return;
+            const img = new Image();
+            img.crossOrigin = 'anonymous';
+            img.onload = () => {
+                aiState.annotationImage = img;
+                const canvas = aiEl('ai-annotation-canvas');
+                const parentWidth = Math.max(320, canvas.parentElement.clientWidth || 760);
+                const scale = Math.min(1, parentWidth / img.naturalWidth);
+                aiState.annotationScale = scale;
+                canvas.width = Math.max(1, Math.round(img.naturalWidth * scale));
+                canvas.height = Math.max(1, Math.round(img.naturalHeight * scale));
+                canvas.style.height = `${canvas.height}px`;
+                redrawAiAnnotation();
+            };
+            img.onerror = () => aiLog('模板帧加载失败，请重新执行自动球场检测');
+            img.src = aiApi(`/api/template/${encodeURIComponent(aiState.videoId)}?t=${Date.now()}`);
+        }
+
+        function handleAiAnnotationClick(event) {
+            if (!aiState.annotationImage || aiState.annotationClicks.length >= 4) return;
+            const canvas = aiEl('ai-annotation-canvas');
+            const rect = canvas.getBoundingClientRect();
+            const canvasX = (event.clientX - rect.left) * (canvas.width / rect.width);
+            const canvasY = (event.clientY - rect.top) * (canvas.height / rect.height);
+            aiState.annotationClicks.push([
+                Math.round(canvasX / aiState.annotationScale),
+                Math.round(canvasY / aiState.annotationScale)
+            ]);
+            redrawAiAnnotation();
+            updateAiAnnotationSteps();
+        }
+
+        function redrawAiAnnotation() {
+            const canvas = aiEl('ai-annotation-canvas');
+            if (!canvas) return;
+            const ctx = canvas.getContext('2d');
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            if (aiState.annotationImage) ctx.drawImage(aiState.annotationImage, 0, 0, canvas.width, canvas.height);
+            const colors = ['#ff5c7a', '#22c55e', '#38bdf8', '#fbbf24'];
+            aiState.annotationClicks.forEach((point, index) => {
+                const x = point[0] * aiState.annotationScale;
+                const y = point[1] * aiState.annotationScale;
+                ctx.fillStyle = colors[index];
+                ctx.beginPath();
+                ctx.arc(x, y, 8, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.strokeStyle = '#ffffff';
+                ctx.lineWidth = 2;
+                ctx.stroke();
+                ctx.fillStyle = '#ffffff';
+                ctx.font = 'bold 16px sans-serif';
+                ctx.fillText(String(index + 1), x + 12, y - 10);
+            });
+            if (aiState.annotationClicks.length > 1) {
+                ctx.strokeStyle = 'rgba(255,255,255,0.75)';
+                ctx.lineWidth = 2;
+                ctx.setLineDash([8, 4]);
+                ctx.beginPath();
+                aiState.annotationClicks.forEach((point, index) => {
+                    const x = point[0] * aiState.annotationScale;
+                    const y = point[1] * aiState.annotationScale;
+                    if (index === 0) ctx.moveTo(x, y);
+                    else ctx.lineTo(x, y);
+                });
+                if (aiState.annotationClicks.length === 4) ctx.closePath();
+                ctx.stroke();
+                ctx.setLineDash([]);
+            }
+        }
+
+        function updateAiAnnotationSteps() {
+            const steps = aiEl('ai-annotation-steps');
+            if (!steps) return;
+            const labels = ['1 左上', '2 右上', '3 右下', '4 左下'];
+            steps.innerHTML = '';
+            labels.forEach((label, index) => {
+                const chip = document.createElement('span');
+                chip.className = 'ai-step-chip';
+                if (index < aiState.annotationClicks.length) chip.classList.add('done');
+                if (index === aiState.annotationClicks.length) chip.classList.add('current');
+                chip.textContent = index < aiState.annotationClicks.length ? `${label} ✓` : label;
+                steps.appendChild(chip);
+            });
+            const submit = aiEl('ai-submit-points-btn');
+            if (submit) submit.disabled = aiState.annotationClicks.length !== 4;
+        }
+
+        async function submitAiAnnotation() {
+            if (!aiState.videoId || aiState.annotationClicks.length !== 4) return;
+            const btn = aiEl('ai-submit-points-btn');
+            btn.disabled = true;
+            aiLog('提交手动球场标注');
+            try {
+                const res = await fetch(aiApi(`/api/videos/${encodeURIComponent(aiState.videoId)}/court/annotate`), {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ corners: aiState.annotationClicks })
+                });
+                const data = await res.json();
+                if (!data.ok) throw new Error(data.error || '保存失败');
+                const preview = aiEl('ai-court-preview');
+                if (preview && data.preview) {
+                    preview.src = aiPublicUrl(data.preview) + `?t=${Date.now()}`;
+                    preview.classList.remove('ai-hidden');
+                }
+                aiEl('ai-annotation-wrap')?.classList.remove('active');
+                aiEl('ai-start-analysis-btn').disabled = false;
+                aiSetText('ai-court-status', '手动球场标注已保存，可以开始 AI 分析。');
+                aiLog('手动球场标注已保存');
+            } catch (error) {
+                aiLog(`手动标注保存失败：${error.message}`);
+                btn.disabled = false;
+            }
+        }
+
+        async function startAiAnalysis() {
+            if (!aiState.videoId) return;
+            aiEl('ai-start-analysis-btn').disabled = true;
+            aiSetProgress('ai-analysis-progress-fill', 'ai-analysis-percent', 0);
+            aiSetText('ai-analysis-message', '正在创建分析任务...');
+            aiSetText('ai-job-status', '任务启动中');
+            aiSetJobDot('run');
+            aiLog('启动 AI 分析任务');
+            try {
+                const res = await fetch(aiApi('/api/analysis'), {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ video_id: aiState.videoId, language: 'zh', pose_family: 'yolo-pose' })
+                });
+                const data = await res.json();
+                if (!data.ok) throw new Error(data.error || '任务启动失败');
+                aiState.jobId = data.job_id;
+                connectAiJobEvents(data.job_id);
+            } catch (error) {
+                aiSetJobDot('err');
+                aiSetText('ai-job-status', '启动失败');
+                aiSetText('ai-analysis-message', error.message);
+                aiEl('ai-start-analysis-btn').disabled = false;
+                aiLog(`任务启动失败：${error.message}`);
+            }
+        }
+
+        function connectAiJobEvents(jobId) {
+            if (aiState.events) {
+                aiState.events.close();
+                aiState.events = null;
+            }
+            try {
+                const events = new EventSource(aiApi(`/api/jobs/${encodeURIComponent(jobId)}/events`));
+                aiState.events = events;
+                ['queued', 'running', 'progress', 'log', 'completed', 'error'].forEach(type => {
+                    events.addEventListener(type, (event) => handleAiJobEvent(type, event.data));
+                });
+                events.onerror = () => {
+                    aiLog('SSE 连接中断，切换为轮询进度');
+                    events.close();
+                    aiState.events = null;
+                    pollAiJob(jobId);
+                };
+            } catch (error) {
+                aiLog(`SSE 不可用，切换为轮询：${error.message}`);
+                pollAiJob(jobId);
+            }
+        }
+
+        function handleAiJobEvent(type, rawData) {
+            let data = {};
+            try { data = JSON.parse(rawData || '{}'); } catch (error) { data = { message: rawData }; }
+            const progress = data.progress ?? (type === 'completed' ? 100 : undefined);
+            if (progress !== undefined) aiSetProgress('ai-analysis-progress-fill', 'ai-analysis-percent', progress);
+            if (data.message) aiSetText('ai-analysis-message', data.message);
+            if (type === 'queued') {
+                aiSetText('ai-job-status', '排队中');
+                aiSetJobDot('run');
+            } else if (type === 'running' || type === 'progress') {
+                aiSetText('ai-job-status', '分析中');
+                aiSetJobDot('run');
+            } else if (type === 'log') {
+                aiLog(data.message);
+            } else if (type === 'completed') {
+                aiSetText('ai-job-status', '完成');
+                aiSetJobDot('ok');
+                aiSetProgress('ai-analysis-progress-fill', 'ai-analysis-percent', 100);
+                aiEl('ai-start-analysis-btn').disabled = false;
+                aiLog('AI 分析完成，正在加载热力图数据');
+                if (aiState.events) {
+                    aiState.events.close();
+                    aiState.events = null;
+                }
+                loadAiResults(data.result).catch((error) => {
+                    aiSetText('ai-analysis-message', `结果加载失败：${error.message}`);
+                    aiLog(`结果加载失败：${error.message}`);
+                });
+            } else if (type === 'error') {
+                aiSetText('ai-job-status', '出错');
+                aiSetJobDot('err');
+                aiEl('ai-start-analysis-btn').disabled = false;
+                aiLog(`分析失败：${data.message || '未知错误'}`);
+                if (aiState.events) {
+                    aiState.events.close();
+                    aiState.events = null;
+                }
+            }
+        }
+
+        function pollAiJob(jobId) {
+            const timer = setInterval(async () => {
+                try {
+                    const res = await fetch(aiApi(`/api/jobs/${encodeURIComponent(jobId)}`));
+                    const data = await res.json();
+                    if (!data.ok) throw new Error(data.error || '查询失败');
+                    aiSetProgress('ai-analysis-progress-fill', 'ai-analysis-percent', data.progress || 0);
+                    aiSetText('ai-analysis-message', data.message || '分析中');
+                    if (data.status === 'completed') {
+                        clearInterval(timer);
+                        aiSetText('ai-job-status', '完成');
+                        aiSetJobDot('ok');
+                        aiEl('ai-start-analysis-btn').disabled = false;
+                        loadAiResults(data.result).catch((error) => {
+                            aiSetText('ai-analysis-message', `结果加载失败：${error.message}`);
+                            aiLog(`结果加载失败：${error.message}`);
+                        });
+                    } else if (data.status === 'error') {
+                        clearInterval(timer);
+                        aiSetText('ai-job-status', '出错');
+                        aiSetJobDot('err');
+                        aiEl('ai-start-analysis-btn').disabled = false;
+                        aiLog(`分析失败：${data.message || '未知错误'}`);
+                    } else {
+                        aiSetText('ai-job-status', '分析中');
+                        aiSetJobDot('run');
+                    }
+                } catch (error) {
+                    clearInterval(timer);
+                    aiSetText('ai-job-status', '进度查询失败');
+                    aiSetJobDot('err');
+                    aiEl('ai-start-analysis-btn').disabled = false;
+                    aiLog(`进度查询失败：${error.message}`);
+                }
+            }, 2500);
+        }
+
+        async function loadAiResults(result) {
+            if (!result && aiState.jobId) {
+                const res = await fetch(aiApi(`/api/jobs/${encodeURIComponent(aiState.jobId)}/result`));
+                const data = await res.json();
+                result = data.result;
+            }
+            if (!result) return;
+            showAiMediaOutputs(result);
+            const heatmapUrl = result.heatmap_data || `/api/jobs/${encodeURIComponent(result.video_id || aiState.jobId)}/heatmap-data`;
+            const res = await fetch(aiPublicUrl(heatmapUrl));
+            const data = await res.json();
+            if (!data.ok) throw new Error(data.error || '热力图数据加载失败');
+            aiState.heatmapData = data;
+            aiEl('ai-results-card')?.classList.remove('ai-hidden');
+            renderAiStats(data);
+            renderAiLinks(result);
+            renderAiVisuals();
+            if (result.speed_data) {
+                try {
+                    await loadAiSpeedData(result);
+                } catch (error) {
+                    aiLog(`球速数据加载失败：${error.message}`);
+                }
+            }
+        }
+
+        function showAiMediaOutputs(result) {
+            const media = aiEl('ai-media-card');
+            const video = aiEl('ai-output-video');
+            const heat = aiEl('ai-output-heatmap-img');
+            const scatter = aiEl('ai-output-scatter-img');
+            let hasMedia = false;
+            if (video && result.output_video) {
+                video.src = aiPublicUrl(result.output_video) + `?t=${Date.now()}`;
+                video.load();
+                aiLog(`分析视频 HTTP 地址：${video.src}`);
+                hasMedia = true;
+            }
+            if (heat && result.heatmap_png) {
+                heat.src = aiPublicUrl(result.heatmap_png) + `?t=${Date.now()}`;
+                hasMedia = true;
+            }
+            if (scatter && result.scatter_png) {
+                scatter.src = aiPublicUrl(result.scatter_png) + `?t=${Date.now()}`;
+                hasMedia = true;
+            }
+            if (media && hasMedia) media.classList.remove('ai-hidden');
+        }
+
+        function renderAiStats(data) {
+            const grid = aiEl('ai-stats-grid');
+            if (!grid) return;
+            grid.innerHTML = '';
+            const labels = { upper: '上半场球员', lower: '下半场球员' };
+            Object.keys(labels).forEach(player => {
+                const stats = data.stats?.[player] || {};
+                const values = [
+                    [`${labels[player]}采样`, `${stats.samples || 0}`],
+                    ['跑动距离', `${stats.distance_m || 0} m`],
+                    ['平均速度', `${stats.avg_speed_mps || 0} m/s`],
+                    ['最高速度', `${stats.max_speed_mps || 0} m/s`]
+                ];
+                values.forEach(([name, value]) => {
+                    const tile = document.createElement('div');
+                    tile.className = 'ai-stat-tile';
+                    const strong = document.createElement('strong');
+                    strong.textContent = value;
+                    const span = document.createElement('span');
+                    span.textContent = name;
+                    tile.appendChild(strong);
+                    tile.appendChild(span);
+                    grid.appendChild(tile);
+                });
+            });
+        }
+
+        function renderAiLinks(result) {
+            const box = aiEl('ai-output-links');
+            if (!box) return;
+            box.innerHTML = '';
+            const links = [
+                ['下载检测 JSONL', result.detections],
+                ['下载球速 JSONL', result.speeds],
+                ['球速统计 JSON', result.speed_summary],
+                ['查看元数据', result.metadata],
+                ['查看回合数据', result.rallies],
+                ['Canvas 数据接口', result.heatmap_data],
+                ['球速数据接口', result.speed_data]
+            ].filter((item) => item[1]);
+            links.forEach(([label, href]) => {
+                const link = document.createElement('a');
+                link.href = aiPublicUrl(href);
+                link.target = '_blank';
+                link.rel = 'noopener';
+                link.textContent = label;
+                box.appendChild(link);
+            });
+        }
+
+        async function loadAiSpeedData(result) {
+            const speedUrl = result.speed_data || `/api/jobs/${encodeURIComponent(result.video_id || aiState.jobId)}/speed-data`;
+            const res = await fetch(aiPublicUrl(speedUrl));
+            const data = await res.json();
+            if (!data.ok) throw new Error(data.error || '球速数据加载失败');
+            data.frames = (data.frames || []).filter(frame => frame && frame.time_sec !== null).sort((a, b) => a.time_sec - b.time_sec);
+            data.hits = (data.hits || []).sort((a, b) => a.time_sec - b.time_sec);
+            aiState.speedData = data;
+            aiEl('ai-speed-card')?.classList.remove('ai-hidden');
+            aiEl('ai-video-speed-gauge-wrap')?.classList.remove('ai-hidden');
+            renderAiSpeedGauge(0, 'none');
+            renderAiSpeedSummary(data);
+            renderAiHitList(data);
+            renderAiSpeedHistogram(data);
+            renderAiSpeedCompare(data);
+            syncAiSpeedWithVideo();
+        }
+
+        function aiSpeedLevel(speed) {
+            if (!Number.isFinite(speed)) return 'none';
+            if (speed < 150) return 'green';
+            if (speed < 250) return 'yellow';
+            if (speed < 350) return 'orange';
+            return 'red';
+        }
+
+        function aiSpeedColor(level) {
+            return { green: '#22c55e', yellow: '#facc15', orange: '#fb923c', red: '#f87171', none: '#64748b' }[level || 'none'] || '#64748b';
+        }
+
+        function renderAiSpeedSummary(data) {
+            const grid = aiEl('ai-speed-summary-grid');
+            if (!grid) return;
+            const summary = data.summary || {};
+            const values = [
+                ['最高球速', `${Math.round(Number(summary.max_speed_kmh) || 0)} km/h`],
+                ['平均球速', `${Number(summary.avg_speed_kmh || 0).toFixed(1)} km/h`],
+                ['击球次数', `${summary.hit_count || 0}`],
+                ['数据类型', '平面投影']
+            ];
+            grid.innerHTML = '';
+            values.forEach(([name, value]) => {
+                const tile = document.createElement('div');
+                tile.className = 'ai-stat-tile';
+                const strong = document.createElement('strong');
+                strong.textContent = value;
+                const span = document.createElement('span');
+                span.textContent = name;
+                tile.appendChild(strong);
+                tile.appendChild(span);
+                grid.appendChild(tile);
+            });
+        }
+
+        function aiFormatTime(seconds) {
+            const value = Math.max(0, Number(seconds) || 0);
+            const minutes = Math.floor(value / 60);
+            const rest = value - minutes * 60;
+            return `${minutes}:${rest.toFixed(1).padStart(4, '0')}`;
+        }
+
+        function findAiSpeedFrame(timeSec) {
+            const frames = aiState.speedData?.frames || [];
+            if (!frames.length) return null;
+            let lo = 0;
+            let hi = frames.length - 1;
+            while (lo < hi) {
+                const mid = Math.ceil((lo + hi) / 2);
+                if (Number(frames[mid].time_sec) <= timeSec) lo = mid;
+                else hi = mid - 1;
+            }
+            const current = frames[lo];
+            const next = frames[Math.min(frames.length - 1, lo + 1)];
+            if (next && Math.abs(Number(next.time_sec) - timeSec) < Math.abs(Number(current.time_sec) - timeSec)) return next;
+            return current;
+        }
+
+        function renderAiSpeedGauge(speed, level) {
+            const canvas = aiEl('ai-speed-gauge');
+            if (!canvas) return;
+            const ctx = canvas.getContext('2d');
+            const w = canvas.width;
+            const h = canvas.height;
+            const cx = w / 2;
+            const cy = h / 2;
+            const radius = Math.min(w, h) / 2 - 18;
+            const value = Number(speed) || 0;
+            const pct = Math.max(0, Math.min(1, value / 500));
+            const color = aiSpeedColor(level || aiSpeedLevel(value));
+            ctx.clearRect(0, 0, w, h);
+            ctx.lineCap = 'round';
+            ctx.lineWidth = 16;
+            ctx.strokeStyle = 'rgba(255,255,255,0.12)';
+            ctx.beginPath();
+            ctx.arc(cx, cy, radius, Math.PI * 0.75, Math.PI * 2.25);
+            ctx.stroke();
+            ctx.strokeStyle = color;
+            ctx.beginPath();
+            ctx.arc(cx, cy, radius, Math.PI * 0.75, Math.PI * (0.75 + 1.5 * pct));
+            ctx.stroke();
+            ctx.fillStyle = '#f8fafc';
+            ctx.font = 'bold 34px sans-serif';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText(`${Math.round(value)}`, cx, cy - 8);
+            ctx.fillStyle = 'rgba(255,255,255,0.72)';
+            ctx.font = '14px sans-serif';
+            ctx.fillText('km/h', cx, cy + 26);
+            ctx.fillStyle = color;
+            ctx.font = '12px sans-serif';
+            ctx.fillText('平面投影速度', cx, cy + 50);
+        }
+
+        function syncAiSpeedWithVideo() {
+            if (!aiState.speedData) return;
+            const video = aiEl('ai-output-video');
+            const time = Number(video?.currentTime || 0);
+            const frame = findAiSpeedFrame(time);
+            const speed = Number(frame?.speed_kmh);
+            const level = frame?.level || aiSpeedLevel(speed);
+            renderAiSpeedGauge(Number.isFinite(speed) ? speed : 0, level);
+            const label = aiEl('ai-speed-current-label');
+            if (label) {
+                label.textContent = Number.isFinite(speed)
+                    ? `${aiFormatTime(time)} · 当前 ${Math.round(speed)} km/h · 平面投影速度（非真实3D速度）`
+                    : `${aiFormatTime(time)} · 当前未检测到羽毛球`;
+            }
+            highlightAiHitAtTime(time);
+        }
+
+        function renderAiHitList(data) {
+            const list = aiEl('ai-hit-list');
+            if (!list) return;
+            list.innerHTML = '';
+            const hits = data.hits || [];
+            if (!hits.length) {
+                list.innerHTML = '<div class="ai-hit-row" style="grid-template-columns:1fr;cursor:default;">暂无明确击球事件</div>';
+                return;
+            }
+            hits.forEach((hit, index) => {
+                const row = document.createElement('div');
+                const speed = Number(hit.speed_kmh) || 0;
+                const level = aiSpeedLevel(speed);
+                row.className = 'ai-hit-row';
+                row.dataset.time = String(hit.time_sec || 0);
+                row.innerHTML = `<span>${aiFormatTime(hit.time_sec)}</span><span class="ai-speed-badge ${level}">${Math.round(speed)} km/h</span><span>${hit.label || hit.type || '击球'}</span><span>${hit.player === 'upper' ? '上半场推断' : hit.player === 'lower' ? '下半场推断' : '未知'} · #${index + 1}</span>`;
+                row.addEventListener('click', () => {
+                    const video = aiEl('ai-output-video');
+                    if (video) {
+                        video.currentTime = Number(hit.time_sec) || 0;
+                        syncAiSpeedWithVideo();
+                    }
+                });
+                list.appendChild(row);
+            });
+        }
+
+        function highlightAiHitAtTime(time) {
+            document.querySelectorAll('.ai-hit-row').forEach(row => {
+                const rowTime = Number(row.dataset.time);
+                row.classList.toggle('active', Number.isFinite(rowTime) && Math.abs(rowTime - time) <= 0.6);
+            });
+        }
+
+        function renderAiSpeedHistogram(data) {
+            const canvas = aiEl('ai-speed-histogram');
+            if (!canvas) return;
+            const parentWidth = Math.max(320, canvas.parentElement.clientWidth || 720);
+            const cssHeight = 260;
+            const dpr = Math.min(window.devicePixelRatio || 1, 2);
+            canvas.width = Math.floor(parentWidth * dpr);
+            canvas.height = Math.floor(cssHeight * dpr);
+            canvas.style.height = `${cssHeight}px`;
+            const ctx = canvas.getContext('2d');
+            ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+            ctx.clearRect(0, 0, parentWidth, cssHeight);
+            ctx.fillStyle = 'rgba(6,10,20,0.95)';
+            ctx.fillRect(0, 0, parentWidth, cssHeight);
+            const histogram = data.histogram || { labels: [], counts: [] };
+            const labels = histogram.labels || [];
+            const counts = histogram.counts || [];
+            const max = Math.max(1, ...counts);
+            const left = 42;
+            const right = parentWidth - 18;
+            const top = 24;
+            const bottom = cssHeight - 38;
+            const barGap = 8;
+            const barWidth = labels.length ? (right - left - barGap * (labels.length - 1)) / labels.length : 0;
+            ctx.strokeStyle = 'rgba(255,255,255,0.22)';
+            ctx.beginPath();
+            ctx.moveTo(left, top);
+            ctx.lineTo(left, bottom);
+            ctx.lineTo(right, bottom);
+            ctx.stroke();
+            labels.forEach((label, index) => {
+                const count = counts[index] || 0;
+                const x = left + index * (barWidth + barGap);
+                const h = (count / max) * (bottom - top - 10);
+                const level = aiSpeedLevel((histogram.bins?.[index] || 0) + 25);
+                ctx.fillStyle = aiSpeedColor(level);
+                ctx.fillRect(x, bottom - h, Math.max(3, barWidth), h);
+                ctx.fillStyle = 'rgba(255,255,255,0.72)';
+                ctx.font = '10px sans-serif';
+                ctx.textAlign = 'center';
+                ctx.fillText(String(count), x + barWidth / 2, bottom - h - 5);
+                ctx.save();
+                ctx.translate(x + barWidth / 2, bottom + 12);
+                ctx.rotate(-Math.PI / 5);
+                ctx.fillText(label, 0, 0);
+                ctx.restore();
+            });
+            ctx.fillStyle = 'rgba(255,255,255,0.82)';
+            ctx.font = '13px sans-serif';
+            ctx.textAlign = 'left';
+            ctx.fillText('速度分布（km/h）', left, 16);
+        }
+
+        function renderAiSpeedCompare(data) {
+            const box = aiEl('ai-speed-compare');
+            if (!box) return;
+            const players = data.players || {};
+            const labels = { upper: '上半场推断球员', lower: '下半场推断球员' };
+            box.innerHTML = '';
+            Object.keys(labels).forEach(key => {
+                const item = players[key] || {};
+                const card = document.createElement('div');
+                card.className = 'ai-speed-player-card';
+                card.innerHTML = `<span>${labels[key]}</span><strong>${Math.round(Number(item.max_speed_kmh) || 0)} km/h</strong><div>平均击球：${Number(item.avg_hit_speed_kmh || 0).toFixed(1)} km/h</div><div>击球次数：${item.hit_count || 0}</div>`;
+                box.appendChild(card);
+            });
+        }
+
+        function switchAiVisual(mode) {
+            aiState.activeVisual = mode;
+            aiEl('ai-tab-heatmap')?.classList.toggle('active', mode === 'heatmap');
+            aiEl('ai-tab-trajectory')?.classList.toggle('active', mode === 'trajectory');
+            aiEl('ai-heatmap-panel')?.classList.toggle('ai-hidden', mode !== 'heatmap');
+            aiEl('ai-trajectory-panel')?.classList.toggle('ai-hidden', mode !== 'trajectory');
+            renderAiVisuals();
+        }
+
+        function prepareAiCanvas(canvas) {
+            const parent = canvas.parentElement;
+            const cssWidth = Math.max(320, Math.floor(parent.clientWidth || 720));
+            const cssHeight = Math.min(760, Math.max(540, Math.floor(cssWidth * 0.72)));
+            const dpr = Math.min(window.devicePixelRatio || 1, 2);
+            canvas.style.height = `${cssHeight}px`;
+            canvas.width = Math.floor(cssWidth * dpr);
+            canvas.height = Math.floor(cssHeight * dpr);
+            const ctx = canvas.getContext('2d');
+            ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+            return { ctx, width: cssWidth, height: cssHeight };
+        }
+
+        function getAiCourtRect(width, height, court) {
+            const pad = 30;
+            const maxW = width - pad * 2;
+            const maxH = height - pad * 2;
+            let courtH = maxH;
+            let courtW = courtH * court.width / court.length;
+            if (courtW > maxW) {
+                courtW = maxW;
+                courtH = courtW * court.length / court.width;
+            }
+            return {
+                left: (width - courtW) / 2,
+                top: (height - courtH) / 2,
+                width: courtW,
+                height: courtH
+            };
+        }
+
+        function courtToCanvas(point, rect, court) {
+            return {
+                x: rect.left + (point.x / court.width) * rect.width,
+                y: rect.top + (point.y / court.length) * rect.height
+            };
+        }
+
+        function drawAiCourt(ctx, rect, court, fillCourt = true) {
+            ctx.save();
+            if (fillCourt) {
+                ctx.fillStyle = '#0b5f45';
+                ctx.fillRect(rect.left, rect.top, rect.width, rect.height);
+            }
+            ctx.strokeStyle = 'rgba(255,255,255,0.92)';
+            ctx.lineWidth = 2;
+            const line = (x1, y1, x2, y2, color, width = 1.5) => {
+                const a = courtToCanvas({ x: x1, y: y1 }, rect, court);
+                const b = courtToCanvas({ x: x2, y: y2 }, rect, court);
+                ctx.strokeStyle = color || 'rgba(255,255,255,0.88)';
+                ctx.lineWidth = width;
+                ctx.beginPath();
+                ctx.moveTo(a.x, a.y);
+                ctx.lineTo(b.x, b.y);
+                ctx.stroke();
+            };
+            ctx.strokeRect(rect.left, rect.top, rect.width, rect.height);
+            const singlesInset = (6.1 - 5.18) / 2;
+            line(singlesInset, 0, singlesInset, 13.4);
+            line(6.1 - singlesInset, 0, 6.1 - singlesInset, 13.4);
+            line(0, 6.7, 6.1, 6.7, '#38bdf8', 2.4);
+            line(0, 4.72, 6.1, 4.72);
+            line(0, 8.68, 6.1, 8.68);
+            line(0, 0.76, 6.1, 0.76, 'rgba(255,255,255,0.72)');
+            line(0, 12.64, 6.1, 12.64, 'rgba(255,255,255,0.72)');
+            line(3.05, 0.76, 3.05, 4.72);
+            line(3.05, 8.68, 3.05, 12.64);
+            ctx.fillStyle = 'rgba(255,255,255,0.72)';
+            ctx.font = '12px sans-serif';
+            ctx.fillText('0m', rect.left + rect.width + 8, rect.top + 12);
+            ctx.fillText('13.4m', rect.left + rect.width + 8, rect.top + rect.height);
+            ctx.restore();
+        }
+
+        function heatColor(value) {
+            const t = Math.max(0, Math.min(1, value));
+            if (t < 0.33) {
+                const k = t / 0.33;
+                return `rgba(${Math.round(0 + 0 * k)},${Math.round(190 + 60 * k)},255,${0.12 + 0.28 * k})`;
+            }
+            if (t < 0.66) {
+                const k = (t - 0.33) / 0.33;
+                return `rgba(${Math.round(0 + 255 * k)},${Math.round(250 - 40 * k)},${Math.round(255 - 215 * k)},${0.35 + 0.25 * k})`;
+            }
+            const k = (t - 0.66) / 0.34;
+            return `rgba(255,${Math.round(210 - 140 * k)},${Math.round(40 - 20 * k)},${0.60 + 0.28 * k})`;
+        }
+
+        function renderAiHeatmap(data) {
+            const canvas = aiEl('ai-heatmap-canvas');
+            if (!canvas || !data) return;
+            const { ctx, width, height } = prepareAiCanvas(canvas);
+            ctx.clearRect(0, 0, width, height);
+            ctx.fillStyle = 'rgba(6,10,20,0.95)';
+            ctx.fillRect(0, 0, width, height);
+            const court = data.court || AI_COURT;
+            court.width = Number(court.width) || AI_COURT.width;
+            court.length = Number(court.length) || AI_COURT.length;
+            const rect = getAiCourtRect(width, height, court);
+            drawAiCourt(ctx, rect, court);
+
+            const cols = 70;
+            const rows = 150;
+            const density = Array.from({ length: rows }, () => new Float32Array(cols));
+            for (const sample of data.samples || []) {
+                const gx = sample.x / court.width * (cols - 1);
+                const gy = sample.y / court.length * (rows - 1);
+                if (!Number.isFinite(gx) || !Number.isFinite(gy)) continue;
+                const cx = Math.round(gx);
+                const cy = Math.round(gy);
+                for (let dy = -3; dy <= 3; dy++) {
+                    for (let dx = -3; dx <= 3; dx++) {
+                        const x = cx + dx;
+                        const y = cy + dy;
+                        if (x < 0 || x >= cols || y < 0 || y >= rows) continue;
+                        const weight = Math.exp(-(dx * dx + dy * dy) / 6);
+                        density[y][x] += weight;
+                    }
+                }
+            }
+            let max = 0;
+            density.forEach(row => row.forEach(value => { if (value > max) max = value; }));
+            if (max > 0) {
+                ctx.save();
+                ctx.globalCompositeOperation = 'lighter';
+                for (let y = 0; y < rows; y++) {
+                    for (let x = 0; x < cols; x++) {
+                        const raw = density[y][x];
+                        if (raw <= 0) continue;
+                        const t = Math.pow(raw / max, 0.62);
+                        if (t < 0.035) continue;
+                        ctx.fillStyle = heatColor(t);
+                        ctx.fillRect(
+                            rect.left + x / cols * rect.width,
+                            rect.top + y / rows * rect.height,
+                            rect.width / cols + 1,
+                            rect.height / rows + 1
+                        );
+                    }
+                }
+                ctx.restore();
+            }
+            drawAiCourt(ctx, rect, court, false);
+            drawAiLegend(ctx, width, height);
+        }
+
+        function drawAiLegend(ctx, width, height) {
+            const x = 22;
+            const y = height - 34;
+            const grad = ctx.createLinearGradient(x, y, x + 150, y);
+            grad.addColorStop(0, 'rgba(0,190,255,0.35)');
+            grad.addColorStop(0.5, 'rgba(255,220,40,0.75)');
+            grad.addColorStop(1, 'rgba(255,70,20,0.95)');
+            ctx.fillStyle = grad;
+            ctx.fillRect(x, y, 150, 10);
+            ctx.strokeStyle = 'rgba(255,255,255,0.25)';
+            ctx.strokeRect(x, y, 150, 10);
+            ctx.fillStyle = 'rgba(255,255,255,0.72)';
+            ctx.font = '12px sans-serif';
+            ctx.fillText('低频', x, y - 6);
+            ctx.fillText('高频', x + 120, y - 6);
+        }
+
+        function renderAiTrajectory(data) {
+            const canvas = aiEl('ai-trajectory-canvas');
+            if (!canvas || !data) return;
+            const { ctx, width, height } = prepareAiCanvas(canvas);
+            ctx.clearRect(0, 0, width, height);
+            ctx.fillStyle = 'rgba(6,10,20,0.95)';
+            ctx.fillRect(0, 0, width, height);
+            const court = data.court || AI_COURT;
+            court.width = Number(court.width) || AI_COURT.width;
+            court.length = Number(court.length) || AI_COURT.length;
+            const rect = getAiCourtRect(width, height, court);
+            drawAiCourt(ctx, rect, court);
+            drawPlayerPath(ctx, data.trajectories?.upper || [], rect, court, '#38bdf8', '上半场');
+            drawPlayerPath(ctx, data.trajectories?.lower || [], rect, court, '#ff6b9d', '下半场');
+        }
+
+        function drawPlayerPath(ctx, points, rect, court, color, label) {
+            if (!points.length) return;
+            ctx.save();
+            ctx.strokeStyle = color;
+            ctx.lineWidth = 2;
+            ctx.globalAlpha = 0.9;
+            ctx.beginPath();
+            let previous = null;
+            points.forEach((point, index) => {
+                const p = courtToCanvas(point, rect, court);
+                const gap = previous ? Math.hypot(point.x - previous.x, point.y - previous.y) : 0;
+                if (index === 0 || gap > 2.2) ctx.moveTo(p.x, p.y);
+                else ctx.lineTo(p.x, p.y);
+                previous = point;
+            });
+            ctx.stroke();
+            const start = courtToCanvas(points[0], rect, court);
+            const end = courtToCanvas(points[points.length - 1], rect, court);
+            ctx.fillStyle = color;
+            ctx.beginPath();
+            ctx.arc(start.x, start.y, 4, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.strokeStyle = '#fff';
+            ctx.beginPath();
+            ctx.arc(end.x, end.y, 6, 0, Math.PI * 2);
+            ctx.stroke();
+            ctx.fillStyle = color;
+            ctx.font = '13px sans-serif';
+            ctx.fillText(label, end.x + 8, end.y - 8);
+            ctx.restore();
+        }
+
+        function renderAiVisuals() {
+            if (!aiState.heatmapData) return;
+            renderAiHeatmap(aiState.heatmapData);
+            renderAiTrajectory(aiState.heatmapData);
+        }
 
         // 初始化3D羽毛球场地
         function init3DCourt(containerId, backgroundColor) {

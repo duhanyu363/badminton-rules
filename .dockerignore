@@ -1,0 +1,28 @@
+.git
+.claude
+.vscode
+.idea
+__pycache__
+**/__pycache__
+*.pyc
+*.pyo
+*.log
+
+# Runtime clones, environments, caches, and generated outputs
+ai-hawkeye/Good-Badminton
+ai-hawkeye/.venv
+ai-hawkeye/downloads
+ai-hawkeye/.yolo-config
+ai-hawkeye/**/*.log
+
+# Large local media kept in the working copy
+*.mp4
+*.mov
+*.avi
+*.mkv
+*.webm
+*.gif
+
+# OS files
+.DS_Store
+Thumbs.db
