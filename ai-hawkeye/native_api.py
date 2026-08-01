@@ -33,13 +33,33 @@ SITE_ROOT = INTEGRATION_DIR.parent
 
 
 def _resolve_runtime_path(env_name: str, default: Path) -> Path:
+    """Resolve runtime paths on local machines and Render.
+
+    Relative env-var values are accepted in two common forms:
+    - repo-root relative: ``ai-hawkeye/Good-Badminton``
+    - integration-dir relative: ``Good-Badminton`` or ``weights``
+
+    This avoids Render resolving ``ai-hawkeye/Good-Badminton`` as
+    ``ai-hawkeye/ai-hawkeye/Good-Badminton``.
+    """
     value = os.environ.get(env_name)
     if not value:
         return default.resolve()
+
     path = Path(value).expanduser()
-    if not path.is_absolute():
-        path = INTEGRATION_DIR / path
-    return path.resolve()
+    if path.is_absolute():
+        return path.resolve()
+
+    repo_relative = (SITE_ROOT / path).resolve()
+    integration_relative = (INTEGRATION_DIR / path).resolve()
+
+    if repo_relative.exists():
+        return repo_relative
+    if integration_relative.exists():
+        return integration_relative
+    if path.parts and path.parts[0] == "ai-hawkeye":
+        return repo_relative
+    return integration_relative
 
 
 def _upload_limit_bytes(default_mb: int = 1024) -> int:

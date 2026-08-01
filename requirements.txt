@@ -1,6 +1,3 @@
-opencv-python-headless==4.10.0.84
-opencv-contrib-python-headless==4.10.0.84
-numpy<2.0,>=1.21.6
-flask
-flask-cors
-gunicorn
+# Python dependencies for the Render AI Hawkeye backend.
+# Render can install this root file directly, while local setup uses ai-hawkeye/requirements.txt.
+-r ai-hawkeye/requirements.txt

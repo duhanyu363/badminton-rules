@@ -5,6 +5,7 @@ services:
     plan: starter
     buildCommand: |
       python -m pip install --upgrade pip
+      python -m pip install -r ai-hawkeye/requirements.txt
       python ai-hawkeye/setup_good_badminton.py --download-weights
     startCommand: python ai-hawkeye/run_good_badminton.py --host 0.0.0.0 --port $PORT
     healthCheckPath: /api/health
@@ -14,6 +15,6 @@ services:
       - key: AI_HAWKEYE_MAX_UPLOAD_MB
         value: "1024"
       - key: AI_HAWKEYE_ALLOWED_ORIGINS
-        sync: false
+        value: https://duhanyu363.github.io
       - key: AI_HAWKEYE_GOOD_ROOT
-        value: ai-hawkeye/Good-Badminton
+        value: Good-Badminton
