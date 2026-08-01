@@ -1,4 +1,6 @@
-# Python dependencies for the embedded Good-Badminton AI Hawkeye backend.
-# Install via: pip install -r ai-hawkeye/requirements.txt
-# This root file is provided for deployment tools that expect requirements.txt at repo root.
--r ai-hawkeye/requirements.txt
+opencv-python-headless==4.10.0.84
+opencv-contrib-python-headless==4.10.0.84
+numpy<2.0,>=1.21.6
+flask
+flask-cors
+gunicorn
