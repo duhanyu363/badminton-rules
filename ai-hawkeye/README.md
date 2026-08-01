@@ -379,31 +379,68 @@ python -m http.server 8000
 
 ## Production deployment notes
 
-GitHub Pages cannot run Python. For public deployment, host the static site and the native API on a server/VPS/GPU host.
+GitHub Pages can only host the static HTML/CSS/JS page. It cannot run Python, OpenCV, PyTorch, FFmpeg, or the Good-Badminton model process. For the public `https://duhanyu363.github.io/badminton-rules/` site, deploy the native AI API separately and let the page call it over HTTPS.
 
-Nginx should reverse proxy `/api/` to `127.0.0.1:5050`, allow large uploads, and disable buffering for SSE:
+### Option A: GitHub Pages + separate API host
+
+1. Keep `index.html` on GitHub Pages.
+2. Deploy `ai-hawkeye/native_api.py` on a VPS, GPU server, Railway-like container host, or Cloud Run-style container. GPU is recommended; CPU works but can be slow for longer or high-resolution clips.
+3. Set CORS to the Pages origin before starting the API:
+
+```powershell
+$env:AI_HAWKEYE_ALLOWED_ORIGINS = "https://duhanyu363.github.io"
+python ai-hawkeye\run_good_badminton.py --host 0.0.0.0 --port 5050
+```
+
+4. Open the static page with an API override:
+
+```text
+https://duhanyu363.github.io/badminton-rules/?api=https://your-api.example.com
+```
+
+The page stores the API base in `localStorage` as `AI_HAWKEYE_API_BASE`. You can also set `window.AI_HAWKEYE_API_BASE` before the page script if you later split configuration into a separate JS file.
+
+### Option B: Same-domain static site + API reverse proxy
+
+Host the static files and API behind the same domain. Nginx should reverse proxy `/api/` to `127.0.0.1:5050`, allow large uploads, and disable buffering for SSE:
 
 ```nginx
 location /api/ {
     proxy_pass http://127.0.0.1:5050/api/;
     proxy_http_version 1.1;
     proxy_set_header Host $host;
+    proxy_set_header X-Real-IP $remote_addr;
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    proxy_set_header X-Forwarded-Proto $scheme;
     proxy_buffering off;
+    proxy_cache off;
     proxy_read_timeout 3600s;
+    proxy_send_timeout 3600s;
     client_max_body_size 1024m;
 }
 ```
 
+### Large video handling
+
+The current API accepts normal `multipart/form-data` uploads and defaults to a 1GB limit. For public deployment, consider:
+
+- Set `AI_HAWKEYE_MAX_UPLOAD_MB` to a practical limit for your server.
+- Encourage users to upload short clips first; full matches should be cut into rallies or short segments.
+- Run analysis asynchronously, as this integration already does, and keep SSE enabled for progress.
+- For very large public workloads, add object storage and multipart/chunked upload later (S3 multipart, tus, or Resumable.js) instead of sending huge files directly through Flask.
+- Store generated videos/results outside the git repo and clean old jobs periodically.
+
 ## Verification checklist
 
 - [ ] `http://127.0.0.1:5050/api/health` returns JSON and `ready: true`.
-- [ ] `AI视频分析` page has no iframe.
+- [ ] `鹰眼轨迹跟踪` page has no iframe.
 - [ ] Upload progress reaches 100%.
 - [ ] Automatic court detection returns a preview or manual annotation canvas appears.
 - [ ] Manual annotation saves `court_annotations.txt` when needed.
 - [ ] Analysis progress updates through SSE or polling.
 - [ ] Canvas heatmap and trajectory render from `/api/jobs/<job_id>/heatmap-data`.
-- [ ] Speed gauge, hit list, histogram, and player speed comparison render from `/api/jobs/<job_id>/speed-data`.
+- [ ] Speed gauge, shuttle speed timeline, hit list, histogram, and player speed comparison render from `/api/jobs/<job_id>/speed-data`.
+- [ ] Player real-time speed timeline renders from `/api/jobs/<job_id>/heatmap-data`.
 - [ ] Output video contains shuttle speed panel, hit labels, rally stats, and bottom speed timeline.
 - [ ] Good-Badminton output video and original PNG visualizations are available.
 - [ ] `outputs/<video_id>/detections.jsonl` exists.
