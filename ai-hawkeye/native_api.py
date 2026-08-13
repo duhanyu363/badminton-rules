@@ -140,18 +140,96 @@ def python_exe() -> Path:
     return GOOD_ROOT / ".venv" / "bin" / "python3"
 
 
+def weight_file_ready(filename: str) -> bool:
+    path = WEIGHTS_DIR / filename
+    return path.exists() and path.stat().st_size > 0
+
+
+def missing_required_weights() -> list[str]:
+    return [filename for filename in REQUIRED_WEIGHTS if not weight_file_ready(filename)]
+
+
 def runtime_ready() -> tuple[bool, list[str]]:
     missing: list[str] = []
     if not GOOD_ROOT.exists():
         missing.append("Good-Badminton 仓库未安装")
     if not python_exe().exists():
         missing.append("Good-Badminton 虚拟环境未安装")
-    for filename in REQUIRED_WEIGHTS:
-        if not (WEIGHTS_DIR / filename).exists():
-            missing.append(f"缺少权重文件 {filename}")
+    for filename in missing_required_weights():
+        missing.append(f"缺少权重文件 {filename}")
     if not RUNNER.exists():
         missing.append("缺少 analysis_runner.py")
     return not missing, missing
+
+
+def copy_default_weights(filenames: Iterable[str]) -> None:
+    default_weights_dir = INTEGRATION_DIR / "Good-Badminton" / "weights"
+    if default_weights_dir.resolve() == WEIGHTS_DIR.resolve() or not default_weights_dir.exists() or not GOOD_ROOT.exists():
+        return
+    WEIGHTS_DIR.mkdir(parents=True, exist_ok=True)
+    for filename in filenames:
+        source = default_weights_dir / filename
+        target = WEIGHTS_DIR / filename
+        if not source.exists() or source.stat().st_size <= 0 or weight_file_ready(filename):
+            continue
+        shutil.copy2(source, target)
+        print(f"[startup] copied weight {source} -> {target}", flush=True)
+
+
+def download_missing_weights_directly(filenames: Iterable[str]) -> None:
+    if not GOOD_ROOT.exists():
+        print("[startup] Good-Badminton not found; cannot download weights directly", file=sys.stderr, flush=True)
+        return
+    try:
+        from setup_good_badminton import WEIGHTS
+        from urllib.request import urlretrieve
+    except Exception as exc:
+        print(f"[startup] cannot load weight download metadata: {exc}", file=sys.stderr, flush=True)
+        return
+
+    WEIGHTS_DIR.mkdir(parents=True, exist_ok=True)
+    for filename in filenames:
+        if weight_file_ready(filename):
+            continue
+        url = WEIGHTS.get(filename)
+        if not url:
+            print(f"[startup] no download URL configured for {filename}", file=sys.stderr, flush=True)
+            continue
+        target = WEIGHTS_DIR / filename
+        temp_target = target.with_name(f".{target.name}.download")
+        try:
+            if temp_target.exists():
+                temp_target.unlink()
+            print(f"[startup] downloading weight {filename}", flush=True)
+            urlretrieve(url, temp_target)
+            if temp_target.stat().st_size <= 0:
+                raise RuntimeError("downloaded file is empty")
+            temp_target.replace(target)
+            print(f"[startup] saved weight {target}", flush=True)
+        except Exception as exc:
+            if temp_target.exists():
+                temp_target.unlink()
+            print(f"[startup] failed to download {filename}: {exc}", file=sys.stderr, flush=True)
+
+
+def ensure_startup_weights() -> None:
+    missing = missing_required_weights()
+    if not missing:
+        return
+
+    print(f"[startup] missing required weights: {', '.join(missing)}", flush=True)
+    download_script = INTEGRATION_DIR / "download_weights.py"
+    if download_script.exists():
+        try:
+            subprocess.run([sys.executable, str(download_script)], cwd=str(INTEGRATION_DIR), check=True, text=True)
+        except Exception as exc:
+            print(f"[startup] download_weights.py failed: {exc}", file=sys.stderr, flush=True)
+
+    missing = missing_required_weights()
+    copy_default_weights(missing)
+    missing = missing_required_weights()
+    if missing:
+        download_missing_weights_directly(missing)
 
 
 def resolve_ffmpeg() -> str | None:
@@ -328,7 +406,7 @@ def public_result(video_id: str) -> dict[str, Any]:
 def api_health():
     ready, missing = runtime_ready()
     weights = {
-        filename: (WEIGHTS_DIR / filename).exists()
+        filename: weight_file_ready(filename)
         for filename in REQUIRED_WEIGHTS + OPTIONAL_WEIGHTS
     }
     return jsonify(
@@ -1073,6 +1151,7 @@ def parse_args() -> argparse.Namespace:
 
 if __name__ == "__main__":
     args = parse_args()
+    ensure_startup_weights()
     ensure_runtime_dirs()
     print(f"Native AI Hawkeye API: http://{args.host}:{args.port}")
     app.run(host=args.host, port=args.port, debug=False, threaded=True)
