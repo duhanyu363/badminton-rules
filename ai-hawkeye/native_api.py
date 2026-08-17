@@ -149,9 +149,7 @@ def ensure_runtime_dirs() -> None:
 
 
 def python_exe() -> Path:
-    if platform.system().lower().startswith("win"):
-        return GOOD_ROOT / ".venv" / "Scripts" / "python.exe"
-    return GOOD_ROOT / ".venv" / "bin" / "python3"
+    return Path(sys.executable).resolve()
 
 
 def weight_file_ready(filename: str) -> bool:
@@ -167,8 +165,6 @@ def runtime_ready() -> tuple[bool, list[str]]:
     missing: list[str] = []
     if not GOOD_ROOT.exists():
         missing.append("Good-Badminton 仓库未安装")
-    if not python_exe().exists():
-        missing.append("Good-Badminton 虚拟环境未安装")
     for filename in missing_required_weights():
         missing.append(f"缺少权重文件 {filename}")
     if not RUNNER.exists():
