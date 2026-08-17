@@ -102,6 +102,20 @@ OPTIONAL_WEIGHTS = [
 app = Flask(__name__)
 app.config["MAX_CONTENT_LENGTH"] = MAX_UPLOAD_BYTES
 
+_startup_lock = threading.Lock()
+_startup_complete = False
+
+
+def initialize_startup() -> None:
+    global _startup_complete
+    with _startup_lock:
+        if _startup_complete:
+            return
+        ensure_runtime_dirs()
+        ensure_startup_weights()
+        _startup_complete = True
+
+
 _jobs: dict[str, dict[str, Any]] = {}
 _jobs_lock = threading.RLock()
 
@@ -130,7 +144,7 @@ def api_options(_path: str):
 def ensure_runtime_dirs() -> None:
     if not GOOD_ROOT.exists():
         return
-    for directory in (VIDEOS_DIR, OUTPUTS_DIR, TEMPLATES_DIR):
+    for directory in (VIDEOS_DIR, OUTPUTS_DIR, TEMPLATES_DIR, WEIGHTS_DIR):
         directory.mkdir(parents=True, exist_ok=True)
 
 
@@ -213,6 +227,7 @@ def download_missing_weights_directly(filenames: Iterable[str]) -> None:
 
 
 def ensure_startup_weights() -> None:
+    WEIGHTS_DIR.mkdir(parents=True, exist_ok=True)
     missing = missing_required_weights()
     if not missing:
         return
@@ -447,6 +462,7 @@ def api_videos():
     return jsonify({"ok": True, "videos": videos})
 
 
+@app.route("/upload", methods=["POST"])
 @app.route("/api/upload", methods=["POST"])
 def api_upload():
     ready, missing = runtime_ready()
@@ -1149,9 +1165,10 @@ def parse_args() -> argparse.Namespace:
     return parser.parse_args()
 
 
+initialize_startup()
+
+
 if __name__ == "__main__":
     args = parse_args()
-    ensure_startup_weights()
-    ensure_runtime_dirs()
     print(f"Native AI Hawkeye API: http://{args.host}:{args.port}")
     app.run(host=args.host, port=args.port, debug=False, threaded=True)

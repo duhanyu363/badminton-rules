@@ -3864,18 +3864,7 @@
             });
         });
 
-        // ============================================================
-        // 鹰眼轨迹跟踪后端地址配置
-        // ============================================================
-        // 只需要修改下面这一行：
-        // 1. 如果 Flask/Good-Badminton 后端运行在你自己的电脑：
-        //    const BACKEND_URL = 'http://127.0.0.1:5000';
-        // 2. 如果后端部署在云服务器，GitHub Pages 是 HTTPS 页面，强烈建议使用 HTTPS 域名：
-        //    const BACKEND_URL = 'https://your-api-domain.com';
-        //    当前线上后端已配置为 Render：
-        //    const BACKEND_URL = 'https://badminton-rules.onrender.com';
-        //    不建议在 GitHub Pages 页面里直接调用 http://公网IP:5000，浏览器可能会因 Mixed Content 拦截。
-        // 3. BACKEND_URL 不要以 / 结尾；如果写了 /，下面代码也会自动去掉。
+        // 鹰眼轨迹跟踪后端地址
         const BACKEND_URL = 'https://badminton-rules.onrender.com';
 
         function resolveAiApiBase() {
