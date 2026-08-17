@@ -3864,33 +3864,7 @@
             });
         });
 
-        // 鹰眼轨迹跟踪后端地址
-        const BACKEND_URL = 'https://badminton-rules.onrender.com';
-
-        function resolveAiApiBase() {
-            const configuredBackend = String(BACKEND_URL || '').trim().replace(/\/+$/, '');
-            if (configuredBackend) return configuredBackend;
-
-            // 下面是可选兜底逻辑：如果临时想通过 URL 覆盖后端地址，可以打开：
-            // https://duhanyu363.github.io/badminton-rules/?api=https://your-api-domain.com
-            const params = new URLSearchParams(window.location.search);
-            const queryBase = params.get('api') || params.get('ai_api');
-            if (queryBase) {
-                const normalized = queryBase.replace(/\/+$/, '');
-                try { window.localStorage.setItem('AI_HAWKEYE_API_BASE', normalized); } catch (_) {}
-                return normalized;
-            }
-            if (window.AI_HAWKEYE_API_BASE) {
-                return String(window.AI_HAWKEYE_API_BASE).replace(/\/+$/, '');
-            }
-            try {
-                const storedBase = window.localStorage.getItem('AI_HAWKEYE_API_BASE');
-                if (storedBase) return storedBase.replace(/\/+$/, '');
-            } catch (_) {}
-            return '';
-        }
-
-        const AI_API_BASE = resolveAiApiBase();
+        const AI_API_BASE = 'https://badminton-rules.onrender.com';
         const AI_COURT = { width: 6.1, length: 13.4 };
         const aiState = {
             initialized: false,
