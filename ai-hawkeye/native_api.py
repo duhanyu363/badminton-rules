@@ -78,6 +78,7 @@ VIDEOS_DIR = GOOD_ROOT / "videos"
 OUTPUTS_DIR = GOOD_ROOT / "outputs"
 TEMPLATES_DIR = GOOD_ROOT / "templates"
 WEIGHTS_DIR = GOOD_ROOT / "weights"
+EXTENSIONS_DIR = INTEGRATION_DIR / "good_badminton_ext"
 RUNNER = INTEGRATION_DIR / "analysis_runner.py"
 
 ALLOWED_EXTENSIONS = {".mp4", ".mov", ".avi", ".mkv", ".webm"}
@@ -112,6 +113,7 @@ def initialize_startup() -> None:
         if _startup_complete:
             return
         ensure_runtime_dirs()
+        sync_good_badminton_extensions()
         ensure_startup_weights()
         _startup_complete = True
 
@@ -150,6 +152,17 @@ def ensure_runtime_dirs() -> None:
 
 def python_exe() -> Path:
     return Path(sys.executable).resolve()
+
+
+def sync_good_badminton_extensions() -> None:
+    if not EXTENSIONS_DIR.exists() or not GOOD_ROOT.exists():
+        return
+    for source in EXTENSIONS_DIR.rglob("*"):
+        if source.is_dir() or "__pycache__" in source.parts or source.suffix == ".pyc":
+            continue
+        target = GOOD_ROOT / source.relative_to(EXTENSIONS_DIR)
+        target.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copy2(source, target)
 
 
 def weight_file_ready(filename: str) -> bool:
@@ -319,9 +332,17 @@ def json_response_error(message: str, status: int = 400, **extra: Any):
 
 
 def import_good_modules() -> None:
-    if str(GOOD_ROOT) not in sys.path:
-        sys.path.insert(0, str(GOOD_ROOT))
+    sync_good_badminton_extensions()
+    good_root = str(GOOD_ROOT)
+    if good_root not in sys.path:
+        sys.path.insert(0, good_root)
+    existing_pythonpath = os.environ.get("PYTHONPATH", "")
+    pythonpath_parts = [part for part in existing_pythonpath.split(os.pathsep) if part]
+    if good_root not in pythonpath_parts:
+        os.environ["PYTHONPATH"] = os.pathsep.join([good_root, *pythonpath_parts])
     os.environ.setdefault("PYTHONUNBUFFERED", "1")
+    if GOOD_ROOT.exists():
+        os.chdir(str(GOOD_ROOT))
 
 
 def append_job_event(job: dict[str, Any], event: str, payload: dict[str, Any]) -> None:
@@ -718,6 +739,7 @@ def run_analysis_job(
     env = os.environ.copy()
     env["PYTHONUNBUFFERED"] = "1"
     env["YOLO_CONFIG_DIR"] = str(INTEGRATION_DIR / ".yolo-config")
+    env["PYTHONPATH"] = os.pathsep.join([str(GOOD_ROOT), env.get("PYTHONPATH", "")])
     env["PATH"] = os.pathsep.join(
         [str(GOOD_ROOT / ".local" / "bin"), str(Path.home() / ".local" / "bin"), env.get("PATH", "")]
     )

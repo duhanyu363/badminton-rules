@@ -17,4 +17,4 @@ services:
       - key: AI_HAWKEYE_ALLOWED_ORIGINS
         value: https://duhanyu363.github.io
       - key: AI_HAWKEYE_GOOD_ROOT
-        value: Good-Badminton
+        value: ai-hawkeye/Good-Badminton
