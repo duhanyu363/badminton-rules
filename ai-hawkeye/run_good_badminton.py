@@ -14,10 +14,14 @@ INTEGRATION_DIR = Path(__file__).resolve().parent
 GOOD_REPO = INTEGRATION_DIR / "Good-Badminton"
 
 
-def python_exe() -> Path:
+def venv_python_exe() -> Path:
     if platform.system().lower().startswith("win"):
         return GOOD_REPO / ".venv" / "Scripts" / "python.exe"
     return GOOD_REPO / ".venv" / "bin" / "python3"
+
+
+def current_python_exe() -> str:
+    return sys.executable or "python"
 
 
 def main() -> int:
@@ -31,19 +35,19 @@ def main() -> int:
     )
     args = parser.parse_args()
 
-    exe = python_exe()
     if not GOOD_REPO.exists():
         print("Good-Badminton not found. Run:")
         print("python ai-hawkeye\\setup_good_badminton.py --download-weights")
-        return 2
-    if not exe.exists():
-        print("Good-Badminton venv not found. Run setup first.")
         return 2
 
     env = os.environ.copy()
     env["PYTHONUNBUFFERED"] = "1"
 
     if args.upstream_webui:
+        exe = venv_python_exe()
+        if not exe.exists():
+            print("Good-Badminton venv not found. Run setup first.")
+            return 2
         app_py = GOOD_REPO / "app.py"
         if not app_py.exists():
             print("Good-Badminton app.py not found. Run setup first.")
@@ -53,7 +57,7 @@ def main() -> int:
 
     native_api = INTEGRATION_DIR / "native_api.py"
     print(f"Starting native AI Hawkeye API at http://{args.host}:{args.port}")
-    return subprocess.call([str(exe), str(native_api), "--host", args.host, "--port", str(args.port)], cwd=str(INTEGRATION_DIR), env=env)
+    return subprocess.call([current_python_exe(), str(native_api), "--host", args.host, "--port", str(args.port)], cwd=str(INTEGRATION_DIR), env=env)
 
 
 if __name__ == "__main__":
