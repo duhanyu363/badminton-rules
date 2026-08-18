@@ -4,9 +4,7 @@ services:
     env: python
     plan: starter
     buildCommand: |
-      apt-get update && apt-get install -y libgl1-mesa-glx libglib2.0-0 libsm6 libxext6 libxrender-dev libgomp1
-      python -m pip install --upgrade pip
-      python -m pip install -r ai-hawkeye/requirements.txt
+      apt-get update && apt-get install -y libgl1-mesa-glx libglib2.0-0 libsm6 libxext6 libxrender-dev libgomp1 ffmpeg && pip install --upgrade pip && pip install -r ai-hawkeye/requirements.txt
       python ai-hawkeye/setup_good_badminton.py --download-weights
     startCommand: gunicorn --chdir ai-hawkeye native_api:app --bind 0.0.0.0:$PORT --workers 1 --threads 4 --timeout 1800
     healthCheckPath: /api/health

@@ -48,10 +48,22 @@ def import_cv2_for_runtime():
     emit("log", message=f"Python executable: {sys.executable}")
     emit("log", message=f"Python sys.path: {json.dumps(sys.path, ensure_ascii=False)}")
     try:
-        import cv2
+        import cv2 as cv2
     except ImportError as exc:
-        emit("error", progress=0, message=f"OpenCV import failed: {exc}", python=sys.executable, sys_path=sys.path)
-        return None
+        emit("log", message=f"OpenCV import failed before reinstall: {exc}")
+        import importlib
+
+        subprocess.check_call([
+            sys.executable,
+            "-m",
+            "pip",
+            "install",
+            "opencv-python-headless",
+            "--force-reinstall",
+            "--no-deps",
+        ])
+        importlib.invalidate_caches()
+        import cv2 as cv2
     emit("log", message=f"OpenCV imported: version={getattr(cv2, '__version__', 'unknown')} file={getattr(cv2, '__file__', 'unknown')}")
     return cv2
 

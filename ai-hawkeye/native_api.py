@@ -107,12 +107,28 @@ _startup_lock = threading.Lock()
 _startup_complete = False
 
 
+def ensure_runtime_opencv() -> None:
+    try:
+        subprocess.check_call([
+            sys.executable,
+            "-m",
+            "pip",
+            "install",
+            "--upgrade",
+            "opencv-python-headless",
+            "opencv-contrib-python-headless",
+        ])
+    except Exception as exc:
+        print(f"[startup] OpenCV runtime install failed: {exc}", file=sys.stderr, flush=True)
+
+
 def initialize_startup() -> None:
     global _startup_complete
     with _startup_lock:
         if _startup_complete:
             return
         ensure_runtime_dirs()
+        ensure_runtime_opencv()
         sync_good_badminton_extensions()
         ensure_startup_weights()
         _startup_complete = True
