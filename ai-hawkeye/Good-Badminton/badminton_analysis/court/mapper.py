@@ -115,8 +115,7 @@ def compute_expanded_roi(court_corners, image_shape):
 
 def annotate_court(image, auto_preview_path=None):
     """
-    Interactive tool to annotate court corners on an image.
-    Returns court corners plus an automatically expanded ROI.
+    Return automatically detected court corners and ROI.
     """
     if not isinstance(image, np.ndarray):
         print("Error: Invalid image input")
@@ -127,120 +126,24 @@ def annotate_court(image, auto_preview_path=None):
     base_image = cv2.resize(image, fixed_size)
 
     auto_corners, _line_mask, auto_debug = auto_detect_court_corners(base_image)
-    if auto_corners:
-        auto_roi_corners = compute_expanded_roi(auto_corners, base_image.shape)
-        auto_preview = render_auto_court_preview(base_image, auto_corners, auto_roi_corners, auto_debug)
+    if not auto_corners:
         if auto_preview_path:
-            cv2.imwrite(auto_preview_path, auto_preview)
-
-        cv2.namedWindow("Auto court detection")
-        cv2.imshow("Auto court detection", auto_preview)
-        print(f"Auto court preview saved: {auto_preview_path or 'auto_court_preview.png'}")
-        print("Press Enter/Y to accept auto detection; press M/R/Esc for manual annotation.")
-        while True:
-            key = cv2.waitKey(1) & 0xFF
-            if key in (13, 10, ord('y'), ord('Y')):
-                cv2.destroyWindow("Auto court detection")
-                court_mapper = CourtMapper(auto_corners)
-                _, auto_mid_height = court_mapper.draw_court_overlay(base_image)
-                scale_x = original_width / fixed_size[0]
-                scale_y = original_height / fixed_size[1]
-                original_corners = [(int(x * scale_x), int(y * scale_y)) for x, y in auto_corners]
-                original_roi_corners = [(int(x * scale_x), int(y * scale_y)) for x, y in auto_roi_corners]
-                return original_corners, original_roi_corners, int(auto_mid_height * scale_y)
-            if key in (27, ord('m'), ord('M'), ord('r'), ord('R')):
-                cv2.destroyWindow("Auto court detection")
-                break
-    elif auto_preview_path:
-        cv2.imwrite(auto_preview_path, render_auto_court_preview(base_image, None, None, auto_debug))
-        print(f"No reliable auto court boundary found. Debug preview saved: {auto_preview_path}")
-
-    corners = []
-    mid_height = [680]
-    window_name = "Court annotation"
-    guide_lines = [
-        "Click 4 court corners in order: 1 top-left, 2 top-right, 3 bottom-right, 4 bottom-left",
-        "Use the actual court boundary lines. ROI is generated automatically. Press ESC to cancel.",
-    ]
-
-    print("请按顺序点击球场 4 个角点：左上、右上、右下、左下。")
-    print("窗口图片顶部会显示点击顺序；ROI 会自动生成，不需要手动标注。")
-
-    def draw_guidance(canvas, extra_line=None):
-        overlay = canvas.copy()
-        cv2.rectangle(overlay, (0, 0), (fixed_size[0], 92), (0, 0, 0), -1)
-        cv2.addWeighted(overlay, 0.58, canvas, 0.42, 0, canvas)
-
-        y = 28
-        for line in guide_lines:
-            cv2.putText(canvas, line, (18, y), cv2.FONT_HERSHEY_SIMPLEX, 0.62, (255, 255, 255), 2, cv2.LINE_AA)
-            y += 28
-        if extra_line:
-            cv2.putText(canvas, extra_line, (18, y), cv2.FONT_HERSHEY_SIMPLEX, 0.62, (80, 220, 255), 2, cv2.LINE_AA)
-
-    def render_annotation_view(extra_line=None):
-        view = base_image.copy()
-        draw_guidance(view, extra_line)
-        for idx, point in enumerate(corners, start=1):
-            cv2.circle(view, point, 5, (0, 0, 255), -1)
-            cv2.putText(view, str(idx), (point[0] + 8, point[1] - 8), cv2.FONT_HERSHEY_SIMPLEX, 0.75, (0, 0, 255), 2, cv2.LINE_AA)
-        if len(corners) > 1:
-            cv2.polylines(view, [np.array(corners, dtype=np.int32)], False, (0, 255, 255), 2)
-        return view
-
-    def show_auto_roi():
-        court_mapper = CourtMapper(corners)
-        overlay, mid_height_int = court_mapper.draw_court_overlay(render_annotation_view("Done. Green = court, blue = pose ROI."))
-        mid_height[0] = mid_height_int
-        roi_corners = compute_expanded_roi(corners, overlay.shape)
-        cv2.rectangle(overlay, roi_corners[0], roi_corners[1], (255, 0, 0), 3)
-        cv2.putText(
-            overlay,
-            "Auto ROI: pose detection area",
-            (roi_corners[0][0], max(116, roi_corners[0][1] - 10)),
-            cv2.FONT_HERSHEY_SIMPLEX,
-            0.7,
-            (255, 0, 0),
-            2,
-            cv2.LINE_AA,
-        )
-        cv2.imshow(window_name, overlay)
-        print("已自动生成 ROI（球员姿态检测范围），无须手动选择。")
-
-    def mouse_callback(event, x, y, flags, param):
-        if event != cv2.EVENT_LBUTTONDOWN or len(corners) >= 4:
-            return
-
-        corners.append((x, y))
-        if len(corners) == 4:
-            show_auto_roi()
-            cv2.setMouseCallback(window_name, lambda *args: None)
-        else:
-            cv2.imshow(window_name, render_annotation_view(f"Next point: {len(corners) + 1}"))
-
-    cv2.namedWindow(window_name)
-    cv2.setMouseCallback(window_name, mouse_callback)
-    cv2.imshow(window_name, render_annotation_view("Next point: 1"))
-
-    while True:
-        key = cv2.waitKey(1) & 0xFF
-        if key == 27 or len(corners) == 4:
-            break
-
-    cv2.destroyAllWindows()
-
-    if len(corners) != 4:
-        print("未完成球场范围标注，请重试。")
+            cv2.imwrite(auto_preview_path, render_auto_court_preview(base_image, None, None, auto_debug))
+            print(f"No reliable auto court boundary found. Debug preview saved: {auto_preview_path}")
         return None, None, None
 
-    roi_corners = compute_expanded_roi(corners, base_image.shape)
+    auto_roi_corners = compute_expanded_roi(auto_corners, base_image.shape)
+    auto_preview = render_auto_court_preview(base_image, auto_corners, auto_roi_corners, auto_debug)
+    if auto_preview_path:
+        cv2.imwrite(auto_preview_path, auto_preview)
+
+    court_mapper = CourtMapper(auto_corners)
+    _, auto_mid_height = court_mapper.draw_court_overlay(base_image)
     scale_x = original_width / fixed_size[0]
     scale_y = original_height / fixed_size[1]
-
-    original_corners = [(int(x * scale_x), int(y * scale_y)) for x, y in corners]
-    original_roi_corners = [(int(x * scale_x), int(y * scale_y)) for x, y in roi_corners]
-    original_mid_height = int(mid_height[0] * scale_y)
-    return original_corners, original_roi_corners, original_mid_height
+    original_corners = [(int(x * scale_x), int(y * scale_y)) for x, y in auto_corners]
+    original_roi_corners = [(int(x * scale_x), int(y * scale_y)) for x, y in auto_roi_corners]
+    return original_corners, original_roi_corners, int(auto_mid_height * scale_y)
 
 
 if __name__ == "__main__":

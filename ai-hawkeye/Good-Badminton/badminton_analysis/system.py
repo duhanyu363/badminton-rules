@@ -1,7 +1,11 @@
 ﻿import os
 import tempfile
-from tkinter import filedialog
-import tkinter as tk
+try:
+    from tkinter import filedialog
+    import tkinter as tk
+except ImportError:
+    filedialog = None
+    tk = None
 import time
 import argparse
 
@@ -404,6 +408,12 @@ class BadmintonAnalysisSystem:
                     f"Court template image not found: {self.template_path}"
                 )
             return self.template_path
+
+        if tk is None or filedialog is None:
+            raise RuntimeError(
+                "Unable to open the template picker. In headless environments, "
+                "pass a court template image path with --template-path."
+            )
 
         try:
             root = tk.Tk()

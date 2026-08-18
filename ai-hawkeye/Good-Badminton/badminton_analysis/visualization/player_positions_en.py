@@ -781,48 +781,45 @@ def analyze_player_positions(detections_path, output_dir=None, fps=30):
 # 测试代码：允许直接运行该文件来测试可视化效果
 if __name__ == "__main__":
     import sys
-    from tkinter import Tk, filedialog
-    
-    # Use file dialog to select detection file
-    print("Please select detections.jsonl file...")
-    
     try:
-        # Create hidden tkinter root window (for file dialog only)
+        from tkinter import Tk, filedialog
+    except ImportError:
+        Tk = None
+        filedialog = None
+
+    if Tk is None or filedialog is None:
+        print("tkinter is unavailable in this environment; pass a detections.jsonl file path as the first argument.")
+        if len(sys.argv) < 2:
+            sys.exit(0)
+        file_path = sys.argv[1]
+        analyze_player_positions(file_path)
+        sys.exit(0)
+
+    print("Please select detections.jsonl file...")
+
+    try:
         root = Tk()
         root.withdraw()
-        
-        # Set default directory
         default_dir = "outputs"
         if not os.path.exists(default_dir):
             default_dir = os.getcwd()
-        
-        # Open file selection dialog
         file_path = filedialog.askopenfilename(
             title="Select Player Position Detection File",
             filetypes=[("JSONL files", "*.jsonl"), ("All files", "*.*")],
             initialdir=default_dir
         )
-        
-        # 如果用户取消选择，则退出
         if not file_path:
             print("No file selected, exiting program")
             sys.exit(0)
-            
-        # 调用分析函数
         success = analyze_player_positions(file_path)
-        
         if success:
             print("\nVisualization test completed successfully")
         else:
             print("\nVisualization test failed")
-            
     except Exception as e:
         print(f"\nTest error: {e}")
-        
     finally:
         try:
-            # 关闭tkinter窗口
             root.destroy()
-        except:
+        except Exception:
             pass
-        

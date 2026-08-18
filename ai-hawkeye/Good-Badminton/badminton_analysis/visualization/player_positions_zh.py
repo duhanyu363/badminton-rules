@@ -811,48 +811,45 @@ def analyze_player_positions(detections_path, output_dir=None, fps=30):
 # 测试代码：允许直接运行该文件来测试可视化效果
 if __name__ == "__main__":
     import sys
-    from tkinter import Tk, filedialog
-    
-    # Use file dialog to select detection file
-    print("请选择 detections.jsonl 文件...")
-    
     try:
-        # Create hidden tkinter root window (for file dialog only)
+        from tkinter import Tk, filedialog
+    except ImportError:
+        Tk = None
+        filedialog = None
+
+    if Tk is None or filedialog is None:
+        print("tkinter 在当前环境不可用；请将 detections.jsonl 文件路径作为第一个参数传入。")
+        if len(sys.argv) < 2:
+            sys.exit(0)
+        file_path = sys.argv[1]
+        analyze_player_positions(file_path)
+        sys.exit(0)
+
+    print("请选择 detections.jsonl 文件...")
+
+    try:
         root = Tk()
         root.withdraw()
-        
-        # Set default directory
         default_dir = "outputs"
         if not os.path.exists(default_dir):
             default_dir = os.getcwd()
-        
-        # Open file selection dialog
         file_path = filedialog.askopenfilename(
             title="选择球员位置检测文件",
             filetypes=[("JSONL文件", "*.jsonl"), ("所有文件", "*.*")],
             initialdir=default_dir
         )
-        
-        # 如果用户取消选择，则退出
         if not file_path:
             print("未选择文件，退出程序")
             sys.exit(0)
-            
-        # 调用分析函数
         success = analyze_player_positions(file_path)
-        
         if success:
             print("\n可视化测试成功完成")
         else:
             print("\n可视化测试失败")
-            
     except Exception as e:
         print(f"\n测试错误: {e}")
-        
     finally:
         try:
-            # 关闭tkinter窗口
             root.destroy()
-        except:
+        except Exception:
             pass
-        
