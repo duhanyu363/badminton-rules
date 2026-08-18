@@ -1,5 +1,5 @@
 [phases.setup]
-nixPkgs = ["python311", "ffmpeg", "git", "libGL", "glib"]
+nixPkgs = ["python311", "ffmpeg", "git", "libGL", "glib", "libsm", "xorg.libXext", "xorg.libXrender", "libgomp"]
 
 [phases.install]
 cmds = [
