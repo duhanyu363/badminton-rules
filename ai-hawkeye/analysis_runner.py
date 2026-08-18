@@ -9,10 +9,12 @@ stdout so the parent API process can stream them to the browser via SSE.
 from __future__ import annotations
 
 import sys, subprocess
+from pathlib import Path
 
 print("analysis_runner bootstrap python:", sys.executable, flush=True)
 site_root = Path(__file__).resolve().parents[1]
 venv_site_packages = site_root / ".venv" / "lib" / f"python{sys.version_info.major}.{sys.version_info.minor}" / "site-packages"
+print("analysis_runner venv_site_packages:", venv_site_packages, "exists=", venv_site_packages.exists(), flush=True)
 if venv_site_packages.exists() and str(venv_site_packages) not in sys.path:
     sys.path.insert(0, str(venv_site_packages))
 print("analysis_runner bootstrap sys.path:", sys.path, flush=True)
