@@ -1,9 +1,10 @@
 [phases.setup]
-nixPkgs = ["python311", "ffmpeg", "git"]
+nixPkgs = ["python311", "ffmpeg", "git", "libGL", "glib"]
 
 [phases.install]
 cmds = [
   "python -m pip install --upgrade pip",
+  "python -m pip install -r ai-hawkeye/requirements.txt",
   "python ai-hawkeye/setup_good_badminton.py --download-weights"
 ]
 
