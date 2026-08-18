@@ -10,9 +10,12 @@ from __future__ import annotations
 
 import sys, subprocess
 
-subprocess.check_call([sys.executable, "-m", "pip", "install", "--upgrade", "pip"])
-subprocess.check_call([sys.executable, "-m", "pip", "install", "numpy", "opencv-python-headless", "opencv-contrib-python-headless", "--force-reinstall"])
-import cv2
+try:
+    import cv2
+except ImportError:
+    subprocess.check_call([sys.executable, "-m", "pip", "install", "--upgrade", "pip"])
+    subprocess.check_call([sys.executable, "-m", "pip", "install", "numpy", "opencv-python-headless", "opencv-contrib-python-headless", "--force-reinstall"])
+    import cv2
 print("cv2 imported successfully, version:", cv2.__version__, flush=True)
 
 import argparse
