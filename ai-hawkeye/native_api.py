@@ -114,10 +114,12 @@ def ensure_runtime_opencv() -> None:
             "-m",
             "pip",
             "install",
-            "--upgrade",
-            "opencv-python-headless",
-            "opencv-contrib-python-headless",
+            "numpy==1.26.4",
+            "opencv-contrib-python-headless==4.10.0.84",
         ])
+        import cv2
+
+        print(f"[startup] cv2 imported successfully, version: {cv2.__version__}", flush=True)
     except Exception as exc:
         print(f"[startup] OpenCV runtime install failed: {exc}", file=sys.stderr, flush=True)
 

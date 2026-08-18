@@ -14,7 +14,7 @@ try:
     import cv2
 except ImportError:
     subprocess.check_call([sys.executable, "-m", "pip", "install", "--upgrade", "pip"])
-    subprocess.check_call([sys.executable, "-m", "pip", "install", "numpy", "opencv-python-headless", "opencv-contrib-python-headless", "--force-reinstall"])
+    subprocess.check_call([sys.executable, "-m", "pip", "install", "numpy==1.26.4", "opencv-contrib-python-headless==4.10.0.84", "--force-reinstall"])
     import cv2
 print("cv2 imported successfully, version:", cv2.__version__, flush=True)
 
