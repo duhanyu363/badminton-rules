@@ -44,13 +44,21 @@ def sync_extensions(good_root: Path) -> None:
         shutil.copy2(source, target)
 
 
+_opencv_install_attempted = False
+
+
 def import_cv2_for_runtime():
+    global _opencv_install_attempted
     emit("log", message=f"Python executable: {sys.executable}")
     emit("log", message=f"Python sys.path: {json.dumps(sys.path, ensure_ascii=False)}")
     try:
         import cv2 as cv2
     except ImportError as exc:
+        if _opencv_install_attempted:
+            emit("error", progress=0, message=f"OpenCV import failed after install attempt: {exc}", python=sys.executable, sys_path=sys.path)
+            return None
         emit("log", message=f"OpenCV import failed before reinstall: {exc}")
+        _opencv_install_attempted = True
         import importlib
 
         subprocess.check_call([
@@ -58,9 +66,9 @@ def import_cv2_for_runtime():
             "-m",
             "pip",
             "install",
+            "numpy",
             "opencv-python-headless",
-            "--force-reinstall",
-            "--no-deps",
+            "opencv-contrib-python-headless",
         ])
         importlib.invalidate_caches()
         import cv2 as cv2
