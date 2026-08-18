@@ -1,5 +1,6 @@
 [phases.setup]
-nixPkgs = ["python311", "ffmpeg", "git", "libGL", "glib", "libsm", "xorg.libXext", "xorg.libXrender", "libgomp"]
+nixPkgs = ["python311", "ffmpeg", "git"]
+aptPkgs = ["libgl1-mesa-glx", "libglib2.0-0", "libsm6", "libxext6", "libxrender-dev", "libgomp1"]
 
 [phases.install]
 cmds = [
@@ -9,4 +10,4 @@ cmds = [
 ]
 
 [start]
-cmd = "python ai-hawkeye/run_good_badminton.py --host 0.0.0.0 --port ${PORT:-5050}"
+cmd = "gunicorn --chdir ai-hawkeye native_api:app --bind 0.0.0.0:${PORT:-5050} --workers 1 --threads 4 --timeout 1800"

@@ -8,9 +8,11 @@ services:
       python -m pip install --upgrade pip
       python -m pip install -r ai-hawkeye/requirements.txt
       python ai-hawkeye/setup_good_badminton.py --download-weights
-    startCommand: python ai-hawkeye/run_good_badminton.py --host 0.0.0.0 --port $PORT
+    startCommand: gunicorn --chdir ai-hawkeye native_api:app --bind 0.0.0.0:$PORT --workers 1 --threads 4 --timeout 1800
     healthCheckPath: /api/health
     envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.0
       - key: PYTHONUNBUFFERED
         value: "1"
       - key: AI_HAWKEYE_MAX_UPLOAD_MB

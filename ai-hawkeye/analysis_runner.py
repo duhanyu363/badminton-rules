@@ -44,6 +44,18 @@ def sync_extensions(good_root: Path) -> None:
         shutil.copy2(source, target)
 
 
+def import_cv2_for_runtime():
+    emit("log", message=f"Python executable: {sys.executable}")
+    emit("log", message=f"Python sys.path: {json.dumps(sys.path, ensure_ascii=False)}")
+    try:
+        import cv2
+    except ImportError as exc:
+        emit("error", progress=0, message=f"OpenCV import failed: {exc}", python=sys.executable, sys_path=sys.path)
+        return None
+    emit("log", message=f"OpenCV imported: version={getattr(cv2, '__version__', 'unknown')} file={getattr(cv2, '__file__', 'unknown')}")
+    return cv2
+
+
 def read_video_info(video_path: Path) -> tuple[int, float]:
     import cv2
 
@@ -172,6 +184,8 @@ def main() -> int:
             return 2
 
     emit("running", progress=1, message="正在加载 Good-Badminton 运行依赖与模型...")
+    if import_cv2_for_runtime() is None:
+        return 1
 
     try:
         from badminton_analysis.system import BadmintonAnalysisSystem, load_runtime_dependencies
