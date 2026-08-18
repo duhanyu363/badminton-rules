@@ -8,12 +8,17 @@ stdout so the parent API process can stream them to the browser via SSE.
 
 from __future__ import annotations
 
+import sys, subprocess
+
+subprocess.check_call([sys.executable, "-m", "pip", "install", "--upgrade", "pip"])
+subprocess.check_call([sys.executable, "-m", "pip", "install", "numpy", "opencv-python-headless", "opencv-contrib-python-headless", "--force-reinstall"])
+import cv2
+print("cv2 imported successfully, version:", cv2.__version__, flush=True)
+
 import argparse
 import json
 import os
 import shutil
-import subprocess
-import sys
 import time
 from pathlib import Path
 from typing import Any
@@ -22,6 +27,29 @@ from typing import Any
 def emit(event: str, **payload: Any) -> None:
     message = {"event": event, **payload}
     print(json.dumps(message, ensure_ascii=False, separators=(",", ":")), flush=True)
+
+
+def describe_path(path: Path) -> dict[str, Any]:
+    resolved = path.expanduser().resolve()
+    info: dict[str, Any] = {
+        "path": str(path),
+        "resolved": str(resolved),
+        "exists": resolved.exists(),
+    }
+    if resolved.exists():
+        info["is_file"] = resolved.is_file()
+        info["is_dir"] = resolved.is_dir()
+        if resolved.is_file():
+            info["size_bytes"] = resolved.stat().st_size
+    return info
+
+
+def redacted_environment() -> dict[str, str]:
+    sensitive_markers = ("TOKEN", "KEY", "SECRET", "PASSWORD", "PASS", "CREDENTIAL", "AUTH", "COOKIE")
+    result: dict[str, str] = {}
+    for key, value in sorted(os.environ.items()):
+        result[key] = "<redacted>" if any(marker in key.upper() for marker in sensitive_markers) else value
+    return result
 
 
 def prepend_path(*paths: Path) -> None:
@@ -204,6 +232,21 @@ def main() -> int:
             return 2
 
     emit("running", progress=1, message="正在加载 Good-Badminton 运行依赖与模型...")
+    emit(
+        "log",
+        message="analysis startup debug",
+        good_root=str(good_root),
+        video_path=describe_path(args.video_path),
+        template_path=describe_path(args.template_path),
+        output_dir=describe_path(args.output_dir),
+        weights_dir=describe_path(args.weights_dir),
+        ball_model=describe_path(ball_model),
+        yolo_pose_model=describe_path(yolo_pose_model),
+        cwd=os.getcwd(),
+        python_executable=sys.executable,
+        sys_path=sys.path,
+        environment=redacted_environment(),
+    )
     if import_cv2_for_runtime() is None:
         return 1
 
