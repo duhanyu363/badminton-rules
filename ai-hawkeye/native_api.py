@@ -112,8 +112,34 @@ def ensure_runtime_opencv() -> None:
         import cv2
 
         print(f"[startup] cv2 imported successfully, version: {cv2.__version__}", flush=True)
+        return
     except Exception as exc:
-        print(f"[startup] OpenCV runtime import failed: {exc}", file=sys.stderr, flush=True)
+        print(f"[startup] OpenCV runtime import failed before install: {exc}", file=sys.stderr, flush=True)
+
+    try:
+        subprocess.check_call([
+            sys.executable,
+            "-m",
+            "pip",
+            "install",
+            "--disable-pip-version-check",
+            "numpy==1.26.4",
+            "opencv-python-headless==4.11.0.86",
+        ])
+        import cv2
+
+        print(f"[startup] cv2 imported successfully after install, version: {cv2.__version__}", flush=True)
+    except Exception as exc:
+        print(f"[startup] OpenCV runtime install failed: {exc}", file=sys.stderr, flush=True)
+
+
+def opencv_status() -> dict[str, Any]:
+    try:
+        import cv2
+
+        return {"ok": True, "version": str(getattr(cv2, "__version__", "unknown")), "file": str(getattr(cv2, "__file__", "unknown"))}
+    except Exception as exc:
+        return {"ok": False, "error": str(exc), "python": str(python_exe())}
 
 
 def initialize_startup() -> None:
@@ -460,6 +486,7 @@ def api_health():
             "integration_dir": str(INTEGRATION_DIR),
             "good_root": str(GOOD_ROOT),
             "python": str(python_exe()),
+            "opencv": opencv_status(),
             "ffmpeg": resolve_ffmpeg(),
             "allowed_origins": list(ALLOWED_ORIGINS),
             "max_upload_mb": round(MAX_UPLOAD_BYTES / 1024 / 1024, 2),
