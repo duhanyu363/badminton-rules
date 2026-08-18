@@ -10,12 +10,13 @@ from __future__ import annotations
 
 import sys, subprocess
 
+print("analysis_runner bootstrap python:", sys.executable, flush=True)
+print("analysis_runner bootstrap sys.path:", sys.path, flush=True)
 try:
     import cv2
-except ImportError:
-    subprocess.check_call([sys.executable, "-m", "pip", "install", "--upgrade", "pip"])
-    subprocess.check_call([sys.executable, "-m", "pip", "install", "numpy==1.26.4", "opencv-contrib-python-headless==4.10.0.84", "--force-reinstall"])
-    import cv2
+except ImportError as exc:
+    print(f"cv2 import failed in analysis_runner: {exc}", flush=True)
+    raise
 print("cv2 imported successfully, version:", cv2.__version__, flush=True)
 
 import argparse

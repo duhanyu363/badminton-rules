@@ -109,19 +109,11 @@ _startup_complete = False
 
 def ensure_runtime_opencv() -> None:
     try:
-        subprocess.check_call([
-            sys.executable,
-            "-m",
-            "pip",
-            "install",
-            "numpy==1.26.4",
-            "opencv-contrib-python-headless==4.10.0.84",
-        ])
         import cv2
 
         print(f"[startup] cv2 imported successfully, version: {cv2.__version__}", flush=True)
     except Exception as exc:
-        print(f"[startup] OpenCV runtime install failed: {exc}", file=sys.stderr, flush=True)
+        print(f"[startup] OpenCV runtime import failed: {exc}", file=sys.stderr, flush=True)
 
 
 def initialize_startup() -> None:
