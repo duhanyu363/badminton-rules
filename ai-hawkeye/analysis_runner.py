@@ -30,6 +30,8 @@ for candidate in (
 if os.name == "nt":
     os.environ.setdefault("KMP_DUPLICATE_LIB_OK", "TRUE")
 
+os.environ.setdefault("YOLO_CONFIG_DIR", str(Path(sys.executable).resolve().parent.parent / "tmp" / "good-badminton-ultralytics"))
+
 try:
     import cv2
 except ImportError as exc:

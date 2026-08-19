@@ -19,6 +19,7 @@ import re
 import shutil
 import subprocess
 import sys
+import tempfile
 import threading
 import time
 import uuid
@@ -776,7 +777,7 @@ def run_analysis_job(
     ]
     env = os.environ.copy()
     env["PYTHONUNBUFFERED"] = "1"
-    env["YOLO_CONFIG_DIR"] = str(INTEGRATION_DIR / ".yolo-config")
+    env["YOLO_CONFIG_DIR"] = str(Path(tempfile.gettempdir()) / "good-badminton-ultralytics")
     env["PYTHONPATH"] = os.pathsep.join([str(GOOD_ROOT), env.get("PYTHONPATH", "")])
     env["PATH"] = os.pathsep.join(
         [str(GOOD_ROOT / ".local" / "bin"), str(Path.home() / ".local" / "bin"), env.get("PATH", "")]
@@ -829,12 +830,16 @@ def run_analysis_job(
     with _jobs_lock:
         job = _jobs.get(job_id)
         final_status = job.get("status") if job else None
+        final_error = job.get("error") if job else None
     if return_code == 0:
         if final_status != "completed":
             update_job(job_id, "completed", status="completed", progress=100, message="分析完成", result=public_result(job_id))
     else:
         if final_status != "error":
-            update_job(job_id, "error", status="error", progress=last_progress, message=f"分析失败，退出码 {return_code}", error={"returncode": return_code})
+            details = {"returncode": return_code}
+            if final_error is not None:
+                details["last_error"] = final_error
+            update_job(job_id, "error", status="error", progress=last_progress, message=f"分析失败，退出码 {return_code}", error=details)
 
 
 @app.route("/api/jobs/<job_id>")

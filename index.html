@@ -4351,6 +4351,7 @@
                         aiSetJobDot('err');
                         aiEl('ai-start-analysis-btn').disabled = false;
                         aiLog(`分析失败：${data.message || '未知错误'}`);
+                        if (data.error) aiLog(`分析详情：${JSON.stringify(data.error)}`);
                     } else {
                         aiSetText('ai-job-status', '分析中');
                         aiSetJobDot('run');
