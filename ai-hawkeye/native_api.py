@@ -387,6 +387,38 @@ def import_good_modules() -> None:
         os.chdir(str(GOOD_ROOT))
 
 
+def serialize_job_state(job_id: str, job: dict[str, Any]) -> dict[str, Any]:
+    state: dict[str, Any] = {
+        "job_id": job_id,
+        "video_id": job.get("video_id", job_id),
+        "status": job.get("status"),
+        "progress": int(job.get("progress", 0)),
+        "message": str(job.get("message", "")),
+        "created_at": job.get("created_at"),
+        "updated_at": time.time(),
+        "error": job.get("error"),
+    }
+    if job.get("result") is not None:
+        state["result"] = job.get("result")
+    proc = job.get("proc")
+    if proc is not None and getattr(proc, "pid", None) is not None:
+        state["pid"] = int(proc.pid)
+    state["events_tail"] = list(job.get("events", []))[-50:]
+    return state
+
+
+def persist_job_state(job_id: str, state: dict[str, Any]) -> None:
+    try:
+        out_dir = output_dir_for(job_id)
+        out_dir.mkdir(parents=True, exist_ok=True)
+        state_path = out_dir / "job_state.json"
+        temp_path = state_path.with_suffix(".json.tmp")
+        temp_path.write_text(json.dumps(state, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
+        temp_path.replace(state_path)
+    except Exception as exc:
+        print(f"[startup] failed to persist job state for {job_id}: {exc}", file=sys.stderr, flush=True)
+
+
 def append_job_event(job: dict[str, Any], event: str, payload: dict[str, Any]) -> None:
     now = time.time()
     normalized = {
@@ -403,6 +435,7 @@ def append_job_event(job: dict[str, Any], event: str, payload: dict[str, Any]) -
 
 
 def update_job(job_id: str, event: str, **payload: Any) -> None:
+    snapshot: dict[str, Any] | None = None
     with _jobs_lock:
         job = _jobs.get(job_id)
         if not job:
@@ -420,6 +453,9 @@ def update_job(job_id: str, event: str, **payload: Any) -> None:
         if "error" in payload:
             job["error"] = payload["error"]
         append_job_event(job, event, payload)
+        snapshot = serialize_job_state(job_id, job)
+    if snapshot is not None:
+        persist_job_state(job_id, snapshot)
 
 
 def output_video_for(video_id: str) -> Path | None:
@@ -727,7 +763,7 @@ def api_start_analysis():
         }
         _jobs[video_id] = job
 
-    append_job_event(job, "queued", {"progress": 0, "message": "任务已排队", "status": "queued"})
+    update_job(video_id, "queued", progress=0, message="任务已排队", status="queued")
 
     language = data.get("language", "zh") if data.get("language") in {"zh", "en"} else "zh"
     pose_family = data.get("pose_family", "yolo-pose")
@@ -868,6 +904,28 @@ def api_job_status(job_id: str):
                     "error": job.get("error"),
                 }
             )
+
+    state_path = output_dir_for(job_id) / "job_state.json"
+    if state_path.exists():
+        try:
+            state = json.loads(state_path.read_text(encoding="utf-8"))
+            result = state.get("result")
+            if state.get("status") == "completed" and not result:
+                result = public_result(job_id)
+            return jsonify(
+                {
+                    "ok": True,
+                    "job_id": job_id,
+                    "video_id": state.get("video_id", job_id),
+                    "status": state.get("status"),
+                    "progress": state.get("progress", 0),
+                    "message": state.get("message", ""),
+                    "result": result,
+                    "error": state.get("error"),
+                }
+            )
+        except Exception:
+            pass
 
     result = public_result(job_id)
     if result.get("detections"):
