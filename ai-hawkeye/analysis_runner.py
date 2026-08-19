@@ -9,6 +9,7 @@ stdout so the parent API process can stream them to the browser via SSE.
 from __future__ import annotations
 
 import argparse
+import gc
 import json
 import os
 import shutil
@@ -28,6 +29,11 @@ for candidate in (
     if candidate.exists() and str(candidate) not in sys.path:
         sys.path.insert(0, str(candidate))
 
+os.environ.setdefault("OMP_NUM_THREADS", "1")
+os.environ.setdefault("MKL_NUM_THREADS", "1")
+os.environ.setdefault("OPENBLAS_NUM_THREADS", "1")
+os.environ.setdefault("NUMEXPR_NUM_THREADS", "1")
+
 if os.name == "nt":
     os.environ.setdefault("KMP_DUPLICATE_LIB_OK", "TRUE")
 
@@ -38,6 +44,14 @@ def _yolo_config_dir() -> Path:
 
 
 os.environ["YOLO_CONFIG_DIR"] = str(_yolo_config_dir())
+
+try:
+    import torch
+
+    torch.set_num_threads(1)
+    torch.set_num_interop_threads(1)
+except Exception:
+    pass
 
 try:
     import cv2
@@ -133,6 +147,48 @@ def resolve_ffmpeg(good_root: Path | None = None) -> str | None:
     return None
 
 
+def prepare_analysis_video(video_path: Path, output_dir: Path, good_root: Path | None = None, max_side: int = 720) -> Path:
+    cap = cv2.VideoCapture(str(video_path))
+    try:
+        width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH) or 0)
+        height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT) or 0)
+    finally:
+        cap.release()
+    if max(width, height) <= max_side or width <= 0 or height <= 0:
+        return video_path
+
+    ffmpeg = resolve_ffmpeg(good_root)
+    if not ffmpeg:
+        emit("log", message="未找到 FFmpeg，跳过分析输入降分辨率")
+        return video_path
+
+    prepared = output_dir / f"analysis_input_{video_path.stem}.mp4"
+    scale_expr = f"scale='if(gte(iw,ih),{max_side},-2)':'if(gte(iw,ih),-2,{max_side})'"
+    cmd = [
+        ffmpeg,
+        "-y",
+        "-i",
+        str(video_path),
+        "-vf",
+        scale_expr,
+        "-an",
+        "-c:v",
+        "mpeg4",
+        "-q:v",
+        "5",
+        str(prepared),
+    ]
+    try:
+        result = subprocess.run(cmd, capture_output=True, text=True, timeout=600)
+        if result.returncode == 0 and prepared.exists() and prepared.stat().st_size > 0:
+            emit("log", message=f"分析输入已降分辨率: {width}x{height} -> max_side={max_side}")
+            return prepared
+        emit("log", message=f"分析输入降分辨率失败，使用原视频: {(result.stderr or result.stdout or '')[-600:]}")
+    except Exception as exc:
+        emit("log", message=f"分析输入降分辨率异常，使用原视频: {exc}")
+    return video_path
+
+
 def transcode_browser_mp4(video_path: Path, good_root: Path | None = None) -> bool:
     """Re-encode an output video to browser-friendly H.264/yuv420p MP4."""
     if not video_path.exists() or video_path.stat().st_size <= 0:
@@ -221,12 +277,13 @@ def main() -> int:
     prepend_path(good_root / ".local" / "bin", Path.home() / ".local" / "bin")
     output_dir.mkdir(parents=True, exist_ok=True)
     weights_dir.mkdir(parents=True, exist_ok=True)
+    analysis_video_path = prepare_analysis_video(video_path, output_dir, good_root=good_root)
 
     if template_path is None:
         try:
             from court_detect import auto_extract_template
 
-            template_path_str = auto_extract_template(str(video_path))
+            template_path_str = auto_extract_template(str(analysis_video_path))
         except Exception as exc:
             emit("error", progress=0, message=f"无法自动提取模板帧: {exc}")
             return 2
@@ -259,6 +316,7 @@ def main() -> int:
         message="analysis startup debug",
         good_root=str(good_root),
         video_path=describe_path(video_path),
+        analysis_video_path=describe_path(analysis_video_path),
         template_path=describe_path(template_path),
         output_dir=describe_path(output_dir),
         weights_dir=describe_path(weights_dir),
@@ -275,7 +333,7 @@ def main() -> int:
         from badminton_analysis.system import BadmintonAnalysisSystem, load_runtime_dependencies
 
         load_runtime_dependencies()
-        total_frames, fps = read_video_info(video_path)
+        total_frames, fps = read_video_info(analysis_video_path)
     except Exception as exc:
         import traceback
 
@@ -314,7 +372,7 @@ def main() -> int:
 
     try:
         system = ProgressBadmintonAnalysisSystem(
-            str(video_path),
+            str(analysis_video_path),
             show_display=False,
             show_skeletons=True,
             show_player_trajectories=True,
@@ -332,7 +390,9 @@ def main() -> int:
             yolo_pose_model=str(yolo_pose_model),
             show_pose_roi=True,
         )
-        system.keep_audio = args.audio == "true"
+        system.output_video_path = str(output_dir / f"detect_{video_id}.mp4")
+        system.temp_output_video_path = str(output_dir / f"temp_detect_{video_id}.mp4")
+        system.keep_audio = args.audio == "true" and analysis_video_path == video_path
         emit("progress", progress=2, message="模型加载完成，开始逐帧分析...", total_frames=total_frames, fps=fps)
         system.process_video()
 
