@@ -131,16 +131,23 @@ def patch_good_badminton() -> None:
 
 
 def download_weights() -> None:
-    weights_dir = GOOD_REPO / "weights"
+    weights_dir = INTEGRATION_DIR / "weights"
     weights_dir.mkdir(parents=True, exist_ok=True)
+    mirror_dir = GOOD_REPO / "weights"
+    mirror_dir.mkdir(parents=True, exist_ok=True)
     for filename, url in WEIGHTS.items():
         target = weights_dir / filename
         if target.exists() and target.stat().st_size > 0:
             print(f"[ok] {target}")
-            continue
-        print(f"[download] {filename}")
-        urlretrieve(url, target)
-        print(f"[saved] {target}")
+        else:
+            print(f"[download] {filename}")
+            urlretrieve(url, target)
+            print(f"[saved] {target}")
+        mirror_target = mirror_dir / filename
+        if mirror_target.resolve() != target.resolve():
+            if not mirror_target.exists() or mirror_target.stat().st_size != target.stat().st_size:
+                shutil.copy2(target, mirror_target)
+                print(f"[mirrored] {mirror_target}")
 
 
 def print_status() -> None:
@@ -148,7 +155,9 @@ def print_status() -> None:
     print("repo:", GOOD_REPO)
     print("python:", python_exe(), "exists=", python_exe().exists())
     print("ffmpeg:", shutil.which("ffmpeg") or "NOT FOUND on PATH")
-    weights_dir = GOOD_REPO / "weights"
+    weights_dir = INTEGRATION_DIR / "weights"
+    print("weights dir:", weights_dir)
+    print("mirror dir:", GOOD_REPO / "weights")
     for filename in WEIGHTS:
         p = weights_dir / filename
         print(("FOUND  " if p.exists() else "MISSING"), p)

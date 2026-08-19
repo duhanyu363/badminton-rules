@@ -77,7 +77,7 @@ GOOD_ROOT = _resolve_runtime_path("AI_HAWKEYE_GOOD_ROOT", INTEGRATION_DIR / "Goo
 VIDEOS_DIR = GOOD_ROOT / "videos"
 OUTPUTS_DIR = GOOD_ROOT / "outputs"
 TEMPLATES_DIR = GOOD_ROOT / "templates"
-WEIGHTS_DIR = GOOD_ROOT / "weights"
+WEIGHTS_DIR = INTEGRATION_DIR / "weights"
 EXTENSIONS_DIR = INTEGRATION_DIR / "good_badminton_ext"
 RUNNER = INTEGRATION_DIR / "analysis_runner.py"
 
@@ -180,9 +180,10 @@ def api_options(_path: str):
 
 
 def ensure_runtime_dirs() -> None:
+    WEIGHTS_DIR.mkdir(parents=True, exist_ok=True)
     if not GOOD_ROOT.exists():
         return
-    for directory in (VIDEOS_DIR, OUTPUTS_DIR, TEMPLATES_DIR, WEIGHTS_DIR):
+    for directory in (VIDEOS_DIR, OUTPUTS_DIR, TEMPLATES_DIR):
         directory.mkdir(parents=True, exist_ok=True)
 
 
@@ -222,7 +223,7 @@ def runtime_ready() -> tuple[bool, list[str]]:
 
 
 def copy_default_weights(filenames: Iterable[str]) -> None:
-    default_weights_dir = INTEGRATION_DIR / "Good-Badminton" / "weights"
+    default_weights_dir = GOOD_ROOT / "weights"
     if default_weights_dir.resolve() == WEIGHTS_DIR.resolve() or not default_weights_dir.exists() or not GOOD_ROOT.exists():
         return
     WEIGHTS_DIR.mkdir(parents=True, exist_ok=True)

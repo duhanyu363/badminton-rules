@@ -127,10 +127,14 @@ def annotate_court(image, auto_preview_path=None):
 
     auto_corners, _line_mask, auto_debug = auto_detect_court_corners(base_image)
     if not auto_corners:
+        auto_corners = [
+            (int(fixed_size[0] * 0.24), int(fixed_size[1] * 0.40)),
+            (int(fixed_size[0] * 0.76), int(fixed_size[1] * 0.40)),
+            (int(fixed_size[0] * 0.90), int(fixed_size[1] * 0.94)),
+            (int(fixed_size[0] * 0.10), int(fixed_size[1] * 0.94)),
+        ]
         if auto_preview_path:
-            cv2.imwrite(auto_preview_path, render_auto_court_preview(base_image, None, None, auto_debug))
-            print(f"No reliable auto court boundary found. Debug preview saved: {auto_preview_path}")
-        return None, None, None
+            print(f"No reliable auto court boundary found. Using fallback court annotation: {auto_preview_path}")
 
     auto_roi_corners = compute_expanded_roi(auto_corners, base_image.shape)
     auto_preview = render_auto_court_preview(base_image, auto_corners, auto_roi_corners, auto_debug)

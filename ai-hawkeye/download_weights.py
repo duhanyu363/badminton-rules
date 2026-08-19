@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Download Good-Badminton release weights into ai-hawkeye/Good-Badminton/weights."""
+"""Download Good-Badminton release weights into ai-hawkeye/weights."""
 
 from __future__ import annotations
 

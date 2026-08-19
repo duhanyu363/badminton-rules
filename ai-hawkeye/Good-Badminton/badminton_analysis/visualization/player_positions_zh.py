@@ -253,8 +253,9 @@ class PlayerPositionVisualizer:
             if start_idx < len(frames):
                 rally_segments.append((start_idx, len(frames)))
             
-            # Filter out short rallies (less than 150 frames)
-            rally_segments = [(start, end) for start, end in rally_segments if end - start >= 150]
+            long_rally_segments = [(start, end) for start, end in rally_segments if end - start >= 150]
+            if long_rally_segments:
+                rally_segments = long_rally_segments
             
             print(f"Detected {len(rally_segments)} valid rallies")
             

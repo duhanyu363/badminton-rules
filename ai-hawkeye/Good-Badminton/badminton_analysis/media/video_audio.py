@@ -134,12 +134,10 @@ def process_video_without_audio(temp_video_path, output_path):
 
 def setup_video_writer(frame_width, frame_height, fps, temp_output_path):
     os.makedirs(os.path.dirname(temp_output_path), exist_ok=True)
-    # 尝试 H.264 编码（浏览器兼容），失败则回退 mp4v
-    for codec in ("avc1", "h264", "mp4v"):
-        fourcc = cv2.VideoWriter_fourcc(*codec)
-        writer = cv2.VideoWriter(temp_output_path, fourcc, fps, (frame_width, frame_height))
-        if writer.isOpened():
-            return writer
+    fourcc = cv2.VideoWriter_fourcc(*"mp4v")
+    writer = cv2.VideoWriter(temp_output_path, fourcc, fps, (frame_width, frame_height))
+    if writer.isOpened():
+        return writer
     raise RuntimeError(f"Unable to create video writer: {temp_output_path}")
 
 

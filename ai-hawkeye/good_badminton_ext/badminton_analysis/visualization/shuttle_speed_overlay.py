@@ -204,12 +204,10 @@ def _draw_timeline(frame, frame_index: int, total_frames: int, points: list[tupl
 
 
 def _open_video_writer(path: str, fps: float, frame_size: tuple[int, int]):
-    for codec in ("avc1", "H264", "mp4v"):
-        fourcc = cv2.VideoWriter_fourcc(*codec)
-        writer = cv2.VideoWriter(path, fourcc, fps, frame_size)
-        if writer.isOpened():
-            return writer
-        writer.release()
+    fourcc = cv2.VideoWriter_fourcc(*"mp4v")
+    writer = cv2.VideoWriter(path, fourcc, fps, frame_size)
+    if writer.isOpened():
+        return writer
     raise RuntimeError(f"Unable to create speed overlay video: {path}")
 
 

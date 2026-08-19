@@ -55,13 +55,39 @@ def detect_court(template_path, save_dir):
             'annotations_path': annotations_path,
         }
     else:
-        # 自动检测失败，保存 debug 图
-        preview = render_auto_court_preview(base_image, None, None, auto_debug)
+        auto_corners = [
+            (int(fixed_size[0] * 0.24), int(fixed_size[1] * 0.40)),
+            (int(fixed_size[0] * 0.76), int(fixed_size[1] * 0.40)),
+            (int(fixed_size[0] * 0.90), int(fixed_size[1] * 0.94)),
+            (int(fixed_size[0] * 0.10), int(fixed_size[1] * 0.94)),
+        ]
+        auto_roi_corners = compute_expanded_roi(auto_corners, base_image.shape)
+        preview = render_auto_court_preview(base_image, auto_corners, auto_roi_corners, auto_debug)
         cv2.imwrite(preview_path, preview)
+
+        scale_x = w / fixed_size[0]
+        scale_y = h / fixed_size[1]
+        corners = [(int(x * scale_x), int(y * scale_y)) for x, y in auto_corners]
+        roi_corners = [(int(x * scale_x), int(y * scale_y)) for x, y in auto_roi_corners]
+
+        cm = CourtMapper(auto_corners)
+        _, mid_height = cm.draw_court_overlay(base_image)
+        mid_height = int(mid_height * scale_y)
+
+        with open(annotations_path, 'w') as f:
+            f.write(f"corners={corners}\n")
+            f.write(f"roi_corners={roi_corners}\n")
+            f.write(f"mid_height={mid_height}\n")
+
         return {
-            'success': False,
-            'error': '自动检测失败，需要手动标注球场',
+            'success': True,
+            'fallback': True,
+            'message': '自动检测失败，已使用默认无头球场标注',
+            'corners': corners,
+            'roi_corners': roi_corners,
+            'mid_height': mid_height,
             'preview_path': preview_path,
+            'annotations_path': annotations_path,
         }
 
 

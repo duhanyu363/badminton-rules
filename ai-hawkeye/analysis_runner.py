@@ -8,30 +8,26 @@ stdout so the parent API process can stream them to the browser via SSE.
 
 from __future__ import annotations
 
-import sys, subprocess
-from pathlib import Path
-
-print("analysis_runner bootstrap python:", sys.executable, flush=True)
-site_root = Path(__file__).resolve().parents[1]
-venv_site_packages = site_root / ".venv" / "lib" / f"python{sys.version_info.major}.{sys.version_info.minor}" / "site-packages"
-print("analysis_runner venv_site_packages:", venv_site_packages, "exists=", venv_site_packages.exists(), flush=True)
-if venv_site_packages.exists() and str(venv_site_packages) not in sys.path:
-    sys.path.insert(0, str(venv_site_packages))
-print("analysis_runner bootstrap sys.path:", sys.path, flush=True)
-try:
-    import cv2
-except ImportError as exc:
-    print(f"cv2 import failed in analysis_runner: {exc}", flush=True)
-    raise
-print("cv2 imported successfully, version:", cv2.__version__, flush=True)
-
 import argparse
 import json
 import os
 import shutil
+import subprocess
+import sys
 import time
 from pathlib import Path
 from typing import Any
+
+if os.name == "nt":
+    os.environ.setdefault("KMP_DUPLICATE_LIB_OK", "TRUE")
+
+try:
+    import cv2
+except ImportError as exc:
+    raise RuntimeError(
+        "OpenCV import failed. Install opencv-python-headless and the system libraries "
+        "libgl1-mesa-glx, libglib2.0-0, libsm6, libxext6, libxrender-dev, libgomp1, and ffmpeg."
+    ) from exc
 
 
 def emit(event: str, **payload: Any) -> None:
@@ -82,41 +78,7 @@ def sync_extensions(good_root: Path) -> None:
         shutil.copy2(source, target)
 
 
-_opencv_install_attempted = False
-
-
-def import_cv2_for_runtime():
-    global _opencv_install_attempted
-    emit("log", message=f"Python executable: {sys.executable}")
-    emit("log", message=f"Python sys.path: {json.dumps(sys.path, ensure_ascii=False)}")
-    try:
-        import cv2 as cv2
-    except ImportError as exc:
-        if _opencv_install_attempted:
-            emit("error", progress=0, message=f"OpenCV import failed after install attempt: {exc}", python=sys.executable, sys_path=sys.path)
-            return None
-        emit("log", message=f"OpenCV import failed before reinstall: {exc}")
-        _opencv_install_attempted = True
-        import importlib
-
-        subprocess.check_call([
-            sys.executable,
-            "-m",
-            "pip",
-            "install",
-            "numpy",
-            "opencv-python-headless",
-            "opencv-contrib-python-headless",
-        ])
-        importlib.invalidate_caches()
-        import cv2 as cv2
-    emit("log", message=f"OpenCV imported: version={getattr(cv2, '__version__', 'unknown')} file={getattr(cv2, '__file__', 'unknown')}")
-    return cv2
-
-
 def read_video_info(video_path: Path) -> tuple[int, float]:
-    import cv2
-
     cap = cv2.VideoCapture(str(video_path))
     try:
         total_frames = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
@@ -212,12 +174,12 @@ def transcode_browser_mp4(video_path: Path, good_root: Path | None = None) -> bo
 
 def main() -> int:
     parser = argparse.ArgumentParser(description="Run Good-Badminton analysis without Web UI")
-    parser.add_argument("--good-root", required=True, type=Path)
-    parser.add_argument("--video-id", required=True)
+    parser.add_argument("--good-root", default=Path(__file__).resolve().parent / "Good-Badminton", type=Path)
+    parser.add_argument("--video-id", default=None)
     parser.add_argument("--video-path", required=True, type=Path)
-    parser.add_argument("--template-path", required=True, type=Path)
-    parser.add_argument("--output-dir", required=True, type=Path)
-    parser.add_argument("--weights-dir", required=True, type=Path)
+    parser.add_argument("--template-path", default=None, type=Path)
+    parser.add_argument("--output-dir", default=None, type=Path)
+    parser.add_argument("--weights-dir", default=Path(__file__).resolve().parent / "weights", type=Path)
     parser.add_argument("--language", default="zh", choices=["zh", "en"])
     parser.add_argument("--pose-family", default="yolo-pose", choices=["yolo-pose", "rtmpose", "rtmo"])
     parser.add_argument("--pose-mode", default="balanced", choices=["lightweight", "balanced", "performance"])
@@ -229,14 +191,46 @@ def main() -> int:
         emit("error", progress=0, message=f"Good-Badminton 不存在: {good_root}")
         return 2
 
+    video_path = args.video_path.resolve()
+    weights_dir = args.weights_dir.resolve()
+    video_id = args.video_id or video_path.stem
+    output_dir = args.output_dir.resolve() if args.output_dir else (Path(__file__).resolve().parent / "outputs" / video_id)
+    template_path = args.template_path.resolve() if args.template_path else None
+
+    sys.path.insert(0, str(good_root))
     os.chdir(str(good_root))
     sync_extensions(good_root)
-    sys.path.insert(0, str(good_root))
     prepend_path(good_root / ".local" / "bin", Path.home() / ".local" / "bin")
+    output_dir.mkdir(parents=True, exist_ok=True)
+    weights_dir.mkdir(parents=True, exist_ok=True)
 
-    ball_model = args.weights_dir / "yolo11s-ball.pt"
-    yolo_pose_model = args.weights_dir / "yolo11n-pose.pt"
-    for required in (args.video_path, args.template_path, ball_model, yolo_pose_model):
+    if template_path is None:
+        try:
+            from court_detect import auto_extract_template
+
+            template_path_str = auto_extract_template(str(video_path))
+        except Exception as exc:
+            emit("error", progress=0, message=f"无法自动提取模板帧: {exc}")
+            return 2
+        if not template_path_str:
+            emit("error", progress=0, message="无法自动提取模板帧")
+            return 2
+        template_path = Path(template_path_str)
+
+    try:
+        from court_detect import detect_court
+
+        court_result = detect_court(str(template_path), str(output_dir))
+    except Exception as exc:
+        emit("error", progress=0, message=f"无法自动生成球场标注: {exc}")
+        return 2
+    if not court_result.get("success"):
+        emit("error", progress=0, message=str(court_result.get("error") or "无法自动生成球场标注"), court_result=court_result)
+        return 2
+
+    ball_model = weights_dir / "yolo11s-ball.pt"
+    yolo_pose_model = weights_dir / "yolo11n-pose.pt"
+    for required in (video_path, template_path, ball_model, yolo_pose_model):
         if not required.exists():
             emit("error", progress=0, message=f"缺少必需文件: {required}")
             return 2
@@ -246,10 +240,10 @@ def main() -> int:
         "log",
         message="analysis startup debug",
         good_root=str(good_root),
-        video_path=describe_path(args.video_path),
-        template_path=describe_path(args.template_path),
-        output_dir=describe_path(args.output_dir),
-        weights_dir=describe_path(args.weights_dir),
+        video_path=describe_path(video_path),
+        template_path=describe_path(template_path),
+        output_dir=describe_path(output_dir),
+        weights_dir=describe_path(weights_dir),
         ball_model=describe_path(ball_model),
         yolo_pose_model=describe_path(yolo_pose_model),
         cwd=os.getcwd(),
@@ -257,14 +251,13 @@ def main() -> int:
         sys_path=sys.path,
         environment=redacted_environment(),
     )
-    if import_cv2_for_runtime() is None:
-        return 1
+    emit("log", message=f"cv2 imported successfully, version={cv2.__version__}")
 
     try:
         from badminton_analysis.system import BadmintonAnalysisSystem, load_runtime_dependencies
 
         load_runtime_dependencies()
-        total_frames, fps = read_video_info(args.video_path)
+        total_frames, fps = read_video_info(video_path)
     except Exception as exc:
         import traceback
 
@@ -303,7 +296,7 @@ def main() -> int:
 
     try:
         system = ProgressBadmintonAnalysisSystem(
-            str(args.video_path),
+            str(video_path),
             show_display=False,
             show_skeletons=True,
             show_player_trajectories=True,
@@ -313,9 +306,9 @@ def main() -> int:
             show_performance_stats=True,
             save_images=False,
             language=args.language,
-            output_dir=str(args.output_dir),
+            output_dir=str(output_dir),
             ball_model_path=str(ball_model),
-            template_path=str(args.template_path),
+            template_path=str(template_path),
             pose_mode=args.pose_mode,
             pose_family=args.pose_family,
             yolo_pose_model=str(yolo_pose_model),
@@ -329,18 +322,18 @@ def main() -> int:
         from badminton_analysis.analysis.shuttle_speed import calculate_shuttle_speeds
         from badminton_analysis.visualization.shuttle_speed_overlay import annotate_video_with_shuttle_speeds
 
-        speeds_path = args.output_dir / "speeds.jsonl"
-        speed_summary_path = args.output_dir / "speed_summary.json"
+        speeds_path = output_dir / "speeds.jsonl"
+        speed_summary_path = output_dir / "speed_summary.json"
         calculate_shuttle_speeds(
             detections_path=system.detections_path,
             metadata_path=system.metadata_path,
             output_jsonl_path=str(speeds_path),
             summary_path=str(speed_summary_path),
-            rally_segments_path=str(args.output_dir / "rally_segments.json"),
+            rally_segments_path=str(output_dir / "rally_segments.json"),
         )
 
         emit("progress", progress=96, message="正在叠加球速标注层...")
-        speed_video_path = args.output_dir / f"detect_{args.video_id}_speed.mp4"
+        speed_video_path = output_dir / f"detect_{video_id}_speed.mp4"
         annotate_video_with_shuttle_speeds(
             input_video_path=system.output_video_path,
             output_video_path=str(speed_video_path),
@@ -360,7 +353,7 @@ def main() -> int:
 
         analyze_player_positions(
             system.detections_path,
-            output_dir=str(args.output_dir / "position_visualizations"),
+            output_dir=str(output_dir / "position_visualizations"),
             fps=system.fps,
         )
 
@@ -371,7 +364,7 @@ def main() -> int:
             "completed",
             progress=100,
             message="分析完成",
-            video_id=args.video_id,
+            video_id=video_id,
             detections=str(Path(system.detections_path).resolve()),
             output_video=str(Path(system.output_video_path).resolve()),
             fps=system.fps,
