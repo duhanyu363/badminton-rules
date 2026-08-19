@@ -101,6 +101,10 @@ OPTIONAL_WEIGHTS = [
     "rtmo-s_8xb32-600e_body7-640x640-dac2bf74_20231211.onnx",
 ]
 
+def _yolo_config_dir() -> Path:
+    return Path(tempfile.gettempdir()) / "good-badminton-ultralytics"
+
+
 app = Flask(__name__)
 app.config["MAX_CONTENT_LENGTH"] = MAX_UPLOAD_BYTES
 
@@ -777,7 +781,7 @@ def run_analysis_job(
     ]
     env = os.environ.copy()
     env["PYTHONUNBUFFERED"] = "1"
-    env["YOLO_CONFIG_DIR"] = str(Path(tempfile.gettempdir()) / "good-badminton-ultralytics")
+    env["YOLO_CONFIG_DIR"] = str(_yolo_config_dir())
     env["PYTHONPATH"] = os.pathsep.join([str(GOOD_ROOT), env.get("PYTHONPATH", "")])
     env["PATH"] = os.pathsep.join(
         [str(GOOD_ROOT / ".local" / "bin"), str(Path.home() / ".local" / "bin"), env.get("PATH", "")]

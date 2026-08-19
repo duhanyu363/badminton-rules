@@ -14,6 +14,7 @@ import os
 import shutil
 import subprocess
 import sys
+import tempfile
 import time
 from pathlib import Path
 from typing import Any
@@ -30,7 +31,13 @@ for candidate in (
 if os.name == "nt":
     os.environ.setdefault("KMP_DUPLICATE_LIB_OK", "TRUE")
 
-os.environ.setdefault("YOLO_CONFIG_DIR", str(Path(sys.executable).resolve().parent.parent / "tmp" / "good-badminton-ultralytics"))
+def _yolo_config_dir() -> Path:
+    if os.name == "nt":
+        return Path(tempfile.gettempdir()) / "good-badminton-ultralytics"
+    return Path("/tmp/good-badminton-ultralytics")
+
+
+os.environ["YOLO_CONFIG_DIR"] = str(_yolo_config_dir())
 
 try:
     import cv2
